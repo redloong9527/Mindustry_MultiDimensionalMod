@@ -11,7 +11,13 @@ import mindustry.world.modules.BlockModule;
 
 /**复制 PowerModule*/
 public class FluxModule extends BlockModule {
-    public FluxModule(){}
+    public FluxModule(Building owner){
+        graph = new FluxGraph();
+        graph.init(owner);
+        this.owner = owner;
+    }
+
+    public Building owner;
 
     /**
      * In case of unbuffered consumers, this is the percentage (1.0f = 100%) of the demanded power which can be supplied.
@@ -22,7 +28,7 @@ public class FluxModule extends BlockModule {
     // public float effectivity = 0f;
     public float fluxAmount = 0f;
     public boolean fusing = false;
-    public FluxGraph graph = new FluxGraph();
+    public FluxGraph graph ;
     public IntSeq links = new IntSeq();
 
     @Override

@@ -4,25 +4,27 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.FluxModule;
-import mindustry.content.Items;
-import mindustry.gen.Building;
-import mindustry.world.Block;
-import mindustry.world.blocks.power.PowerBlock;
-import mindustry.world.meta.BlockGroup;
+import mindustry.world.blocks.production.GenericCrafter;
 
-public class FluxBlock extends Block{
-    public FluxBlock(String name){
+public class FluxCrafter extends GenericCrafter {
+    public FluxCrafter(String name){
         super(name);
-        update = true;
-        solid = true;
-        hasPower = true;
-        group = BlockGroup.power;
     }
 
-    public class FluxBlockBuild extends Building implements Flux{
-        public FluxModule flux = new FluxModule(this);
 
-        public FluxModule flux(){return flux;};
+
+    public class FluxCrafterBuild extends GenericCrafterBuild implements Flux{
+
+        public FluxModule flux = new FluxModule(this);
+        @Override
+        public void craft(){
+            super.craft();
+        }
+
+        @Override
+        public FluxModule flux() {
+            return flux;
+        }
 
         @Override
         public void write(Writes write) {

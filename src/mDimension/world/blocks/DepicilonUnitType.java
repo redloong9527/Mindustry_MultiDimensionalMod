@@ -15,4 +15,16 @@ public class DepicilonUnitType extends UnitType {
         envDisabled = Env.space;
         researchCostMultiplier = 7.5f;
     }
+
+    public static class DepicilonTankUnitType extends DepicilonUnitType{
+        public DepicilonTankUnitType(String name){
+            super(name);
+            squareShape = true;
+            omniMovement = false;
+            rotateMoveFirst = true;
+            rotateSpeed = 1.3f;
+            envDisabled = Env.none;
+            speed = 0.8f;
+        }
+    }
 }

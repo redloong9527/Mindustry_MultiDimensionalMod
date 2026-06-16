@@ -28,6 +28,8 @@ import mDimension.entity.bullet.MultiPointLaserBullet;
 import mDimension.entity.pattern.ShootSwing;
 import mDimension.world.blocks.*;
 import mDimension.world.flux.FluxBlock;
+import mDimension.world.flux.FluxCrafter;
+import mDimension.world.flux.FluxGraph;
 import mDimension.world.flux.FluxNode;
 import mindustry.content.*;
 import mindustry.entities.Effect;
@@ -2214,7 +2216,6 @@ public class md_blocks {
             consumeItems(with(
                     Items.silicon,70,md_items.al_alloy,40
             ));
-            itemCapacity = 140;
             consumePower(220f/60f);
             upgrades.addAll(
                     new UnitType[]{md_UnitTypes.captive,md_UnitTypes.zircon}
@@ -2222,13 +2223,13 @@ public class md_blocks {
         }};
 
         airforce_anchor_point_reconstructor = new RegionReconstructor("airforce-anchor-point-reconstructor"){{
-            requirements(Category.units, with(Items.silicon, 150, md_items.al_alloy, 120, Items.graphite, 150));
+            requirements(Category.units, with(Items.silicon, 150, md_items.al_alloy, 120, md_items.polymer, 100));
             size = 3;
             craftTime = 60f*30;
+            researchCostMultiplier = 0.2f;
             consumeItems(with(
-                    Items.silicon,50,md_items.al_alloy,40,Items.graphite,30
+                    Items.silicon,50,md_items.polymer,40,Items.graphite,20
             ));
-            itemCapacity = 140;
             consumePower(250f/60f);
             upgrades.addAll(
                     new UnitType[]{md_UnitTypes.shimmer,md_UnitTypes.firefly}
@@ -2237,7 +2238,7 @@ public class md_blocks {
 
         //endregion
 
-        Block test = new TestBlock("testBlock"){{
+        Block test = new FluxCrafter("testBlock"){{
             requirements(Category.crafting,with());
             consume(new ConsumeFlux(){{
                 produceAmount = 1f;
@@ -2256,17 +2257,17 @@ public class md_blocks {
             enableDrawStatus = false;
             drawDisabled = true;
         }};
-        Block test2 = new FluxBlock("batter"){{
-            requirements(Category.power,with());
-            size = 2;
-            consume(new ConsumeFlux(){{
-                capacity = 100;
-                retain = 100;
-                dissipationSpeed = 0.1f/60f;
-            }});
-            enableDrawStatus = false;
-            drawDisabled = true;
-        }};
+//        Block test2 = new FluxBlock("batter"){{
+//            requirements(Category.power,with());
+//            size = 2;
+//            consume(new ConsumeFlux(){{
+//                capacity = 100;
+//                retain = 100;
+//                dissipationSpeed = 0.1f/60f;
+//            }});
+//            enableDrawStatus = false;
+//            drawDisabled = true;
+//        }};
     }
     public static void loadAmmo(){
         heavy_ammo = new AmmoBlock("heavy-ammo"){{

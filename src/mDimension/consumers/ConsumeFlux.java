@@ -32,13 +32,14 @@ import java.util.function.Predicate;
 
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.world;
+import static mDimension.world.flux.Fluxs.*;
 
 public class ConsumeFlux extends Consume {
-    public static Seq<Building> outArray2 = new Seq<>();
+    //public static Seq<Building> outArray2 = new Seq<>();
     public static Queue<Building> queue = new Queue<>();
-    public static Seq<Building> outArray1 = new Seq<>();
+    //public static Seq<Building> outArray1 = new Seq<>();
     public static IntSet visited = new IntSet();
-    public static ExtraModule<FluxModule> fluxModMain = new ExtraModule<>();
+    //public static ExtraModule<FluxModule> fluxModMain = new ExtraModule<>();
     public static Interval timer = new Interval();
 
     /** The maximum amount of power which can be processed per tick. This might influence efficiency or load a buffer. */
@@ -78,7 +79,7 @@ public class ConsumeFlux extends Consume {
 
     @Override
     public void apply(Block block){
-        fluxModMain.master = block;
+        //fluxModMain.master = block;
         if (retain==0)retain=usage*2+10;
         if(!isNode) {
             block.addBar("fluxAmount", (b) -> {
@@ -132,21 +133,21 @@ public class ConsumeFlux extends Consume {
         if(b == null)return false;
         return b.block.findConsumer(c->c instanceof ConsumeFlux)!=null;
     };
-    public static boolean hasConsume(Block b){
-        return b.findConsumer(c->c instanceof ConsumeFlux)!=null;
-    };
-    public static FluxModule flux(Building b){
-        if(b == null)return null;
-        ConsumeFlux con = getConsume(b);
-        if(con == null)return null;
-        FluxModule flux = con.getModule(b);
+//    public static boolean hasConsume(Block b){
+//        return b.findConsumer(c->c instanceof ConsumeFlux)!=null;
+//    };
+//    public static FluxModule flux(Building b){
+//        if(b == null)return null;
+//        ConsumeFlux con = getConsume(b);
+//        if(con == null)return null;
+//        FluxModule flux = con.getModule(b);
+//
+//        return flux == null?fluxModMain.register(b,FluxModule::new):flux;
+//    }
 
-        return flux == null?fluxModMain.register(b,FluxModule::new):flux;
-    }
-
-    public FluxModule getModule(Building b){
-        return fluxModMain.register(b,FluxModule::new);
-    }
+//    public FluxModule getModule(Building b){
+//        return fluxModMain.register(b,FluxModule::new);
+//    }
 
     public float overloadProcess(FluxModule flux){
         return Math.min(1,(flux.fluxAmount-capacity) / (bearingCapacity));
@@ -158,9 +159,9 @@ public class ConsumeFlux extends Consume {
 
 
 
-    public boolean hasModule(Building b){
-        return fluxModMain.has(b);
-    }
+//    public boolean hasModule(Building b){
+//        return fluxModMain.has(b);
+//    }
 
     @Override
     public void update(Building b) {
@@ -175,7 +176,7 @@ public class ConsumeFlux extends Consume {
         IntSeq linksc = flux.links;
         linksc.each(pos->{
             Building link = world.tile(pos).build;
-            if(link == null || link.dead || ConsumeFlux.flux(link) == null){
+            if(link == null || link.dead || flux(link) == null){
                 flux.links.removeValue(pos);
             }
         });
@@ -238,7 +239,7 @@ public class ConsumeFlux extends Consume {
         self.updateProximity();
         for(int i=0;i<self.proximity.size;i++) {
             var other = self.proximity.get(i);
-            if (other != null && ConsumeFlux.flux(other)!=null && other.team == self.team) {
+            if (other != null && flux(other)!=null && other.team == self.team) {
                 out.add(other);
             }
         }
@@ -251,34 +252,34 @@ public class ConsumeFlux extends Consume {
         });
         return out;
     }
-    public Seq<Building> connectFlux(Building self,Seq<Building> out){
-        return connectFlux(self,out,flux(self));
-    }
-    public  Seq<Building> FluxBfs(Building start,Seq<Building> out){
-        out.clear();
-        //FluxModule flux = flux(start);
-        queue.clear();
-        visited.clear();
-        queue.addLast(start);
-        visited.add(start.pos());
-        while (!queue.isEmpty()){
-            Building node = queue.removeFirst();
-            ConsumeFlux cons = ConsumeFlux.getConsume(node);
-            if(cons!=null) {
-                for (Building c : cons.connectFlux(node, outArray1)) {
-                    if (c != null && visited.add(c.pos())) {
-                        BfsAct(node,c);
-                        out.add(c);
-                        queue.addLast(c);
-                    }
-
-                }
-            }
-
-        }
-
-        return out;
-    };
+//    public Seq<Building> connectFlux(Building self,Seq<Building> out){
+//        return connectFlux(self,out,flux(self));
+//    }
+//    public  Seq<Building> FluxBfs(Building start,Seq<Building> out){
+//        out.clear();
+//        //FluxModule flux = flux(start);
+//        queue.clear();
+//        visited.clear();
+//        queue.addLast(start);
+//        visited.add(start.pos());
+//        while (!queue.isEmpty()){
+//            Building node = queue.removeFirst();
+//            ConsumeFlux cons = ConsumeFlux.getConsume(node);
+//            if(cons!=null) {
+//                for (Building c : cons.connectFlux(node, outArray1)) {
+//                    if (c != null && visited.add(c.pos())) {
+//                        BfsAct(node,c);
+//                        out.add(c);
+//                        queue.addLast(c);
+//                    }
+//
+//                }
+//            }
+//
+//        }
+//
+//        return out;
+//    };
 
     public void BfsAct(Building f,Building c){
 

@@ -359,7 +359,8 @@ public class RegionReconstructor extends UnitBlock {
 
         public UnitType findType(UnitType t){
             for(int i=0;i<upgrades.size;i++){
-                if(t == upgrades.get(i)[0]){
+                UnitType u= upgrades.get(i)[0];
+                if(t == u && u.unlockedNowHost()){
                     return  upgrades.get(i)[1];
                 }
             }

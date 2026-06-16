@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
+import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Tmp;
@@ -18,8 +19,10 @@ import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Env;
 
+import static arc.math.geom.Geometry.d8;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
+import static mDimension.world.flux.Fluxs.*;
 
 public class FluxNode extends FluxBlock {
     public int maxNodes = 10;
@@ -83,51 +86,7 @@ public class FluxNode extends FluxBlock {
         consume(cons = new ConsumeFlux(){{
             dissipationSpeed = 0;
             isNode = true;
-        }
-
-            @Override
-            public Seq<Building> connectFlux(Building b, Seq<Building> out) {
-                out.clear();
-                FluxModule flux = ConsumeFlux.flux(b);
-
-                if(flux==null)return out;
-                b.updateProximity();
-                for(Building other : b.proximity) {
-                    if (other != null && ConsumeFlux.flux(other)!=null && flux != null && other.team == b.team) {
-                        out.add(other);
-                    }
-                }
-                Items.silicon.description = ""+flux.links.size;
-                flux.links.each(pos->{
-                    Building o = world.build(pos);
-                    if(o!=null&&!o.dead){
-                        out.addUnique(o);
-                    }
-                });
-
-                for(int i=0;i<4;i++){
-                    switch (i){
-                        case (0)-> Tmp.p1.set(1,1);
-                        case (1)-> Tmp.p1.set(-1,1);
-                        case (2)-> Tmp.p1.set(-1,-1);
-                        case (3)-> Tmp.p1.set(1,-1);
-                    }
-                    for(int g =1;g<range;g++){
-
-                        Building other = world.build(b.tile.x + Tmp.p1.x*g,b.tile.y + Tmp.p1.y*g);
-
-                        if (other instanceof FluxNodeBuild || other != null && ConsumeFlux.flux(other)!=null && flux != null && other.team == b.team){
-                            out.add(other);
-                            ConsumeFlux.flux(other).links.addUnique(other.pos());
-                            flux.links.addUnique(other.pos());
-                            break;
-                        }
-                    }
-                }
-
-                return out;
-            }
-        });
+        }});
     }
 
     public void drawLaser(float x1, float y1, float x2, float y2){
@@ -153,7 +112,6 @@ public class FluxNode extends FluxBlock {
         @Override
         public void updateTile() {
             super.updateTile();
-            FluxModule flux = ConsumeFlux.flux(this);
             float max = 0;
 
             for(Point2 p: links){
@@ -171,7 +129,7 @@ public class FluxNode extends FluxBlock {
                     Tmp.v1.set(tile.x + Tmp.p1.x*g,tile.y + Tmp.p1.y*g).scl(8);
                     Tile tilec = world.tile(tile.x + Tmp.p1.x*g,tile.y + Tmp.p1.y*g);
                     Building other = tilec.build;
-                    FluxModule oflux = ConsumeFlux.flux(other);
+                    FluxModule oflux = Fluxs.flux(other);
                     if (oflux!=null){
                         oflux.links.addUnique(pos());
                         linkBuild[i] = other;
@@ -191,7 +149,7 @@ public class FluxNode extends FluxBlock {
             for (int i=0;i<flux.graph.all.size;i++) {
                 var other = flux.graph.all.get(i);
                 s5++;
-                FluxModule oflux = ConsumeFlux.flux(other);
+                FluxModule oflux = Fluxs.flux(other);
                 ConsumeFlux ocons = ConsumeFlux.getConsume(other);
                 if(oflux == null||ocons==null)continue;
                 s1 += oflux.fluxAmount;
@@ -207,6 +165,29 @@ public class FluxNode extends FluxBlock {
 
 
             updateClipRadius(20f + 8f*max);
+        }
+
+        @Override
+        public Seq<Building> FluxConnections(Seq<Building> out) {
+
+            out = super.FluxConnections(out);
+
+            for(int i = 1;i<8;i+=2){
+                var p = Geometry.d8(i);
+                for(int g =1;g<range;g++){
+
+                    Building other = world.build(tile.x + p.x*g,tile.y + p.y*g);
+
+                    if (other instanceof Flux && other.team == team && !other.dead){
+                        out.add(other);
+                        Fluxs.flux(other).links.addUnique(pos());
+                        flux.links.addUnique(other.pos());
+                        break;
+                    }
+                }
+            }
+
+            return out;
         }
 
         @Override

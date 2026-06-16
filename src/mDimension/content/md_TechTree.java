@@ -7,6 +7,7 @@ import static mDimension.content.md_liquids.*;
 import static mDimension.content.md_blocks.*;
 import static mDimension.content.md_UnitTypes.*;
 import static mindustry.content.Items.*;
+import static mindustry.content.Liquids.*;
 import mindustry.content.TechTree;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Objectives;
@@ -24,7 +25,9 @@ public class md_TechTree {
     public static void load(){
         md_Planets.depicilon.techTree = nodeRoot("depicilon",md_blocks.coreSteady,()->{
             node(md_blocks.al_alloy_smelting,Seq.with(new Objectives.SectorComplete(md_SectorPresets.starting_point)),()->{
-               node(polymer_compressor,Seq.with(new Objectives.OnSector(md_SectorPresets.crystallization_oil_rift)));
+               node(ammonia_chamber,Seq.with(new Objectives.OnSector(md_SectorPresets.crystallization_oil_rift)),()->{
+                   node(polymer_compressor);
+               });
             });
             node(md_blocks.light_duct,()->{
                 node(md_blocks.armored_light_duct,()->{
@@ -60,7 +63,7 @@ public class md_TechTree {
                     });
                 });
                 node(beam_bore,()->{
-
+                    node(ammonia_collector);
                 });
             });
             node(crack,()->{
@@ -75,7 +78,9 @@ public class md_TechTree {
                 });
             });
             node(magnetic_node,()->{
-                node(graphite_combustion_chamber);
+                node(graphite_combustion_chamber,()->{
+                    node(composite_combustion);
+                });
                 node(internal_energy_pile);
             });
 
@@ -93,23 +98,32 @@ public class md_TechTree {
                 });
                 nodeProduce(titanium,()->{
                     nodeProduce(ti_alloy,()->{
-                        nodeProduce(dimension_fluid,()->{
-                            nodeProduce(polymorphic_crystal);
-                        });
+                        nodeProduce(polymorphic_crystal);
                         nodeProduce(plasma);
                     });
                 });
                 nodeProduce(copper);
                 nodeProduce(graphite);
+
+                nodeProduce(ammonia,()->{
+                    nodeProduce(crystallization_oil);
+                    nodeProduce(hydrogen);
+                    nodeProduce(nitrogen);
+                });
             });
             node(infantry_factory,()->{
+                node(anchor_radar);
                 node(army_anchor_point_reconstructor);
                 node(airborne_vessels_factory,()->{
-                    node(army_anchor_point_reconstructor);
+                    node(airforce_anchor_point_reconstructor);
                 });
 
-                node(captive,ItemStack.with(),()->{});
-                node(shimmer,ItemStack.with(polymer,500,silicon,800),()->{});
+                node(captive,ItemStack.with(),()->{
+                    node(zircon);
+                });
+                node(shimmer,ItemStack.with(polymer,50,silicon,100),()->{
+                    node(firefly);
+                });
             });
 
 

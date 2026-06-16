@@ -8,6 +8,7 @@ import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.ExtraModule;
 import mDimension.consumers.modules.FluxModule;
 import mDimension.world.flux.FluxGraph;
+import mDimension.world.flux.Fluxs;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
@@ -37,10 +38,8 @@ public class MDEvents {
 
             Building b = e.tile.build;
             if(b!=null){
-                ConsumeFlux cons = ConsumeFlux.getConsume(b);
-                if(cons!=null){
-                    FluxModule flux = cons.getModule(b);
-
+                var flux = Fluxs.flux(b);
+                if(flux!=null){
                     if(flux.fusing){
                         ItemTurret t = (ItemTurret)(Blocks.scathe);
                         t.ammoTypes.get(Items.carbide).spawnUnit.weapons.get(0).bullet.create(b,b.x,b.y,0);
@@ -89,7 +88,7 @@ public class MDEvents {
                 if (graph.deprecate) {
                     graphs.remove(graph);
                 } else if (graph.init) {
-                    Items.coal.description += "\n\n\nindex:" + ind + " allSize:" + graphs.size + "\n";
+                    Items.coal.description += "\n\n\nindex:" + ind + " allSize:" + graphs.size + "\n" + graph.getDebugLog();
                     if(loadSave){
                         graph.saveLoad();
                         graph.updateGraph();

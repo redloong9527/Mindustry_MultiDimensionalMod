@@ -1,12 +1,17 @@
 package mDimension.content;
 
 import annotations.Annotations.*;
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.math.geom.Rect;
+import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
+import mDimension.entity.ability.AccelerateAbility;
 import mDimension.entity.ability.PatienceAbility;
 import mDimension.entity.bullet.BallLightningBulletType;
 import mDimension.tool.Drawff;
@@ -16,12 +21,11 @@ import mDimension.world.weapons.DestoryWeapon;
 import mDimension.world.weapons.OverdriveWeapon;
 import mindustry.ai.types.BuilderAI;
 import mindustry.content.Fx;
+import mindustry.content.UnitTypes;
+import mindustry.entities.Effect;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.abilities.StatusFieldAbility;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.BulletType;
-import mindustry.entities.bullet.ContinuousFlameBulletType;
-import mindustry.entities.bullet.ShrapnelBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootBarrel;
@@ -32,16 +36,77 @@ import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 
+import static arc.graphics.g2d.Draw.color;
+import static arc.graphics.g2d.Lines.stroke;
 import static mindustry.Vars.tilesize;
 
 import static mDimension.content.md_blocks.modname;
 public class md_UnitTypes {
     public static UnitType captive , zircon;
+    public static UnitType mouse;
     public static UnitType shimmer , firefly ,burst;
     //coreUnit
     public static UnitType primitive;
 
     public static void load(){
+        captive = new DepicilonUnitType("captive"){{
+            constructor = MechUnit::create;
+
+            canBoost = true;
+            boostMultiplier = 1.2f;
+            riseSpeed = descentSpeed = 0.02f;
+
+            researchCostMultiplier = 0.5f;
+            legForwardScl = 0.8f;
+            legLengthScl = 0.8f;
+            legMaxLength = 1.2f;
+            legMoveSpace = 0.8f;
+            legBaseUnder = true;
+            legLength = 2f;
+            mechLegColor = Color.valueOf("4C4E5E");
+            speed = 0.6f;
+            hitSize = 10f;
+            armor = 3f;
+            health = 350;
+            stepSoundVolume = 0.4f;
+            abilities.add(
+                    new PatienceAbility(0.3f){{
+                        armor = 4;
+                        damage = 2.5f;
+                        drawHeat = true;
+                        heatColor = Color.valueOf("E8FFFE");
+                        suffix = "-p";
+                    }}
+            );
+
+            weapons.add(new Weapon(modname+"captive-weapon"){{
+                reload = 30;
+                x = 5.25f;
+                y = 0.75f;
+                recoil = 1.0f;
+                top = false;
+                ejectEffect = Fx.casing1;
+                shoot = new ShootBarrel(){{
+                    shots = 3;
+                    shotDelay = 4f;
+                }};
+                bullet = new BasicBulletType(2.5f, 9){{
+                    recoil = 0.18f;
+                    spin = 5f;
+                    hitColor=trailColor = backColor = Color.valueOf("B2E9FF");
+                    trailLength = 8;
+                    trailWidth = 1.5f;
+                    trailSinMag = 0.15f;
+                    trailSinScl = 5f;
+                    width = 6.5f;
+                    height = 10f;
+                    lifetime = 50f;
+                    despawnEffect = md_Fx.hitBulletColor(4f,3,12);
+                    hitEffect = md_Fx.hitBulletColor(6f,5,18);
+
+                }};
+            }});
+        }};
         zircon = new DepicilonUnitType("zircon"){{
             constructor = MechUnit::create;
 
@@ -155,63 +220,100 @@ public class md_UnitTypes {
             );
         }};
 
-        captive = new DepicilonUnitType("captive"){{
-            constructor = MechUnit::create;
-
-            canBoost = true;
-            boostMultiplier = 1.2f;
-            riseSpeed = descentSpeed = 0.02f;
-
-            researchCostMultiplier = 0.5f;
-            legForwardScl = 0.8f;
-            legLengthScl = 0.8f;
-            legMaxLength = 1.2f;
-            legMoveSpace = 0.8f;
-            legBaseUnder = true;
-            legLength = 2f;
-            mechLegColor = Color.valueOf("4C4E5E");
-            speed = 0.6f;
-            hitSize = 10f;
-            armor = 3f;
+        mouse = new DepicilonUnitType.DepicilonTankUnitType("mouse"){{
+            //UnitTypes.stell;
+            hitSize = 11f;
+            treadPullOffset = 4;
+            softShadowRegion = Core.atlas.find("circle-shadow");
             health = 350;
-            stepSoundVolume = 0.4f;
-            abilities.add(
-                    new PatienceAbility(0.3f){{
-                        armor = 4;
-                        damage = 2.5f;
-                        drawHeat = true;
-                        heatColor = Color.valueOf("E8FFFE");
-                        suffix = "-p";
+            armor = 4f;
+            itemCapacity = 10;
+            floorMultiplier = 0.8f;
+            rotateSpeed = 4.5f;
+            constructor = TankUnit::create;
+
+            accel = 0.2f;
+            drag = 0.15f;
+            speed = 8f/7.5f;
+
+            tankMoveVolume *= 0.2f;
+            tankMoveSound = Sounds.tankMoveSmall;
+
+            treadRects = new Rect[]{
+                    new Rect(12 - 32f, 29 - 32f, 11, 29),
+                    new Rect(26 - 32f, 5 - 32f, 6, 21)
+            };
+            abilities.add(new AccelerateAbility());
+            weapons.add(
+                    new Weapon(modname + "mouse-weapon"){{
+                        predictTarget = false;
+                        reload = 120f;
+                        shoot.shots = 6;
+                        shoot.shotDelay = 3f;
+
+                        x=0;y=-7f/4;
+                        mirror = false;
+                        rotate = true;
+                        rotateSpeed =5f;
+                        shootCone = 2f;
+                        heatColor = Color.valueOf("F90FDA");
+                        cooldownTime = 20;
+                        shootSound = Sounds.shootScepterSecondary;
+                        bullet = new RailBulletType(){{
+                            length = 12*8;
+                            damage = 35f;
+                            pierceCap = 2;
+                            pierce = true;
+                            armorMultiplier = 0.5f;
+                            hitColor = Color.valueOf("F6A6FF");
+                            hitEffect = Fx.hitBulletColor;
+                            pierceDamageFactor = 0.5f;
+                            inaccuracy = 1.5f;
+
+
+                            smokeEffect = Fx.colorSpark;
+
+                            endEffect = new Effect(14f, e -> {
+                                color(e.color);
+                                Drawf.tri(e.x, e.y, e.fout() * 2f, 5f, e.rotation);
+                            });
+
+                            shootEffect = new Effect(10, e -> {
+                                color(e.color);
+                                float w = 1.2f + 2.5f * e.fout();
+
+                                Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+                                color(e.color);
+
+                                for(int i : Mathf.signs){
+                                    Drawf.tri(e.x, e.y, w * 0.9f, 18f * e.fout(), e.rotation + i * 45f);
+                                }
+
+                                Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+                            });
+
+                            lineEffect = new Effect(20f, e -> {
+                                if(!(e.data instanceof Vec2 v)) return;
+
+                                color(e.color);
+                                stroke(e.fout() * 1.4f + 0.6f);
+
+                                Fx.rand.setSeed(e.id);
+                                for(int i = 0; i < 7; i++){
+                                    Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                                    Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                                }
+
+                                e.scaled(14f, b -> {
+                                    stroke(b.fout() * 1.5f);
+                                    color(e.color);
+                                    Lines.line(e.x, e.y, v.x, v.y);
+                                });
+                            });
+                        }};
                     }}
             );
 
-            weapons.add(new Weapon(modname+"captive-weapon"){{
-                reload = 30;
-                x = 5.25f;
-                y = 0.75f;
-                recoil = 1.0f;
-                top = false;
-                ejectEffect = Fx.casing1;
-                shoot = new ShootBarrel(){{
-                    shots = 3;
-                    shotDelay = 4f;
-                }};
-                bullet = new BasicBulletType(2.5f, 9){{
-                    recoil = 0.18f;
-                    spin = 5f;
-                    hitColor=trailColor = backColor = Color.valueOf("B2E9FF");
-                    trailLength = 8;
-                    trailWidth = 1.5f;
-                    trailSinMag = 0.15f;
-                    trailSinScl = 5f;
-                    width = 6.5f;
-                    height = 10f;
-                    lifetime = 50f;
-                    despawnEffect = md_Fx.hitBulletColor(4f,3,12);
-                    hitEffect = md_Fx.hitBulletColor(6f,5,18);
-
-                }};
-            }});
         }};
         shimmer = new DepicilonUnitType("shimmer"){{
 
@@ -403,66 +505,6 @@ public class md_UnitTypes {
             moveSoundVolume = 0.25f;
             moveSoundPitchMin = 0.7f;
             moveSoundPitchMax = 1.5f;
-        }};
-        primitive = new DepicilonUnitType("primitive"){{
-            constructor = PayloadUnit::create;
-            coreUnitDock = true;
-            controller = u -> new BuilderAI(true, 400f);
-            isEnemy = false;
-            envDisabled = 0;
-
-            range = 80f;
-            faceTarget = true;
-            targetPriority = -2;
-            lowAltitude = true;
-            mineWalls = true;
-            mineFloor = true;
-            mineHardnessScaling = true;
-            flying = true;
-            mineSpeed = 4f;
-            mineTier = 3;
-            buildSpeed = 1f;
-            drag = 0.08f;
-            speed = 4.8f;
-            rotateSpeed = 6f;
-            accel = 0.08f;
-            itemCapacity = 40;
-            health = 200;
-            armor = 2f;
-            hitSize = 10f;
-
-            engineSize = 10/4f;
-            engineOffset = 22/4f;
-            setEnginesMirror(
-                    new UnitEngine(18 / 4f, 4 / 4f, 10/4f, -45)
-            );
-
-            payloadCapacity = 2 * 2 * tilesize * tilesize;
-            pickupUnits = true;
-            vulnerableWithPayloads = true;
-
-            fogRadius = 0f;
-            targetable = false;
-            hittable = false;
-
-            weapons.add(
-                    new OverdriveWeapon(modname+"primitive-weapon1"){{
-                        lockedRange = 30*8f;
-                        lockedTime = 50f;
-                        reload = 30f;
-                        extraDuration = 300f;
-                        aimChangeSpeed = 4.5f;
-
-
-
-                        y = -4/4f;
-                        x = 0;
-                        shootY = 7/4f;
-                        mirror = false;
-                        top = false;
-                    }}
-            );
-            clipSize = 32*8f;
         }};
         burst = new DepicilonUnitType("burst"){{
 
@@ -721,6 +763,69 @@ public class md_UnitTypes {
                 Draw.z(z);
             }
         };
+
+
+        primitive = new DepicilonUnitType("primitive"){{
+            constructor = PayloadUnit::create;
+            coreUnitDock = true;
+            controller = u -> new BuilderAI(true, 400f);
+            isEnemy = false;
+            envDisabled = 0;
+
+            range = 80f;
+            faceTarget = true;
+            targetPriority = -2;
+            lowAltitude = true;
+            mineWalls = true;
+            mineFloor = true;
+            mineHardnessScaling = true;
+            flying = true;
+            mineSpeed = 4f;
+            mineTier = 3;
+            buildSpeed = 1f;
+            drag = 0.08f;
+            speed = 4.8f;
+            rotateSpeed = 6f;
+            accel = 0.08f;
+            itemCapacity = 40;
+            health = 200;
+            armor = 2f;
+            hitSize = 10f;
+
+            engineSize = 10/4f;
+            engineOffset = 22/4f;
+            setEnginesMirror(
+                    new UnitEngine(18 / 4f, 4 / 4f, 10/4f, -45)
+            );
+
+            payloadCapacity = 2 * 2 * tilesize * tilesize;
+            pickupUnits = true;
+            vulnerableWithPayloads = true;
+
+            fogRadius = 0f;
+            targetable = false;
+            hittable = false;
+
+            weapons.add(
+                    new OverdriveWeapon(modname+"primitive-weapon1"){{
+                        lockedRange = 30*8f;
+                        lockedTime = 50f;
+                        reload = 30f;
+                        extraDuration = 300f;
+                        aimChangeSpeed = 4.5f;
+
+
+
+                        y = -4/4f;
+                        x = 0;
+                        shootY = 7/4f;
+                        mirror = false;
+                        top = false;
+                    }}
+            );
+            clipSize = 32*8f;
+        }};
+
     }
 
 

@@ -37,18 +37,5 @@ public class TestBlock extends GenericCrafter {
             super.updateTile();
             update.get(this);
         }
-
-        @Override
-        public void write(Writes write) {
-            super.write(write);
-            FluxModule flux = ConsumeFlux.flux(this);
-            flux.write(write);
-        }
-
-        @Override
-        public void read(Reads read, byte revision) {
-            super.read(read,revision);
-            FluxModule flux = ConsumeFlux.flux(this);
-            flux.read(read);}
     }
 }

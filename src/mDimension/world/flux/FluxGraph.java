@@ -1,6 +1,7 @@
 package mDimension.world.flux;
 
 import arc.graphics.Color;
+import arc.struct.IntSet;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import mDimension.consumers.ConsumeFlux;
@@ -10,11 +11,12 @@ import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.gen.Building;
 
-import static mDimension.consumers.ConsumeFlux.*;
+import static mDimension.world.flux.Fluxs.*;
 import static mindustry.Vars.world;
 
 public class FluxGraph {
     private int lastChange = -2;
+    public static IntSet visited = new IntSet();
     public static Queue<Building> queue = new Queue<>();
     public static Seq<Building> outArray1 = new Seq<>();
     public boolean deprecate = false;
@@ -22,7 +24,7 @@ public class FluxGraph {
     public Seq<Building> all = new Seq<>();
     public Building[] lastAll;
 
-    public Seq<Building> newGraph = new Seq<>();
+    public String debugLog = "";
 
     {
         MDEvents.graphs.add(this);
@@ -50,7 +52,6 @@ public class FluxGraph {
 
     public Seq<Building> bfs(Building start,Seq<Building> out){
         out.clear();
-        FluxModule flux = flux(start);
         queue.clear();
         visited.clear();
         queue.addLast(start);
@@ -58,33 +59,32 @@ public class FluxGraph {
         visited.add(start.pos());
         while (!queue.isEmpty()){
             Building node = queue.removeFirst();
-            ConsumeFlux cons = ConsumeFlux.getConsume(node);
-            if(cons!=null) {
-                for (Building c : cons.connectFlux(node, outArray1)) {
-                    FluxModule cflux = flux(c);
-                    if (c != null && visited.add(c.pos())&& cflux !=null) {
+            for (Building c : FluxConnections(node, outArray1)) {
+                FluxModule cflux = flux(c);
+                if (c != null && visited.add(c.pos())&& cflux !=null) {
 
-                        cflux.graph =this;
-                        Fx.colorTrail.at(c.x,c.y,2, Color.valueOf("4040ff"));
-                        out.add(c);
-                        queue.addLast(c);
-                    }
-
+                    cflux.graph =this;
+                    Fx.colorTrail.at(c.x,c.y,2, Color.valueOf("4040ff"));
+                    out.add(c);
+                    queue.addLast(c);
                 }
+
             }
 
         }
         return out;
-    };
+    }
 
     public void update() {
         if (lastChange != world.tileChanges) {
             lastChange = world.tileChanges;
             updateGraph();
         }
+
+
     }
     public void updateGraph(){
-        Items.coal.description += "size:"+all.size + " init:"+init+" deprecate:"+deprecate +"\nlastAll:\n"+all;
+        debugLog = "size:"+all.size + " init:"+init+" deprecate:"+deprecate +"\nlastAll:\n"+all;
         if(!init)return;
 
         boolean none = true;
@@ -107,7 +107,7 @@ public class FluxGraph {
         Fx.colorTrail.at(start.x,start.y,3.5f, Color.valueOf("40ff40"));
 
         all = bfs(start,all);
-        Items.coal.description += "\nAll:\n"+all;
+        debugLog += "\nAll:\n"+all;
         for (Building last : lastAll) {
             if (!all.contains(last)) {
                 FluxModule lastFlux = flux(last);
@@ -131,6 +131,9 @@ public class FluxGraph {
             }
         }
         deprecate();
+    }
+    public String getDebugLog(){
+        return debugLog;
     }
 
 }
