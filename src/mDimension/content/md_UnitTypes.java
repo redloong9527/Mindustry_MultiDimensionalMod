@@ -35,6 +35,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import mindustry.world.blocks.payloads.UnitPayload;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -43,7 +44,7 @@ import static mindustry.Vars.tilesize;
 import static mDimension.content.md_blocks.modname;
 public class md_UnitTypes {
     public static UnitType captive , zircon;
-    public static UnitType mouse;
+    public static UnitType mouse,coyote;
     public static UnitType shimmer , firefly ,burst;
     //coreUnit
     public static UnitType primitive;
@@ -223,15 +224,14 @@ public class md_UnitTypes {
         mouse = new DepicilonUnitType.DepicilonTankUnitType("mouse"){{
             //UnitTypes.stell;
             hitSize = 11f;
-            treadPullOffset = 4;
+            treadPullOffset = 5;
             softShadowRegion = Core.atlas.find("circle-shadow");
             health = 350;
             armor = 4f;
-            itemCapacity = 10;
+            itemCapacity = 0;
             floorMultiplier = 0.8f;
             rotateSpeed = 4.5f;
-            constructor = TankUnit::create;
-
+            rotateMoveFirst = false;
             accel = 0.2f;
             drag = 0.15f;
             speed = 8f/7.5f;
@@ -310,6 +310,79 @@ public class md_UnitTypes {
                                     Lines.line(e.x, e.y, v.x, v.y);
                                 });
                             });
+                        }};
+                    }}
+            );
+
+        }};
+        coyote = new DepicilonUnitType.DepicilonTankUnitType("coyote"){{
+            hitSize = 16;
+            health = 1800f;
+            treadPullOffset = 11;
+            armor = 6f;
+            speed = 10/7.5f;
+            rotateSpeed = 4f;
+            accel = 0.2f;
+            drag = 0.15f;
+            rotateMoveFirst = false;
+            itemCapacity = 0;
+            floorMultiplier = 0.7f;
+            treadRects = new Rect[]{
+                    new Rect(24 - 48f, 11 - 48f, 13, 34),
+                    new Rect(18 - 48f, 50 - 48f, 13, 34)
+            };
+            crushFragile = false;
+            tankMoveVolume *= 0.55f;
+            tankMoveSound = Sounds.tankMove;
+            abilities.add(new AccelerateAbility(){{
+                level = 0.8f;
+                dSpeed = 3.5f/60;
+                Aspeed = 0.08f;
+                speed = 0.45f/60;
+            }});
+
+            weapons.addAll(
+                    new Weapon(modname+"coyote-weapon1"){{
+                        x = 0;
+                        y = -7/4f;
+                        mirror = false;
+                        rotate = true;
+                        rotateSpeed = 4.5f;
+                        reload = 60;
+                        shoot.shots = 4;
+                        shoot.shotDelay = 5f;
+                        inaccuracy = 5f;
+                        shootSound = Sounds.shootFuse;
+                        shootSoundVolume = 0.28f;
+                        shootY = 8f;
+                        bullet = new ShrapnelBulletType(){{
+                            length = 7*8f;
+                            width = 12f;
+                            shootEffect = smokeEffect = Fx.thoriumShoot;
+                            serrationSpacing = 6f;
+                            serrationFadeOffset = 0.3f;
+                            serrationSpaceOffset =30f;
+                            serrationLenScl = 6f;
+                            lifetime = 15f;
+                            damage = 35f;
+                            toColor = Color.valueOf("FFABE6");
+                        }};
+                    }},
+                    new Weapon(modname+"coyote-weapon2"){{
+                        x = -25/4f;
+                        y = -17/4f;
+                        mirror = true;
+                        rotate = true;
+                        rotateSpeed = 5f;
+                        reload = 40f;
+                        shoot.shots = 3;
+                        shoot.shotDelay = 5f;
+                        shootSound = Sounds.shootArc;
+                        shootSoundVolume = 0.55f;
+                        bullet = new LightningBulletType(){{
+                            damage = 18;
+                            lightningColor = Color.valueOf("FFABE6");
+                            lightningLength = 12;
                         }};
                     }}
             );

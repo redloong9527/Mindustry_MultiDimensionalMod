@@ -1,6 +1,7 @@
 package mDimension.world.blocks;
 
 import mDimension.content.md_items;
+import mindustry.gen.TankUnit;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
@@ -25,6 +26,7 @@ public class DepicilonUnitType extends UnitType {
             rotateSpeed = 1.3f;
             envDisabled = Env.none;
             speed = 0.8f;
+            constructor = TankUnit::create;
         }
     }
 }

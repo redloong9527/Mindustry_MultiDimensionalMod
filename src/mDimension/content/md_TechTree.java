@@ -6,8 +6,11 @@ import static mDimension.content.md_items.*;
 import static mDimension.content.md_liquids.*;
 import static mDimension.content.md_blocks.*;
 import static mDimension.content.md_UnitTypes.*;
+import static mDimension.content.md_SectorPresets.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.*;
+import static mindustry.game.Objectives.*;
+
 import mindustry.content.TechTree;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Objectives;
@@ -125,6 +128,15 @@ public class md_TechTree {
                     node(firefly);
                 });
             });
+
+            node(starting_point,()->{
+                node(crystallization_oil_rift,Seq.with(
+                        new SectorComplete(starting_point),
+                        new Research(ammonia_collector)
+                ));
+            });
+
+
 
 
 

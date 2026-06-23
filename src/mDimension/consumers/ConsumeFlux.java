@@ -1,23 +1,17 @@
 package mDimension.consumers;
 
 import arc.Core;
-import arc.func.Boolc;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
-import arc.struct.IntSeq;
 import arc.struct.IntSet;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Interval;
-import arc.util.Time;
-import mDimension.consumers.modules.ExtraModule;
 import mDimension.consumers.modules.FluxModule;
 import mDimension.tool.continuousRGB;
-import mDimension.world.flux.FluxGraph;
-import mDimension.world.flux.FluxNode;
-import mindustry.content.Fx;
+import mDimension.world.flux.Flux;
 import mindustry.content.Items;
 import mindustry.core.UI;
 import mindustry.entities.Effect;
@@ -25,10 +19,6 @@ import mindustry.gen.Building;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.consumers.Consume;
-
-import java.rmi.server.UID;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.world;
@@ -48,20 +38,11 @@ public class ConsumeFlux extends Consume {
     public float produceAmount =0;
     /**最大的正常存储上限，超过的会以dissipationSpeed/tick的速度流失*/
     public float capacity =0;
-    /**辐能承载力，超过capacity+bearingCapacity的话进入熔断状态，你可以重写overloadProcess()来更改熔断机制*/
-    public float bearingCapacity =0;
     /**建筑拉取和保有的目标值*/
-    public float retain = 0;
-    public boolean isWillFusing = true;
-    public boolean pullFlux = true;
+    public boolean canOverload = true;
     public boolean isNode = false;
-    public boolean isbatter = false;
-    public BiPredicate<FluxModule,ConsumeFlux> canPull = (mod,cons)-> {
-        return cons.isbatter || mod.fluxAmount > cons.retain;
-    };
+    public boolean buffered = true;
 
-    public boolean alwaysDissipation = false;
-    public float  dissipationSpeed = 0.3f/60f;
 
     public Effect overloadEffect = new Effect(60f,e->{
         Draw.color(e.color);
@@ -80,17 +61,18 @@ public class ConsumeFlux extends Consume {
     @Override
     public void apply(Block block){
         //fluxModMain.master = block;
-        if (retain==0)retain=usage*2+10;
         if(!isNode) {
-            block.addBar("fluxAmount", (b) -> {
-                FluxModule flux = flux(b);
+            block.addBar("fluxAmount", b -> {
+                var f = (Flux)b;
+                FluxModule flux = f.flux();
+                var cons = f.consFlux();
                 Color color = Color.valueOf("F090F0");
                 return new Bar(
                         () -> {
-                            return Core.bundle.format("bar.flux", UI.formatAmount((long)flux.fluxAmount),UI.formatAmount((long)capacity),UI.formatAmount((long)(capacity+bearingCapacity)));
+                            return Core.bundle.format("bar.flux", UI.formatAmount((long)flux.fluxAmount) ,UI.formatAmount((long)cons.capacity));
                         },
                         () -> color,
-                        () -> ((int) (flux.fluxAmount) / (capacity + bearingCapacity))
+                        () -> ((int) (flux.fluxAmount) / (capacity))
                 );
             });
             block.addBar("fluxStats", (b) -> {
@@ -98,7 +80,7 @@ public class ConsumeFlux extends Consume {
                 Color color = Color.valueOf("FFB19C");
                 return new Bar(
                         () -> {
-                            if(flux.fusing){
+                            if(flux.overload){
                                 return Core.bundle.get("bar.fluxFusing");
                             }else if(flux.fluxAmount > capacity){
                                 return Core.bundle.get("bar.fluxOverload");
@@ -108,7 +90,7 @@ public class ConsumeFlux extends Consume {
                         },
                         () -> color,
                         () -> {
-                            if(flux.fusing){
+                            if(flux.overload){
                                 return 1f;
                             }else if(flux.fluxAmount > capacity){
                                 return 0.66f;
@@ -119,7 +101,7 @@ public class ConsumeFlux extends Consume {
                 );
             });
         }else{
-            isWillFusing = false;
+            canOverload = false;
         }
     }
 
@@ -150,7 +132,7 @@ public class ConsumeFlux extends Consume {
 //    }
 
     public float overloadProcess(FluxModule flux){
-        return Math.min(1,(flux.fluxAmount-capacity) / (bearingCapacity));
+        return Math.min(1,(flux.fluxAmount/capacity));
     }
 
     public Color fluxColor(FluxModule flux){
@@ -165,68 +147,70 @@ public class ConsumeFlux extends Consume {
 
     @Override
     public void update(Building b) {
-        FluxModule flux =  flux(b);
-        if(!flux.graph.init){
-            flux.graph.init(b);
-        }
-        if(!isNode && (flux.graph.deprecate)){
-            flux.graph = new FluxGraph();
-            flux.graph.init(b);
-        }
-        IntSeq linksc = flux.links;
-        linksc.each(pos->{
-            Building link = world.tile(pos).build;
-            if(link == null || link.dead || flux(link) == null){
-                flux.links.removeValue(pos);
-            }
-        });
-
-
-        if(isNode)return;
-        flux.fusing = isWillFusing && overloadProcess(flux)>0.99f;
-        if(flux.fluxAmount>capacity && Mathf.chanceDelta(overloadProcess(flux) * effectChangePerTile * b.block.size* b.block.size)){
-            overloadEffect.at(b.x+Mathf.range(b.block.size/2f)*8f,b.y+Mathf.range(b.block.size/2f)*8f,fluxColor(flux));
-        }
-
-        if(alwaysDissipation||flux.fluxAmount>capacity+0.01f){
-            float amount = dissipationSpeed * Time.delta;
-            flux.fluxAmount -= Math.min(amount,flux.fluxAmount-capacity);
-        }
-        //拉取辐能
-        if(pullFlux&& capacity> 0 && flux.fluxAmount<retain){
-            for(int i=0;i<flux.graph.all.size;i++){
-                var n = flux.graph.all.get(i);
-                if(n == b)continue;
-                FluxModule nflux =  flux(n);
-                ConsumeFlux ncons = getConsume(n);
-                if(canPull.test(nflux,ncons) && flux.fluxAmount<retain){
-                    float amount =0;
-                    if(!isbatter){
-                        amount = Math.min(nflux.fluxAmount-ncons.retain,capacity-flux.fluxAmount);
-                    }else{
-                        amount = Math.min(nflux.fluxAmount,capacity-flux.fluxAmount);
-                    }
-                    flux.fluxAmount+=amount;
-                    nflux.fluxAmount-=amount;
-                    if(flux.fluxAmount>=retain)break;
-                }
-            }
-        }
+        //yas disneed all
+//        FluxModule flux =  flux(b);
+//        if(!flux.graph.init){
+//            flux.graph.init(b);
+//        }
+//        if(!isNode && (flux.graph.deprecate)){
+//            flux.graph = new FluxGraph();
+//            flux.graph.init(b);
+//        }
+//        IntSeq linksc = flux.links;
+//        linksc.each(pos->{
+//            Building link = world.tile(pos).build;
+//            if(link == null || link.dead || flux(link) == null){
+//                flux.links.removeValue(pos);
+//            }
+//        });
+//
+//
+//        if(isNode)return;
+//        flux.fusing = isWillFusing && overloadProcess(flux)>0.99f;
+//        if(flux.fluxAmount>capacity && Mathf.chanceDelta(overloadProcess(flux) * effectChangePerTile * b.block.size* b.block.size)){
+//            overloadEffect.at(b.x+Mathf.range(b.block.size/2f)*8f,b.y+Mathf.range(b.block.size/2f)*8f,fluxColor(flux));
+//        }
+//
+//        if(alwaysDissipation||flux.fluxAmount>capacity+0.01f){
+//            float amount = dissipationSpeed * Time.delta;
+//            flux.fluxAmount -= Math.min(amount,flux.fluxAmount-capacity);
+//        }
+//        //拉取辐能
+//        if(pullFlux&& capacity> 0 && flux.fluxAmount<retain){
+//            for(int i=0;i<flux.graph.all.size;i++){
+//                var n = flux.graph.all.get(i);
+//                if(n == b)continue;
+//                FluxModule nflux =  flux(n);
+//                ConsumeFlux ncons = getConsume(n);
+//                if(canPull.test(nflux,ncons) && flux.fluxAmount<retain){
+//                    float amount =0;
+//                    if(!buffered){
+//                        amount = Math.min(nflux.fluxAmount-ncons.retain,capacity-flux.fluxAmount);
+//                    }else{
+//                        amount = Math.min(nflux.fluxAmount,capacity-flux.fluxAmount);
+//                    }
+//                    flux.fluxAmount+=amount;
+//                    nflux.fluxAmount-=amount;
+//                    if(flux.fluxAmount>=retain)break;
+//                }
+//            }
+//        }
     }
 
     @Override
     public void trigger(Building b) {
-        if(!shouldConsumeFlux(b))return;
-        FluxModule flux =  flux(b);
-        flux.fluxAmount+=produceAmount;
-        flux.fluxAmount-=usage;
+//        if(!shouldConsumeFlux(b))return;
+//        FluxModule flux =  flux(b);
+//        flux.fluxAmount+=produceAmount;
+//        flux.fluxAmount-=usage;
     }
 
     @Override
     public float efficiency(Building b) {
-        if(usage<=0)return 1f;
-        FluxModule flux = flux(b);
-        return flux.fluxAmount > usage ? 1f:0f;
+        return 1f;
+//        if(usage<=0)return 1f;
+//        FluxModule flux = flux(b);
+//        return flux.fluxAmount > usage ? 1f:0f;
     }
 
     public boolean shouldConsumeFlux(Building b){
