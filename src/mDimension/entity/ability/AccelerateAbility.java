@@ -4,19 +4,22 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Align;
 import arc.util.Time;
 import arc.util.Tmp;
+import mDimension.tool.Debug;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.ui.Fonts;
 
 public class AccelerateAbility extends Ability {
     public float level = 1f;
-    public float speed = 0.25f/60,Aspeed =0.1f;
+    public float speed = 0.35f/60,Aspeed =0.1f;
     public float angle;
-    public float dSpeed = 2f/60;
+    public float dSpeed = 4f/60;
     public float target;
     public float tolerance = 50f;
     public Effect moveEffect;
@@ -25,14 +28,18 @@ public class AccelerateAbility extends Ability {
     public Color effectColor;
     public float arrowOffset = 0f;
     public float arrowScl = 1f;
+    public int time = 0;
     @Override
     public void update(Unit unit){
         float speed2 = unit.vel().len2();
-        if(speed2 > 0.1f * Time.delta){
+        if(speed2 > 0.1f){
             target = unit.vel().angle();
+            time = 3;
+        }else if(time>0){
+            time -=1;
         }
         float sp,t;
-        if(speed2 < 0.1f * Time.delta || Math.abs(Angles.angleDist(angle,target)) > tolerance){
+        if(time<=0 || Math.abs(Angles.angleDist(angle,target)) > tolerance){
             sp = dSpeed;
             t = 0;
         }else {
@@ -62,5 +69,6 @@ public class AccelerateAbility extends Ability {
         Drawf.tri(Tmp.v1.x,Tmp.v1.y,2+2*scl * arrowScl,scl*2 * arrowScl,angle+180);
         Draw.reset();
         Draw.z(z);
+        //Fonts.outline.draw("v:"+unit.vel().len2() + "\ndt:"+Time.delta,unit.x,unit.y,Color.white,0.2f,false, Align.center);
     }
 }

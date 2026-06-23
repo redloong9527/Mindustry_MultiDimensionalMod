@@ -2,27 +2,33 @@ package mDimension.world.flux;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
+import arc.util.Interval;
 import arc.util.Tmp;
-import arc.util.io.Writes;
 import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.FluxModule;
-import mindustry.content.Items;
+import mDimension.tool.Debug;
 import mindustry.core.UI;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
+import mindustry.world.blocks.power.PowerGraph;
+import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.meta.Env;
+
+import java.util.Arrays;
 
 import static arc.math.geom.Geometry.d8;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-import static mDimension.world.flux.Fluxs.*;
 
 public class FluxNode extends FluxBlock {
     public int maxNodes = 10;
@@ -55,26 +61,16 @@ public class FluxNode extends FluxBlock {
         addBar("fluxAmount", ob -> {
             FluxNodeBuild b = (FluxNodeBuild)ob;
             Color color = Color.valueOf("F090F0");
+            var f = (Flux)ob;
             return new Bar(
                     () -> {
-                        return Core.bundle.get("bar.fluxIcon")+UI.formatAmount((long)b.fluxAmount);
+                        return Core.bundle.get("bar.fluxIcon")+UI.formatAmount((long)f.flux().graph.getTotal());
                     },
                     () -> color,
-                    () -> ((int) (b.fluxAmount) / (b.cap))
+                    () -> (f.flux().graph.getTotal()/f.flux().graph.getStorage())
             );
         });
 
-        addBar("fluxStats", ob -> {
-            FluxNodeBuild b = (FluxNodeBuild)ob;
-            Color color = Color.valueOf("FFB19C");
-            return new Bar(
-                    () -> {
-                        return Core.bundle.format("bar.fluxStats",b.overloads,b.fusings);
-                    },
-                    () -> color,
-                    () -> (float) (b.fusings) / (b.builds)
-            );
-        });
     }
 
     @Override
@@ -84,9 +80,22 @@ public class FluxNode extends FluxBlock {
         laserEnd = Core.atlas.find("power-beam-end");
 
         consume(cons = new ConsumeFlux(){{
-            dissipationSpeed = 0;
             isNode = true;
         }});
+    }
+
+    @Override
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
+        super.drawPlace(x, y, rotation, valid);
+        for(int i = 0; i < 4; i ++) {
+            var dir = Geometry.d8edge[i];
+            int offset = size / 2;
+            //find first block with power in range
+            int w = (range + offset);
+
+            Drawf.dashLine(Pal.placing,(x + dir.x*0.5f) * tilesize,(y + dir.y*0.5f) * tilesize,(x + w*dir.x)* tilesize,(y + w*dir.y)* tilesize);
+        }
+
     }
 
     public void drawLaser(float x1, float y1, float x2, float y2){
@@ -102,101 +111,131 @@ public class FluxNode extends FluxBlock {
 
 
     public class FluxNodeBuild extends FluxBlockBuild{
-        public Point2[] links = new Point2[]{new Point2(-1,-1),new Point2(-1,-1),new Point2(-1,-1),new Point2(-1,-1)};
-        public Building[] linkBuild = new Building[4];
-        public float fluxAmount = 0f;
-        public float cap =0;
-        public int overloads = 0,fusings = 0;
-        public int builds=0;
+        public Building[] links = new Building[4];
+        public Tile[] dests = new Tile[4];
+        public int lastChange = -2;
+        public Interval t = new Interval();
 
         @Override
         public void updateTile() {
-            super.updateTile();
-            float max = 0;
-
-            for(Point2 p: links){
-                p.set(-1,-1);
+                //TODO this block technically does not need to update every frame, perhaps put it in a special list.
+            if(lastChange != world.tileChanges){
+                lastChange = world.tileChanges;
+                updateDirections();
             }
-            for(int i=0;i<4;i++){
-                switch (i){
-                    case (0)-> Tmp.p1.set(1,1);
-                    case (1)-> Tmp.p1.set(-1,1);
-                    case (2)-> Tmp.p1.set(-1,-1);
-                    case (3)-> Tmp.p1.set(1,-1);
-                }
-                for(int g =1;g<range;g++){
-                    max = Math.max(max,g);
-                    Tmp.v1.set(tile.x + Tmp.p1.x*g,tile.y + Tmp.p1.y*g).scl(8);
-                    Tile tilec = world.tile(tile.x + Tmp.p1.x*g,tile.y + Tmp.p1.y*g);
-                    Building other = tilec.build;
-                    FluxModule oflux = Fluxs.flux(other);
-                    if (oflux!=null){
-                        oflux.links.addUnique(pos());
-                        linkBuild[i] = other;
-                        if(!(other instanceof FluxNodeBuild node) || node.id<this.id){
-                            links[i].set(tile.x + Tmp.p1.x*g,tile.y + Tmp.p1.y*g);
-                        }
-                        break;
-                    }
-                }
-            }
+//            if(t.get(0,10)){
+//                String s = "";
+//                Seq<Building> seq = FluxConnections(tempBuilds);
+//                for(int i=0;i<seq.size;i++){
+//                    s+=seq.get(i) + "\n";
+//                }
+//                Debug.string(s,11,this);
+//            }
 
-            float s1 = 0;
-            float s2 = 0;
-            int s3 = 0;
-            int s4 = 0;
-            int s5 = 0;
-            for (int i=0;i<flux.graph.all.size;i++) {
-                var other = flux.graph.all.get(i);
-                s5++;
-                FluxModule oflux = Fluxs.flux(other);
-                ConsumeFlux ocons = ConsumeFlux.getConsume(other);
-                if(oflux == null||ocons==null)continue;
-                s1 += oflux.fluxAmount;
-                s2 += ocons.capacity + ocons.bearingCapacity;
-                s3 += oflux.fluxAmount > ocons.capacity ? 1 : 0;
-                s4 += oflux.fusing ? 1 : 0;
-            }
-            fluxAmount = s1;
-            cap = s2;
-            overloads = s3;
-            fusings = s4;
-            builds = s5;
-
-
-            updateClipRadius(20f + 8f*max);
+            updateClipRadius(80f);
         }
 
         @Override
-        public Seq<Building> FluxConnections(Seq<Building> out) {
-
-            out = super.FluxConnections(out);
-
-            for(int i = 1;i<8;i+=2){
-                var p = Geometry.d8(i);
-                for(int g =1;g<range;g++){
-
-                    Building other = world.build(tile.x + p.x*g,tile.y + p.y*g);
-
-                    if (other instanceof Flux && other.team == team && !other.dead){
-                        out.add(other);
-                        Fluxs.flux(other).links.addUnique(pos());
-                        flux.links.addUnique(other.pos());
-                        break;
-                    }
-                }
-            }
-
-            return out;
+        public void pickedUp(){
+            Arrays.fill(links, null);
+            Arrays.fill(dests, null);
         }
+
 
         @Override
         public void draw() {
             super.draw();
-            for(Point2 p: links){
-                if(p.x>0)drawLaser(x,y,p.x *tilesize,p.y*tilesize);
-            }
+            for(int i = 0; i < 4; i ++) {
+                if(links[i] == null )continue;
+                var dir = Geometry.d8edge[i];
+                int offset = size / 2;
+                //find first block with power in range
+                for (int j = 1 + offset; j <= range + offset; j++) {
+                    int tx = tile.x + j * dir.x,ty =  tile.y + j * dir.y;
+                    var other = world.build(tx,ty);
 
+                    if (other != null && other.isInsulated()) {
+                        break;
+                    }
+
+                    if (other == links[i]){
+                        drawLaser(this.x,this.y,tx*tilesize,ty*tilesize);
+                    }
+                }
+            }
+            int h = flux.graph.hashCode();
+            int r = h & 0xff0000;
+            int g = h & 0x00ff00;
+            int b = h & 0x0000ff;
+            int rgba = r|g|b|0x000000ff;
+            Draw.color(rgba);
+
+            Fill.circle(x,y,3);
+            Draw.reset();
+        }
+
+
+        @Override
+        public void overload() {
+            //pass
+        }
+
+
+        public void updateDirections(){
+            for(int i = 0; i < 4; i ++){
+                var prev = links[i];
+                var dir = Geometry.d8edge[i];
+                links[i] = null;
+                dests[i] = null;
+                int offset = size/2;
+                //find first block with power in range
+                for(int j = 1 + offset; j <= range + offset; j++){
+                    var other = world.build(tile.x + j * dir.x, tile.y + j * dir.y);
+
+                    //hit insulated wall
+                    if(other != null && other.isInsulated()){
+                        break;
+                    }
+
+                    //power nodes do NOT play nice with beam nodes, do not touch them as that forcefully modifies their links
+                    if(other instanceof Flux && other.team == this.team && !other.dead){
+                        links[i] = other;
+                        dests[i] = world.tile(tile.x + j * dir.x, tile.y + j * dir.y);
+                        break;
+                    }
+                }
+
+                var next = links[i];
+
+                if(next != prev){
+                    //unlinked, disconnect and reflow
+                    if(prev != null && prev.isAdded()){
+                        var f = (Flux)prev;
+                        var pflux = f.flux();
+                        pflux.links.removeValue(pos());
+                        flux.links.removeValue(prev.pos());
+
+                        FluxGraph newgraph = new FluxGraph();
+                        //reflow from this point, covering all tiles on this side
+                        newgraph.bfs(this);
+
+                        if(pflux.graph != newgraph){
+                            //reflow power for other end
+                            FluxGraph og = new FluxGraph();
+                            og.bfs(prev);
+                        }
+                    }
+
+                    //linked to a new one, connect graphs
+                    if(next != null){
+                        var nf = (Flux)next;
+                        flux.links.addUnique(next.pos());
+                        nf.flux().links.addUnique(pos());
+
+                        flux.graph.addGraph(nf.flux().graph);
+                    }
+                }
+            }
         }
 
     }

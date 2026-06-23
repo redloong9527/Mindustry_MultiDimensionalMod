@@ -288,7 +288,7 @@ public class md_blocks {
         //endregion
         //region test2 测试-激光消费者
         test2 = new GenericCrafter("test2") {{
-            requirements(Category.crafting, with());
+            requirements(Category.crafting,BuildVisibility.sandboxOnly, with());
             size = 3;
             consumePower(1f);
             consume(new ConsumeBeam(20f, md_beams.ultraviolet_ligth));
@@ -357,12 +357,12 @@ public class md_blocks {
             requirements(Category.crafting, ItemStack.with(
                     md_items.aluminium, 70,
                     md_items.al_alloy, 40,
-                    Items.silicon,100
+                    Items.silicon,50
             ));
             squareSprite = false;
             size = 3;
             consumeLiquids(LiquidStack.with(md_liquids.crystallization_oil, 15 / 60f, Liquids.hydrogen, 6f / 60f));
-            consumePower(4f);
+            consumePower(3f);
             outputItem = new ItemStack(md_items.polymer, 1);
             craftTime = 60f;
             craftEffect = md_Fx.craftEffect(60f, 4f, md_items.polymer.color, 6, new float[]{4, 4, -4, 4, -4, -4, 4, -4});
@@ -550,7 +550,7 @@ public class md_blocks {
         }};
         test5 = new MultiRecipeCrafter("test5") {{
             drawDisabled = true;
-            requirements(Category.crafting, with());
+            requirements(Category.crafting,BuildVisibility.sandboxOnly, with());
             consumeRecipes(new MultiRecipeConsume(
                     new MultiRecipeConsume.Recipe() {{
                         consumeItems = with(Items.sand, 2, Items.lead, 2);
@@ -1670,7 +1670,7 @@ public class md_blocks {
                 size = 4;
             }};
             test4 = new ContinuousTurret("test4"){{
-                requirements(Category.turret,with());
+                requirements(Category.turret,BuildVisibility.sandboxOnly,with());
                 drawDisabled = true;
                 size = 4;
                 shootType = new MultiPointLaserBullet(){{
@@ -1714,7 +1714,6 @@ public class md_blocks {
                 rotateSpeed = 60/60f;
                 shootCone = 360f;
                 unitSort = UnitSorts.strongest;
-                drawDisabled = true;
                 consume(new ConsumeBeam(80,md_beams.near_infrared_ligth));
 
             }};
@@ -2148,7 +2147,7 @@ public class md_blocks {
             canOverdrive = false;
             payloadLimit = 2f;
             moveTime = 25f;
-            moveForce = 100;
+            moveForce = 200;
             health = 400;
         }};
         small_payload_router = new md_PayloadRouter("small-payload-router",2){{
@@ -2156,7 +2155,7 @@ public class md_blocks {
             canOverdrive = false;
             payloadLimit = 2f;
             moveTime = 25;
-            moveForce = 100;
+            moveForce = 200;
             health = 400;
         }};
         //endregion
@@ -2183,7 +2182,7 @@ public class md_blocks {
         }};
 
         airborne_vessels_factory = new UnitFactory("airborne-vessels-factory"){{
-            requirements(Category.units, with(Items.silicon, 170, md_items.polymer, 150, Items.titanium, 120));
+            requirements(Category.units, with(Items.silicon, 170, md_items.polymer, 150, Items.copper, 120));
             plans = Seq.with(
                     new UnitPlan(md_UnitTypes.shimmer, 60f * 28, with(Items.silicon, 45, md_items.polymer,80))
             );
@@ -2213,6 +2212,7 @@ public class md_blocks {
             requirements(Category.units, with(Items.silicon, 150, md_items.al_alloy, 120, Items.graphite, 150));
             size = 3;
             craftTime = 60f*20;
+            researchCostMultiplier = 0.2f;
             consumeItems(with(
                     Items.silicon,70,md_items.al_alloy,40
             ));
@@ -2239,12 +2239,10 @@ public class md_blocks {
         //endregion
 
         Block test = new FluxCrafter("testBlock"){{
-            requirements(Category.crafting,with());
+            requirements(Category.crafting,BuildVisibility.sandboxOnly,with());
             consume(new ConsumeFlux(){{
-                produceAmount = 1f;
-                capacity = 20;
-                bearingCapacity = 10;
-                retain = 10f;
+                produceAmount = 3/60f;
+                capacity = 30f;
             }});
             craftTime = 30f;
             drawDisabled = true;
@@ -2252,7 +2250,7 @@ public class md_blocks {
 
         };
         Block test1 = new FluxNode("node"){{
-            requirements(Category.power,with());
+            requirements(Category.power,BuildVisibility.sandboxOnly,with());
             size = 1;
             enableDrawStatus = false;
             drawDisabled = true;

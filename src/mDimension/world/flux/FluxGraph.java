@@ -1,139 +1,341 @@
 package mDimension.world.flux;
 
+import arc.func.Cons;
 import arc.graphics.Color;
+import arc.math.Mathf;
 import arc.struct.IntSet;
 import arc.struct.Queue;
 import arc.struct.Seq;
-import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.FluxModule;
 import mDimension.world.data.MDEvents;
+import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.gen.Building;
 
 import static mDimension.world.flux.Fluxs.*;
 import static mindustry.Vars.world;
 
 public class FluxGraph {
-    private int lastChange = -2;
-    public static IntSet visited = new IntSet();
-    public static Queue<Building> queue = new Queue<>();
-    public static Seq<Building> outArray1 = new Seq<>();
+    // ========== 静态常量 ==========
+    private static final int INITIAL_CAPACITY = 16;
+
+    // ========== 实例变量（每个图独立） ==========
+    // BFS 缓冲区 - 实例变量避免多图竞争
+    private final IntSet visited = new IntSet();
+    private final Queue<Building> queue = new Queue<>();
+    private final Seq<Building> outArray1 = new Seq<>(false, INITIAL_CAPACITY, Building.class);
+    private final Seq<Building> outArray2 = new Seq<>(false, INITIAL_CAPACITY, Building.class);
+
+    // 图状态
     public boolean deprecate = false;
     public boolean init = false;
-    public Seq<Building> all = new Seq<>();
-    public Building[] lastAll;
+    private int lastChange = -2;
 
+    // 建筑列表 - 用 false 避免类型检查开销
+    public final Seq<Building> all = new Seq<>(false, INITIAL_CAPACITY, Building.class);
+    public final Seq<Building> storage = new Seq<>(false, INITIAL_CAPACITY, Building.class);
+    public final Seq<Building> consumer = new Seq<>(false, INITIAL_CAPACITY, Building.class);
+
+    // 调试用
     public String debugLog = "";
 
-    {
-        MDEvents.graphs.add(this);
-    }
-
-    public void init(Building b){
-        init = true;
+    // ========== 初始化 ==========
+    public void init(Building b) {
+        if (!init) {
+            MDEvents.graphs.addUnique(this);
+        }
         add(b);
+        init = true;
     }
 
-    public void add(Building b){
-        FluxModule flux = flux(b);
-        if(flux == null)return;
+    public void init() {
+        if (!init) {
+            MDEvents.graphs.addUnique(this);
+        }
+        init = true;
+    }
+
+    // ========== 核心操作 ==========
+    public void add(Building b) {
+        if (!(b instanceof Flux f)) return;
+
+        FluxModule flux = f.flux();
+        var cons = f.consFlux();
+        if (flux == null) return;
+
         all.add(b);
 
-        if(flux.graph != this)flux.graph.deprecate();
+        if (cons.buffered && cons.capacity > 0) {
+            storage.add(b);
+        }
+        if (cons.usage > 0) {
+            consumer.add(b);
+        }
+
+        // 从旧图移除，指向新图
+        if (flux.graph != this && flux.graph != null) {
+            flux.graph.removeList(b);
+        }
         flux.graph = this;
     }
 
-    public void deprecate(){
+    public void removeList(Building b) {
+        all.remove(b);
+        storage.remove(b);
+        consumer.remove(b);
+    }
+
+    public void clear() {
         all.clear();
+        storage.clear();
+        consumer.clear();
+    }
+
+    public void deprecate() {
+        clear();
         MDEvents.graphs.remove(this);
         deprecate = true;
     }
 
-    public Seq<Building> bfs(Building start,Seq<Building> out){
-        out.clear();
+    // ========== BFS（对齐原版 PowerGraph） ==========
+    /**
+     * 标准 BFS，用于 updateGraph 重建
+     */
+    public void bfs(Building start) {
+        clear();
         queue.clear();
         visited.clear();
         queue.addLast(start);
-        out.add(start);
+        add(start);
         visited.add(start.pos());
-        while (!queue.isEmpty()){
+
+        while (!queue.isEmpty()) {
             Building node = queue.removeFirst();
             for (Building c : FluxConnections(node, outArray1)) {
                 FluxModule cflux = flux(c);
-                if (c != null && visited.add(c.pos())&& cflux !=null) {
-
-                    cflux.graph =this;
-                    Fx.colorTrail.at(c.x,c.y,2, Color.valueOf("4040ff"));
-                    out.add(c);
+                if (c != null && visited.add(c.pos()) && cflux != null) {
+                    if (cflux.graph != this) {
+                        cflux.graph.removeList(c);
+                    }
+                    add(c);
+                    Fx.colorTrail.at(c.x, c.y, 2, Color.valueOf("4040ff"));
                     queue.addLast(c);
                 }
-
             }
-
         }
-        return out;
+        init();
     }
 
+    /**
+     * 带屏障的 BFS，用于 remove 时绕开被拆建筑
+     */
+    public void bfs(Building start, Building barrier, Cons<Building> cons) {
+        clear();
+        queue.clear();
+        visited.clear();
+        queue.addLast(start);
+        visited.add(start.pos());
+
+        while (!queue.isEmpty()) {
+            Building node = queue.removeFirst();
+            if (cons != null) cons.get(node);
+
+            for (Building c : FluxConnections(node, outArray1)) {
+                if (c == barrier) continue;
+                FluxModule cflux = flux(c);
+                if (c != null && visited.add(c.pos()) && cflux != null) {
+                    if (cflux.graph != this) {
+                        cflux.graph.removeList(c);
+                    }
+                    add(c);
+                    Fx.colorTrail.at(c.x, c.y, 2, Color.valueOf("4040ff"));
+                    queue.addLast(c);
+                }
+            }
+        }
+        init();
+    }
+
+    // ========== 数值计算 ==========
+    public float getCapacity() {
+        float totalCapacity = 0f;
+        var items = storage.items;
+        for (int i = 0; i < storage.size; i++) {
+            var battery = items[i];
+            if (battery instanceof Flux f) {
+                totalCapacity += (f.consFlux().capacity - f.flux().fluxAmount);
+            }
+        }
+        return totalCapacity;
+    }
+
+    public float getStorage() {
+        float amount = 0f;
+        var items = storage.items;
+        for (int i = 0; i < storage.size; i++) {
+            var battery = items[i];
+            if (battery instanceof Flux f) {
+                amount += f.consFlux().capacity;
+            }
+        }
+        return amount;
+    }
+
+    public float getTotal() {
+        float amount = 0f;
+        var items = storage.items;
+        for (int i = 0; i < storage.size; i++) {
+            var battery = items[i];
+            if (battery instanceof Flux f) {
+                amount += f.flux().fluxAmount;
+            }
+        }
+        return amount;
+    }
+
+    public boolean isOverload() {
+        return getCapacity() < 0.1f;
+    }
+
+    public void changeCapacity(float excess) {
+        float capacity = getCapacity();
+        if (Mathf.equal(capacity, 0f)) return;
+
+        float chargedPercent = Mathf.clamp(excess / capacity, -1, 1);
+        var items = storage.items;
+        for (int i = 0; i < storage.size; i++) {
+            var battery = items[i];
+            if (battery instanceof Flux f && f.consFlux().capacity > 0f) {
+                var flux = f.flux();
+                var cons = f.consFlux();
+                flux.fluxAmount += (cons.capacity - flux.fluxAmount) * chargedPercent;
+            }
+        }
+    }
+
+    public float getChangeAmount() {
+        float totalCapacity = 0f;
+        var items = all.items;
+        for (int i = 0; i < all.size; i++) {
+            var battery = items[i];
+            if (battery instanceof Flux f) {
+                totalCapacity += f.outputAmount() - f.consumerAmount();
+            }
+        }
+        return totalCapacity;
+    }
+
+    // ========== 更新 ==========
     public void update() {
+        if (!Vars.state.isGame()) {
+            deprecate();
+            return;
+        }
+
         if (lastChange != world.tileChanges) {
             lastChange = world.tileChanges;
             updateGraph();
         }
 
-
-    }
-    public void updateGraph(){
-        debugLog = "size:"+all.size + " init:"+init+" deprecate:"+deprecate +"\nlastAll:\n"+all;
-        if(!init)return;
-
-        boolean none = true;
-        for(Building b:all){
-            if(b.dead || world.build(b.pos()) == null){
-                all.remove(b);
-            }else if(flux(b).graph == this){
-                none = false;
-            }else{
-                all.remove(b);
-            }
+        float amount = getChangeAmount();
+        changeCapacity(amount);
+        if (isOverload()) {
+            all.each(b -> MDEvents.overload.addUnique(b));
         }
-        if(all.size == 0 || none){
+    }
+
+    public void updateGraph() {
+        if (!init) return;
+
+        if (all.size == 0) {
             deprecate();
             return;
         }
 
-        lastAll = all.toArray(Building.class);
         Building start = all.get(0);
-        Fx.colorTrail.at(start.x,start.y,3.5f, Color.valueOf("40ff40"));
-
-        all = bfs(start,all);
-        debugLog += "\nAll:\n"+all;
-        for (Building last : lastAll) {
-            if (!all.contains(last)) {
-                FluxModule lastFlux = flux(last);
-                if (lastFlux != null) {
-                    Fx.colorTrail.at(last.x,last.y,7, Color.valueOf("ff4040"));
-                    lastFlux.graph =  new FluxGraph();
-                    lastFlux.graph.init(last);
-                }
+        if (start.dead || world.build(start.pos()) != start) {
+            // 起始节点失效，找一个有效的
+            start = findValidStart();
+            if (start == null) {
+                deprecate();
+                return;
             }
         }
 
+        bfs(start);
     }
 
-    public void saveLoad(){
-        for(Building b:all){
+    private Building findValidStart() {
+        var items = all.items;
+        for (int i = 0; i < all.size; i++) {
+            Building b = items[i];
+            if (!b.dead && world.build(b.pos()) == b) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    // ========== 存档兼容 ==========
+    public void saveLoad() {
+        for (Building b : all) {
             Building nowb = world.build(b.pos());
             FluxModule flux = flux(nowb);
-            if(flux!=null){
+            if (flux != null) {
                 flux.graph = new FluxGraph();
                 flux.graph.init(nowb);
             }
         }
         deprecate();
     }
-    public String getDebugLog(){
-        return debugLog;
+
+    // ========== 拆除处理（对齐原版 PowerGraph.remove） ==========
+    public void remove(Building tile) {
+        if (!(tile instanceof Flux f)) return;
+
+        // 收集邻居，使用局部变量
+        Seq<Building> neighbors = new Seq<>(false, 4, Building.class);
+        f.FluxConnections(neighbors);
+
+        for (int i = 0; i < neighbors.size; i++) {
+            Building other = neighbors.items[i];
+            if (!(other instanceof Flux of)) continue;
+
+            FluxModule oflux = of.flux();
+            if (oflux == null || oflux.graph != this) continue;
+
+            // 创建新图，BFS 填充
+            FluxGraph graph = new FluxGraph();
+            graph.bfs(other, tile, null);
+        }
+
+        deprecate();
     }
 
+    // ========== 合并图 ==========
+    public void addGraph(FluxGraph graph) {
+        if (graph == this) return;
+
+        // 合并到更大的图
+        if (graph.all.size > all.size) {
+            graph.addGraph(this);
+            return;
+        }
+
+        graph.deprecate();
+        for (Building tile : graph.all) {
+            add(tile);
+        }
+        init();
+    }
+
+    @Override
+    public String toString() {
+        return "FluxGraph{" +
+                "all=" + all.size +
+                ", storage=" + storage.size +
+                ", consumer=" + consumer.size +
+                ", deprecate=" + deprecate +
+                '}';
+    }
 }
