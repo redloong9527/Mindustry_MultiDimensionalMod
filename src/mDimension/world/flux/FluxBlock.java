@@ -19,7 +19,6 @@ public class FluxBlock extends Block{
         super(name);
         update = true;
         solid = true;
-        hasPower = true;
         group = BlockGroup.power;
     }
 

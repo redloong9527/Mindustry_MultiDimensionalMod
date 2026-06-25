@@ -1,6 +1,8 @@
 package mDimension.world.data;
 
 import arc.Core;
+import arc.func.Cons;
+import arc.func.Cons2;
 import arc.func.Cons3;
 import arc.func.Cons4;
 import arc.graphics.Blending;
@@ -11,193 +13,27 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.FloatSeq;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mDimension.draw.MDLines;
-import mDimension.entity.LaserEntity;
+import mDimension.entity.BeamEntity;
 import mDimension.meta.md_Stat;
 import mDimension.tool.Drawff;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.logic.LAccess;
 import mindustry.logic.Senseable;
 
 public class Beam extends UnlockableContent implements Senseable {
-    public static final Blending cover = new Blending(Gl.one,Gl.zero,Gl.one,Gl.zero);
-
-
-    public LaserDrawer laserDrawer= l->{
-        basicDraw(l, Color.valueOf("ffd080"));
-    };
-    public static void basicDraw(LaserEntity l){basicDraw(l,Color.white);}
-    public static void basicDraw(LaserEntity l,Color color){basicDraw( l, color, 2.5f);}
-    public static void basicDraw(LaserEntity l,Color color,float rad){basicDraw( l, color, rad, 1f,110f,4f);}
-    public static void basicDraw(LaserEntity l,Color color,float rad,float alpha,float Layer,float fadingDst){
-        rad *= (Mathf.sin(Time.time+Mathf.randomSeed(l.id* 114L)*50,24,0.08f)+1f);
-        color = color.a(Math.min(alpha*l.beamData.power/10,1));
-        Draw.color(color);
-        Draw.z(Layer);
-        Lines.stroke(rad*1.4f);
-        for(int i = 1;i<l.points.size;i++){
-            Vec2 lp = l.points.get(i-1);
-            Vec2 np = l.points.get(i);
-            Lines.line(lp.x,lp.y  ,  np.x,np.y , false);
-            if(l.points.size>2 && i!=l.points.size-1){
-                Fill.circle(np.x,np.y,rad*0.7f);
-            }
-        }
-        float sx = l.points.get(0).x,sy = l.points.get(0).y,
-                tx = l.points.get(l.points.size-1).x,ty = l.points.get(l.points.size-1).y;
-        Fill.circle(sx,sy,rad);
-        if(l.isBlocked){
-            Fill.circle(tx,ty,rad);
-        }else {
-            MDLines.line2(Core.atlas.white(), tx, ty, color.toFloatBits(), tx+l.rotation.x*fadingDst, ty+l.rotation.y*fadingDst, color.cpy().a(0).toFloatBits(),false);
-        }
-        Draw.reset();
-    }
-    public static void basicDraw(LaserEntity l, Color color, float rad, float alpha, float Layer,float fadingDst,Cons3<Float,Float,Float> drawCap){
-        rad *= (Mathf.sin(Time.time+Mathf.randomSeed(l.id* 114L)*50,24,0.08f)+1f);
-        color = color.a(Math.min(alpha*l.beamData.power/10,1));
-        Draw.color(color);
-        Draw.z(Layer);
-        Lines.stroke(rad*1.4f);
-        for(int i = 1;i<l.points.size;i++){
-            Vec2 lp = l.points.get(i-1);
-            Vec2 np = l.points.get(i);
-            Lines.line(lp.x,lp.y  ,  np.x,np.y , false);
-            if(l.points.size>2 && i!=l.points.size-1){
-                Fill.circle(np.x,np.y,rad*0.7f);
-            }
-        }
-        float sx = l.points.get(0).x,sy = l.points.get(0).y,
-                tx = l.points.get(l.points.size-1).x,ty = l.points.get(l.points.size-1).y;
-        drawCap.get(sx,sy,rad);
-        if(l.isBlocked){
-            drawCap.get(tx,ty,rad);
-        }else {
-            MDLines.line2(Core.atlas.white(), tx, ty, color.toFloatBits(), tx+l.rotation.x*fadingDst, ty+l.rotation.y*fadingDst, color.cpy().a(0).toFloatBits(),false);
-        }
-        Draw.reset();
-    }
-    public static void basicDraw(LaserEntity l, Color color, float rad, float alpha, float Layer,float fadingDst, Cons4<Float,Float,Float,Boolean> drawCap){
-        rad *= (Mathf.sin(Time.time+Mathf.randomSeed(l.id* 114L)*50,24,0.08f)+1f);
-        color = color.a(Math.min(alpha*l.beamData.power/10,1));
-        Draw.color(color);
-        Draw.z(Layer);
-        Lines.stroke(rad*1.4f);
-        for(int i = 1;i<l.points.size;i++){
-            Vec2 lp = l.points.get(i-1);
-            Vec2 np = l.points.get(i);
-            Lines.line(lp.x,lp.y  ,  np.x,np.y , false);
-            if(l.points.size>2 && i!=l.points.size-1){
-                drawCap.get(np.x,np.y,rad,false);
-            }
-        }
-        float sx = l.points.get(0).x,sy = l.points.get(0).y,
-                tx = l.points.get(l.points.size-1).x,ty = l.points.get(l.points.size-1).y;
-        drawCap.get(sx,sy,rad,true);
-        if(l.isBlocked){
-            drawCap.get(tx,ty,rad,true);
-        }else{
-            MDLines.line2(Core.atlas.white(), tx, ty, color.toFloatBits(), tx+l.rotation.x*fadingDst, ty+l.rotation.y*fadingDst, color.cpy().a(0).toFloatBits(),false);
-        }
-        Draw.reset();
-    }
-    public static void particleFlowDraw(LaserEntity l, Color color, float length, float spread, float amountMulti, float alpha, float Layer){
-        color = color.a(Math.min(alpha*l.beamData.power/10,1));
-        Draw.color(color);
-        Draw.z(Layer);
-        Lines.stroke(0.5f);
-        for(int i = 1;i<l.points.size;i++){
-            Vec2 lp = l.points.get(i-1);
-            Vec2 np = l.points.get(i);
-            float len = Tmp.v1.set(np).sub(lp).len();
-            Drawff.particleFlow(l.id,4f,lp.x,lp.y,np.x,np.y,(int)(len*amountMulti), length,spread,3);
-        }
-        Draw.reset();
-    }
-
-    public static void node(LaserEntity l, Color color, float rad, float alpha, float Layer, Cons4<Float,Float,Float,Boolean> drawCap){
-        rad *= (Mathf.sin(Time.time+Mathf.randomSeed(l.id* 114L)*50,24,0.08f)+1f);
-        color = color.a(Math.min(alpha*l.beamData.power/10,1));
-        Draw.color(color);
-        Draw.z(Layer);
-        for(int i = 1;i<l.points.size;i++){
-            Vec2 np = l.points.get(i);
-            if(l.points.size>2 && i!=l.points.size-1){
-                drawCap.get(np.x,np.y,rad,false);
-            }
-        }
-        float sx = l.points.get(0).x,sy = l.points.get(0).y,
-                tx = l.points.get(l.points.size-1).x,ty = l.points.get(l.points.size-1).y;
-        drawCap.get(sx,sy,rad,true);
-        if(l.isBlocked){
-            drawCap.get(tx,ty,rad,true);
-        }
-        Draw.reset();
-    }
-
-
-    public static void DrawPacket(LaserEntity l,Color color,float rad,float alpha,float Layer,float life) {
-        if (l.points.size < 2) return;
-        float lastTime = Time.time;
-        float fin = (((Time.time + Mathf.randomSeed(l.id)*life) % life) / life)*1.25f;
-
-        Draw.z(Layer);
-        if(fin<1f) {
-            alpha *= (float) (1 - Math.pow(2 * fin - 1, 6));
-            Draw.color(color.a(alpha));
-            if(fin<0.3f && !l.isBlocked) {
-                Lines.setCirclePrecision(1f);
-                Lines.stroke((1.2f-fin/0.3f)*rad);
-                Lines.circle(l.points.get(0).x,l.points.get(0).y,rad*2.2f*(fin/0.3f));
-            }
-            float[] para = new float[l.points.size - 1];
-            float totLen = 0;
-            for (int i = 1; i < l.points.size; i++) {
-                Vec2 lp = l.points.get(i - 1);
-                Vec2 np = l.points.get(i);
-                float paraLen = Mathf.len(np.x - lp.x, np.y - lp.y);
-                para[i - 1] = paraLen;
-                totLen += paraLen;
-            }
-            float lenFin = fin * totLen;
-            float max = 0;
-            int f = 0;
-            for (int i = 0; i < para.length; i++) {
-                max += para[i];
-                f = i;
-                if (max >= lenFin) break;
-            }
-
-            float useLen = max - lenFin;
-            Vec2 node = l.points.get(f + 1);
-            Vec2 rotat = new Vec2(
-                    l.points.get(f + 1).x - l.points.get(f).x,
-                    l.points.get(f + 1).y - l.points.get(f).y
-            ).nor();
-            Fill.circle(node.x - useLen * rotat.x, node.y - useLen * rotat.y, rad);
-        }else if(!l.isBlocked){
-            Draw.color(color.a(alpha));
-            float cfin = (fin-1) /0.25f;
-            for(int i = 0;i<4;i++){
-                Vec2 end = l.points.get(l.points.size-1);
-                Drawf.tri(end.x,end.y,rad*(1-cfin),rad*2f*(2-cfin),i*90f);
-            }
-        }
-
-    }
-
-    public interface LaserDrawer{
-        void draw(LaserEntity laserEntity);
-    }
 
     public int energyLevel = 3;
 
     public int lenght = 15;
-
+    //no achieve
     public boolean hasDamage = false;
 
     public boolean targetAir = false;
@@ -242,4 +78,115 @@ public class Beam extends UnlockableContent implements Senseable {
     public void setStats() {
         stats.add(md_Stat.energyLevel,energyLevel);
     }
+    public BeamDrawer beamDrawer= l->{
+        basicDraw(l,(last,now)->{
+            float scl = scl(l);
+            float z = Draw.z();
+            Draw.color(color,0.2f);
+            Lines.stroke(5*scl);
+            Lines.line(last.x,last.y,now.x,now.y,false);
+            Draw.z(z+0.001f);
+            Draw.color(color,Color.white,0.2f);
+            Lines.stroke(3*scl);
+            Lines.line(last.x,last.y,now.x,now.y,false);
+            Draw.z(z+0.002f);
+            Draw.color(Color.white);
+            Lines.stroke(1f*scl);
+            Lines.line(last.x,last.y,now.x,now.y,false);
+            Draw.z(z);
+        },v->{
+            float scl = scl(l)*0.5f;
+
+            Draw.color(color,0.2f);
+            Fill.circle(v.x,v.y,5*scl);
+
+            Draw.color(color,Color.white,0.2f);
+            Fill.circle(v.x,v.y,3*scl);
+
+            Draw.color(Color.white);
+            Fill.circle(v.x,v.y,1f*scl);
+        },v->{
+            float scl = scl(l)*0.5f;
+            float z = Draw.z();
+            Draw.color(color,0.2f);
+            Fill.circle(v.x,v.y,7f*scl);
+            Draw.z(z+0.001f);
+            Draw.color(color,Color.white,0.2f);
+            Fill.circle(v.x,v.y,5f*scl);
+            Draw.z(z+0.002f);
+            Draw.color(Color.white);
+            Fill.circle(v.x,v.y,1.5f*scl);
+            Draw.z(z);
+        },(v,rot)->{
+            float scl = scl(l);
+            float dst = 6f;
+            Draw.color(color,0.2f);
+            Lines.stroke(5*scl);
+            MDLines.line2(v.x,v.y, v.x+rot.x*dst,v.y+rot.y*dst);
+
+            Draw.color(color,Color.white,0.2f);
+            Lines.stroke(3*scl);
+            MDLines.line2(v.x,v.y, v.x+rot.x*dst,v.y+rot.y*dst);
+
+            Draw.color(Color.white);
+            Lines.stroke(1f*scl);
+            MDLines.line2(v.x,v.y, v.x+rot.x*dst,v.y+rot.y*dst);
+        });
+    };
+    public float scl(BeamEntity l){
+        return  (Mathf.absin(Time.time + l.id*1145,3,0.15f)+0.93f)*l.warmup;
+    }
+
+    public static void basicDraw(BeamEntity l,Cons2<Vec2,Vec2> cons,Cons<Vec2> node,Cons<Vec2> cap,Cons2<Vec2,Vec2> end){
+        for(int i=1;i<l.points.size/2-1;i++){
+            Draw.z(Layer.blockOver);
+            node.get(Tmp.v2.set(l.points.get(i*2),l.points.get(i*2+1)));
+        }
+        for(int i=1;i<l.points.size/2;i++){
+            Draw.z(Layer.blockOver+0.01f);
+            cons.get(Tmp.v1.set(l.points.get(i*2-2),l.points.get(i*2-1))
+                    ,Tmp.v2.set(l.points.get(i*2),l.points.get(i*2+1))
+            );
+        }
+        int size = l.points.size;
+        float tx = l.points.get(size-2);
+        float ty = l.points.get(size-1);
+        Draw.z(Layer.blockOver+0.01f);
+        cap.get(Tmp.v1.set(l.points.get(0),l.points.get(1)));
+        if(l.isBlocked){
+            cap.get(Tmp.v1.set(tx,ty));
+        }else {
+            end.get(Tmp.v1.set(tx,ty) , l.rotation);
+        }
+        Draw.reset();
+    }
+    public static void DrawCap(BeamEntity l,Cons<Vec2> cap){
+        cap.get( Tmp.v1.set(l.points.get(0) , l.points.get(1)));
+        if(l.isBlocked){
+            int size = l.points.size;
+            cap.get( Tmp.v1.set(l.points.get(size-2) , l.points.get(size-1)));
+        }
+    };
+    public static void DrawEnd(BeamEntity l){};
+    public static void particleFlowDraw(BeamEntity l, Color color, float length, float spread, float amountMulti, float alpha, float Layer){
+        color = color.a(Math.min(alpha*l.beamData.power/10,1));
+        Draw.color(color);
+        Draw.z(Layer);
+        Lines.stroke(0.5f);
+        for(int i=1;i<l.points.size/2;i++){
+            Vec2 lp = Tmp.v1.set(l.points.get(i*2-2),l.points.get(i*2-1));
+            Vec2 np = Tmp.v2.set(l.points.get(i*2),l.points.get(i*2+1));
+            float len = Tmp.v1.set(np).sub(lp).len();
+            Drawff.particleFlow(l.id,4f,lp.x,lp.y,np.x,np.y,(int)(len*amountMulti), length,spread,3);
+        }
+        Draw.reset();
+    }
+
+
+
+    public interface BeamDrawer{
+        void draw(BeamEntity laserEntity);
+    }
+
+
 }

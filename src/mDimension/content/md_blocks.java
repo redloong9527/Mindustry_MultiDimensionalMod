@@ -967,7 +967,6 @@ public class md_blocks {
             health = 100;
 
             explosivenessScale = flammabilityScale = 12f/60f;
-            botColor = Color.valueOf("575446");
         }};
         //endregion
         //region turret

@@ -163,14 +163,16 @@ public class FluxNode extends FluxBlock {
                     }
                 }
             }
-            int h = flux.graph.hashCode();
-            int r = h & 0xff0000;
-            int g = h & 0x00ff00;
-            int b = h & 0x0000ff;
-            int rgba = r|g|b|0x000000ff;
-            Draw.color(rgba);
+            if (flux.graph != null && flux.graph.init && !flux.graph.deprecate) {
+                int h = flux.graph.hashCode();
+                int r = h & 0xff0000;
+                int g = h & 0x00ff00;
+                int b = h & 0x0000ff;
+                int rgba = r|g|b|0x000000ff;
+                Draw.color(rgba);
 
-            Fill.circle(x,y,3);
+                Fill.circle(x,y,3);
+            }
             Draw.reset();
         }
 

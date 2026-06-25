@@ -6,7 +6,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.content.md_Fx;
 import mDimension.content.md_beams;
-import mDimension.entity.LaserEntity;
+import mDimension.entity.BeamEntity;
 import mDimension.meta.md_StatValues;
 import mDimension.tool.md_Edge;
 import mDimension.world.data.Beam;
@@ -87,7 +87,7 @@ public class LaserCrafter extends GenericCrafter {
 
     public class TestCrafterBuild extends GenericCrafterBuild{
 
-        public LaserEntity[] crafterLasers = new LaserEntity[beamAmount];
+        public BeamEntity[] crafterLasers = new BeamEntity[beamAmount];
 
         public int lastRotation;
 
@@ -106,7 +106,7 @@ public class LaserCrafter extends GenericCrafter {
             for(int i = 0;i<beamAmount;i++) {
                 if (crafterLasers[i] == null) {
                     Vec2 p = md_Edge.transpose(craftPos[i].cpy(),rotation).add(x,y);
-                    LaserEntity laserEntity = new LaserEntity(beam);
+                    BeamEntity laserEntity = new BeamEntity(beam);
                     laserEntity.create(p.x, p.y,md_Edge.transpose(craftRotation[i].cpy(),rotation), i);
                     md_Fx.waveColor(5f, 3f, 1f).at(p.x * 8, p.y * 8, Color.valueOf("FFFFFF"));
                 } else {

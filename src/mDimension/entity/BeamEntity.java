@@ -1,8 +1,10 @@
 package mDimension.entity;
 
 import arc.graphics.g2d.Draw;
+import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
+import arc.struct.FloatSeq;
 import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -18,50 +20,57 @@ import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.core.World;
 import mindustry.entities.EntityGroup;
-import mindustry.gen.Building;
-import mindustry.gen.Drawc;
-import mindustry.gen.Entityc;
-import mindustry.gen.Groups;
+import mindustry.gen.*;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 
-public class LaserEntity implements Entityc, Drawc {
+public class BeamEntity implements Entityc, Drawc {
     protected transient int index__all;
     protected transient int index__draw;
     public boolean added = false;
     public boolean isBlocked = false;
     public int id = EntityGroup.nextId();
+    public float warmup=0;
 
     public int createId;
 
     public Vec2 rotation = new Vec2(1,0);
     public Vec2 launchRotation;
 
-    public Seq<Vec2> points = new Seq<Vec2>(3);
+    public FloatSeq points = new FloatSeq(3);
 
     public float x;
     public float y;
 
-    public Seq<Building> passBuild = new Seq<Building>(3);
+    public Seq<Building> passBuild = new Seq<Building>(6);
 
     public Beam laser = md_beams.near_infrared_ligth;
     public BeamData beamData;
 
 
 
-    public LaserEntity(){
+    public BeamEntity(){
 
     }
-    public LaserEntity(Beam laser){
+    public BeamEntity(Beam laser){
         this.laser = laser;
     }
 
     public void setPower(float power){this.beamData.setPower(power);}
 
-    public void start(float x,float y,Vec2 r){points.add(new Vec2(x+r.x*4,y+r.y*4));}
-    public void turn(float x,float y){points.add(new Vec2(x,y));}
-    public void end(float x,float y,Vec2 r){points.add(new Vec2(x-r.x*4,y-r.y*4));}
+    public void start(float x,float y,Vec2 r){
+        points.add(x +r.x*4,y +r.y*4);
+    }
+    public void turn(float x,float y){
+        points.add(x,y);
+    }
+    public void end(float x,float y,Vec2 r){
+        points.add(x -r.x*4,y -r.y*4);
+    }
+    public void updateEntity(){
+        warmup = Mathf.approachDelta(warmup,beamData.power > 0.01f ?1f:0f,1.5f/60f);
+    }
 
     @Override
     public void update() {
@@ -71,10 +80,11 @@ public class LaserEntity implements Entityc, Drawc {
         }else if(buildOn() instanceof LaserCrafter.TestCrafterBuild tcb){
             without:
             {
-                for (LaserEntity l : tcb.crafterLasers) {
+                for (BeamEntity l : tcb.crafterLasers) {
                     if (l == this) break without;
                 }
                 remove();
+                return;
             }
             int length = this.beamData.length;
             points.clear();
@@ -83,6 +93,7 @@ public class LaserEntity implements Entityc, Drawc {
             isBlocked = false;
             float cx = x,cy = y;
             rotation.set(launchRotation);
+            updateEntity();
             for (int i = 1; i <= length; i++) {
                 cx += rotation.x*8;
                 cy += rotation.y*8;
@@ -150,7 +161,7 @@ public class LaserEntity implements Entityc, Drawc {
 
     @Override
     public void draw() {
-        if(beamData.power>0.1f)laser.laserDrawer.draw(this);
+        if(warmup>0.01f)laser.beamDrawer.draw(this);
         Draw.reset();
     }
 

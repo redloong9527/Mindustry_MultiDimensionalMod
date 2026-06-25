@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import mDimension.content.md_beams;
 import mDimension.meta.md_StatValues;
 import mDimension.world.data.BeamData;
 import mDimension.world.data.Beam;
@@ -25,7 +26,7 @@ public class ConsumeBeam extends Consume {
     //由于aunke使用的min，所以改这个diao用没有
     public float maxEfficiency = 1f;
 
-    public Beam inputBeam = null;
+    public Beam inputBeam = md_beams.near_infrared_ligth;
     public int maxSize = 256;
 
     public static Seq<ConsumeBeam> allConsume = new Seq<>();
@@ -61,10 +62,10 @@ public class ConsumeBeam extends Consume {
     @Override
     public void apply(Block block) {
         //region Bar
-        block.addBar("laserpower",e->
+        block.addBar(inputBeam == null?"beam-"+minWavelength+"-"+maxWavelength:"beam-"+inputBeam.name,e->
             new Bar(
-                    ()-> Core.bundle.format("bar.laserpower", getLaserPower(e)),
-                    ()->Color.white,
+                    ()-> inputBeam.localizedName+" "+Core.bundle.format("bar.laserpower", getLaserPower(e),requiredPower),
+                    ()->inputBeam.color,
                     ()->getLaserPower(e)/requiredPower
             )
         );

@@ -7,10 +7,12 @@ import arc.struct.IntSet;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import mDimension.consumers.modules.FluxModule;
+import mDimension.tool.Debug;
 import mDimension.world.data.MDEvents;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.gen.Building;
+import mindustry.graphics.Pal;
 
 import static mDimension.world.flux.Fluxs.*;
 import static mindustry.Vars.world;
@@ -135,6 +137,8 @@ public class FluxGraph {
         visited.clear();
         queue.addLast(start);
         visited.add(start.pos());
+
+        add(start);
 
         while (!queue.isEmpty()) {
             Building node = queue.removeFirst();
@@ -300,13 +304,16 @@ public class FluxGraph {
         for (int i = 0; i < neighbors.size; i++) {
             Building other = neighbors.items[i];
             if (!(other instanceof Flux of)) continue;
+            Debug.cry(other);
 
             FluxModule oflux = of.flux();
             if (oflux == null || oflux.graph != this) continue;
 
             // 创建新图，BFS 填充
             FluxGraph graph = new FluxGraph();
-            graph.bfs(other, tile, null);
+            graph.bfs(other, tile, c->{
+                Debug.cry(c,Pal.heal);
+            });
         }
 
         deprecate();
