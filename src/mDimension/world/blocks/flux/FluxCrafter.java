@@ -1,8 +1,7 @@
-package mDimension.world.flux;
+package mDimension.world.blocks.flux;
 
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.FluxModule;
 import mindustry.game.Team;
 import mindustry.gen.Building;

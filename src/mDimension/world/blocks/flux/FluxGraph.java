@@ -1,4 +1,4 @@
-package mDimension.world.flux;
+package mDimension.world.blocks.flux;
 
 import arc.func.Cons;
 import arc.graphics.Color;
@@ -8,13 +8,13 @@ import arc.struct.Queue;
 import arc.struct.Seq;
 import mDimension.consumers.modules.FluxModule;
 import mDimension.tool.Debug;
-import mDimension.world.data.MDEvents;
+import mDimension.world.MDEvents;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 
-import static mDimension.world.flux.Fluxs.*;
+import static mDimension.world.blocks.flux.Fluxs.*;
 import static mindustry.Vars.world;
 
 public class FluxGraph {

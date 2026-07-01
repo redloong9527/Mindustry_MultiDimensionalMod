@@ -3,7 +3,7 @@ package mDimension.consumers.modules;
 import arc.struct.IntSeq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.world.flux.FluxGraph;
+import mDimension.world.blocks.flux.FluxGraph;
 import mindustry.gen.Building;
 import mindustry.world.modules.BlockModule;
 

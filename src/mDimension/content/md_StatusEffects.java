@@ -25,7 +25,7 @@ public class md_StatusEffects {
             color = Color.valueOf("ffffff");
             healthMultiplier = 0.65f;
             damageMultiplier = 0.8f;
-            speedMultiplier = 1.5f;
+            speedMultiplier = 1.1f;
             damage = 4f;
             effect = md_Fx.dimension_vapor;
             effectChance = 0.03f;

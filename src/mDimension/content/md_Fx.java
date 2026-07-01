@@ -17,6 +17,7 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Effect;
 
 import arc.graphics.Color;
+import mindustry.gen.Healthc;
 import mindustry.gen.Posc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
@@ -429,6 +430,71 @@ public class md_Fx {
            Drawf.tri(e.x,e.y,wid,len,e.rotation +o * 12f);
        }
        Fill.circle(e.x,e.y,wid/2);
+    }),
+
+    fluffrainShoot = new Effect(20f,e->{
+        color(e.color,Color.white,e.fin()*0.5f);
+        rand.setSeed(e.id);
+        for(int i=0;i<7;i++){
+            float dr = rand.range(20f);
+            v.trns(e.rotation+dr,(rand.random(6f)+3f)*e.finpow());
+            v.add(v1.trns(e.rotation+180,8f));
+            Fill.poly(e.x+v.x,e.y+v.y,4,e.fout()*3f);
+        }
+    }),
+
+    fluffrainHit = new Effect(20f,e->{
+        color(e.color,Color.white,e.fout()*0.7f);
+        randLenVectors(e.id+5,6,15f*e.finpow(),(x,y)->{
+            Fill.circle(e.x+x,e.y+y,e.fout()*2.5f);
+        });
+        Lines.stroke(e.fout());
+        Lines.circle(e.x,e.y,e.finpow()*8f);
+    }),
+
+
+    RefractedLaser = new Effect(20f,e->{
+        if(e.data instanceof Healthc[] targets){
+            v.set(e.x,e.y);
+            float fout = e.fout();
+            float stroke;
+
+            for(int i=0;i<targets.length;i++){
+                var t = targets[i];
+                v1.set(t.x(),t.y());
+                stroke = fout*7f;
+
+                color(e.color,0.3f);
+                Fill.circle(v.x,v.y,stroke * 1.15f);
+                Lines.stroke(stroke);
+                Lines.line(v.x,v.y,v1.x,v1.y,false);
+
+                stroke = fout*5.8f;
+
+                color(e.color,Color.white,0.25f);
+                Fill.circle(v.x,v.y,stroke * 1.15f);
+                Lines.stroke(stroke);
+                Lines.line(v.x,v.y,v1.x,v1.y,false);
+
+                stroke = fout*3.7f;
+
+                color(e.color,Color.white,0.9f);
+                Fill.circle(v.x,v.y,stroke * 1.15f);
+                Lines.stroke(stroke);
+                Lines.line(v.x,v.y,v1.x,v1.y,false);
+
+                v.set(t.x(),t.y());
+            }
+            stroke = fout * 7f;
+            color(e.color,0.3f);
+            Fill.circle(v.x,v.y,stroke * 1.15f);
+            stroke = fout * 5.8f;
+            color(e.color,Color.white,0.25f);
+            Fill.circle(v.x,v.y,stroke * 1.15f);
+            stroke = fout * 3.7f;
+            color(e.color,Color.white,0.9f);
+            Fill.circle(v.x,v.y,stroke * 1.15f);
+        }
     }),
 
 

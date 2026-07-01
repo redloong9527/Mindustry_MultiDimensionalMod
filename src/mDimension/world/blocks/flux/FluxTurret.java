@@ -1,9 +1,8 @@
-package mDimension.world.flux;
+package mDimension.world.blocks.flux;
 
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.consumers.modules.FluxModule;
-import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Tile;

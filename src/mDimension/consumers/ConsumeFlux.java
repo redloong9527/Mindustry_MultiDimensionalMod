@@ -11,7 +11,7 @@ import arc.struct.Seq;
 import arc.util.Interval;
 import mDimension.consumers.modules.FluxModule;
 import mDimension.tool.continuousRGB;
-import mDimension.world.flux.Flux;
+import mDimension.world.blocks.flux.Flux;
 import mindustry.content.Items;
 import mindustry.core.UI;
 import mindustry.entities.Effect;
@@ -22,7 +22,7 @@ import mindustry.world.consumers.Consume;
 
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.world;
-import static mDimension.world.flux.Fluxs.*;
+import static mDimension.world.blocks.flux.Fluxs.*;
 
 public class ConsumeFlux extends Consume {
     //public static Seq<Building> outArray2 = new Seq<>();

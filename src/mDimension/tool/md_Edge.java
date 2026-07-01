@@ -1,12 +1,16 @@
 package mDimension.tool;
 
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.Block;
+import mindustry.world.Build;
 import mindustry.world.Tile;
+
+import static mindustry.Vars.world;
 
 public class md_Edge {
     public static Vec2[] getFacingNearby(Building b){
@@ -76,7 +80,7 @@ public class md_Edge {
         for(var v:getFacingNearby(b,r)){
             Vec2 rotat = direction(b.rotation);
             v.add(rotat.x*8,rotat.y*8);
-            Building onBuild = Vars.world.buildWorld(v.x,v.y);
+            Building onBuild = world.buildWorld(v.x,v.y);
             if(onBuild == null)return null;
             if(!isFind){cache = onBuild;isFind = true;continue;}
             if(cache != onBuild)return null;
@@ -104,6 +108,61 @@ public class md_Edge {
         }
 
         return new int[]{-1};
-
     }
+
+    public static Tile[] getFacingTile(Building b){
+        int size=b.block.size;
+        int r = (b.rotation+1)%4;
+        int dx = Geometry.d4x(r);
+        int dy = Geometry.d4y(r);
+        int l = size/2+1;
+
+        int ox = f4[b.rotation].x*l;
+        int oy = f4[b.rotation].y*l;
+        if(b.block.size %2 == 0) {
+            ox+=f4i[b.rotation].x;
+            oy+=f4i[b.rotation].y;
+        }
+        var res = new Tile[size];
+        for(int i=0;i<size;i++){
+            int wx = b.tile.x + ox + dx*i;
+            int wy = b.tile.y + oy + dy*i;
+            res[i] = world.tile(wx,wy);
+        }
+
+        return res;
+    }
+    public static Building getAllFacingBuild(Building b){
+        Building res = null;
+        for(var t:getFacingTile(b)){
+            Building other = t.build;
+            if(other ==null)return null;
+            if(res == null){
+                res = other;
+            }else if(res != other){
+                return null;
+            }
+        }
+        return res;
+    }
+
+    public static final Point2[] f4=new Point2[]{
+            new Point2(1,-1),
+            new Point2(1,1),
+            new Point2(-1,1),
+            new Point2(-1,-1)
+    };
+
+    ///c x | x x
+    ///c x | x x
+    ///----o----
+    ///c x | x x
+    ///c c | c c
+
+    public static final Point2[] f4i=new Point2[]{
+            new Point2(0,2),
+            new Point2(-1,0),
+            new Point2(1,-1),
+            new Point2(2,1)
+    };
 }

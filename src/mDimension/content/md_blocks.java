@@ -12,6 +12,7 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Time;
+import arc.util.Tmp;
 import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.consumers.MultiRecipeConsume;
@@ -21,18 +22,19 @@ import mDimension.draw.DrawPiston;
 import mDimension.draw.DrawRotation;
 import mDimension.entity.EntityShield;
 import mDimension.entity.MultiSound;
-import mDimension.entity.bullet.BallLightningBulletType;
-import mDimension.entity.bullet.CatapultBulletType;
-import mDimension.entity.bullet.EntityCrafterBulletType;
-import mDimension.entity.bullet.MultiPointLaserBullet;
+import mDimension.entity.bullet.*;
+import mDimension.entity.pattern.ShootBarrelRandom;
 import mDimension.entity.pattern.ShootSwing;
 import mDimension.world.blocks.*;
-import mDimension.world.flux.FluxBlock;
-import mDimension.world.flux.FluxCrafter;
-import mDimension.world.flux.FluxGraph;
-import mDimension.world.flux.FluxNode;
+import mDimension.world.blocks.drill.BurstDrill_Pro;
+import mDimension.world.blocks.drill.CrustDrill;
+import mDimension.world.blocks.drill.CrustDrillBooster;
+import mDimension.world.blocks.drill.CrustDrillGuide;
+import mDimension.world.blocks.flux.FluxCrafter;
+import mDimension.world.blocks.flux.FluxNode;
 import mindustry.content.*;
 import mindustry.entities.Effect;
+import mindustry.entities.Puddles;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
@@ -54,11 +56,11 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ContinuousTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.distribution.Duct;
 import mindustry.world.blocks.distribution.OverflowGate;
 import mindustry.world.blocks.distribution.Sorter;
 import mindustry.world.blocks.liquid.Conduit;
-import mindustry.world.blocks.liquid.LiquidJunction;
 import mindustry.world.blocks.payloads.Constructor;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
@@ -70,6 +72,7 @@ import mindustry.world.consumers.ConsumePower;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
+import static mindustry.Vars.world;
 import static mindustry.type.ItemStack.with;
 import mDimension.meta.*;
 
@@ -87,11 +90,11 @@ public class md_blocks {
     //liquid
     siphon_pump,  fluid_unloader,fluid_conduit_bridge,directional_fluid_router,fluid_junction,fluid_conduit,
     //drill
-    deep_water_extractor,beam_bore,small_impact_drill,ammonia_collector,
+    deep_water_extractor,beam_bore,small_impact_drill,ammonia_collector,crustal_drill,  drilling_casing_module,
     //ammo
     heavy_ammo,
     //turret
-    ionize, fracture,break_water, polarization,dawn,crack,crest,test4,test5,
+    ionize,crack,ejection, fracture,break_water, polarization,dawn,fluffrain,crest,test4,test5,
     //wall
     aluminium_wall,aluminium_wall_large,al_alloy_wall,al_alloy_wall_large,
     //core
@@ -798,6 +801,28 @@ public class md_blocks {
             consumePower(0.5f);
             liquidCapacity = 180;
         }};
+        crustal_drill = new CrustDrill("crustal-drill"){{
+            requirements(Category.production,with(Items.silicon,120,Items.copper,200,Items.graphite,150,md_items.al_alloy,150));
+            drawer = new DrawMulti(
+                    new DrawRegion("-rotate",120/60f,true),
+                    new DrawRegion(),
+                    new DrawRegion("-bit",120/60f,true),
+                    new DrawRegion("-top"),
+                    new DrawRegion("-cap",120/60f,true),
+                    new DrawGlowRegion(){{alpha = 0.6f;}}
+            );
+            consumePower(300/60f);
+        }};
+        drilling_casing_module = new CrustDrillBooster("drilling-casing-module"){{
+            requirements(Category.production,with());
+            consumeLiquid(Liquids.nitrogen,3/60f);
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.nitrogen,4f),
+                    new DrawRegion(),
+                    new DrawRegion("-top")
+            );
+        }};
         //endregion
         //region distribution
             light_duct = new Duct("light-duct") {{
@@ -1162,6 +1187,15 @@ public class md_blocks {
                 }};
 
             }};
+//            ejection = new ItemTurret("ejection"){{
+//                requirements(Category.turret, ItemStack.with(md_items.polymer,80,Items.silicon,50,Items.graphite,30));
+//                researchCostMultiplier = 0.5f;
+//                consumeLiquid(Liquids.hydrogen,6/60f);
+//                ammo(
+//                        Items.copper,Items.silicon,md_items.polymer
+//                );
+//
+//            }};
             fracture = new ItemTurret("fracture") {{
                 requirements(Category.turret, ItemStack.with(md_items.aluminium, 120, Items.silicon, 80, Items.titanium, 80));
                 ammo(
@@ -1390,7 +1424,7 @@ public class md_blocks {
                 ammo(
                         md_items.polymorphic_crystal,new BallLightningBulletType(110f/60f,120,"large-orb"){{
                             drag = 0.005f;
-                            lifetime = 60f*7;
+                            lifetime = 60f*6;
                             despawnHit = true;
                             splashDamage = 200f;
                             splashDamageRadius = 72f;
@@ -1419,9 +1453,9 @@ public class md_blocks {
                             };
 
                             shockEffect = new MultiEffect(md_Fx.chainLightningPro,md_Fx.waveHitColor(12,9f,13f,1.5f,0.85f));
-                            shockDamage = 120f;
+                            shockDamage = 80f;
                             shockRange = 160;
-                            shockAmount = 6;
+                            shockAmount = 5;
                             shockLimit = 3;
 
                             shockCooldown = 4.8f;
@@ -1507,6 +1541,107 @@ public class md_blocks {
                 }};
 
                 outlineColor = Pal.darkOutline;
+            }};
+            fluffrain = new LiquidTurret("fluffrain"){{
+                requirements(Category.turret,with(md_items.polymer,150,Items.silicon,200,md_items.al_alloy,200,md_items.polymer,200));
+                ammo(
+                        md_liquids.dimension_fluid,new BasicBulletType(15.2f*8/60f,50){{
+                            lifetime = 55f;
+                            width = 7f;
+                            height = 20;
+                            trailWidth = 1.2f;
+                            trailLength = 18;
+                            trailColor = backColor = hitColor = Color.valueOf("FFE894");
+                            drag = -0.03f;
+                            shootSound = Sounds.shootMissilePlasma;
+                            soundPitchMax = 0.9f;
+                            soundPitchMin = 0.6f;
+                            shootSoundVolume = 0.68f;
+                            ammoMultiplier = 1/7.2f;
+
+                            despawnEffect=hitEffect = md_Fx.fluffrainHit;
+                            trailEffect = Fx.colorSpark;
+                            trailInterval = 15;
+                            trailRotation = true;
+
+                            splashDamage = 40f;
+                            splashDamageRadius =8;
+                            pierce = true;
+                            pierceCap = 2;
+                            despawnHit = false;
+                            fragOnDespawn = false;
+                            setDefaults = false;
+
+                            fragBullets = 1;
+                            fragOffsetMax = fragOffsetMin = 0;
+                            fragBullet = new RefractedLaserBulletType(){{
+                                damage = 250;
+                                pierceCap = 6;
+                                status = md_StatusEffects.dimension_slip;
+                                statusDuration = 60f;
+                            }
+                                @Override
+                                public void hit(Bullet b, float hitx, float hity, boolean createFrags) {
+                                    super.hit(b, hitx, hity, createFrags);
+                                    Puddles.deposit(world.tileWorld(hitx, hity), md_liquids.dimension_fluid, 15f);
+                                }
+                            };
+                        }
+                            @Override
+                            public void createFrags(Bullet b, float x, float y) {
+                                if(Mathf.random()>0.9f){
+                                    Sounds.explosionCleroi.at(x,y,0.85f + Mathf.random(0.3f),0.4f);
+                                    super.createFrags(b, x, y);
+                                }
+                            }
+                            @Override
+                            public void updateTrailEffects(Bullet b){
+                                boolean canSpawn = trailMinVelocity <= 0f || b.vel.len2() >= trailMinVelocity * trailMinVelocity;
+                                if(b.time>15 && trailInterval > 0f && canSpawn){
+                                    if(b.timer(0, trailInterval / (b.fin()*2.2f+0.8f) + b.id%4*2)){
+                                        trailEffect.at(b.x, b.y,b.rotation()+180, trailColor);
+                                    }
+                                }
+                            }
+                        }
+                );
+                liquidCapacity = 120f;
+                shootEffect = md_Fx.fluffrainShoot;
+                loopSound = Sounds.none;
+                size = 4;
+                shoot = new ShootBarrelRandom(){{
+                    float s = 2f;
+                    barrels = new float[]{
+                            -5*s,2,0,
+                            -3*s,2,0,
+                            -s,-4,0,
+                            0,-4,0,
+                            s,-4,0,
+                            3*s,2,0,
+                            5*s,2,0,
+                    };
+                    shots = 5;
+                    shotDelay = 4f;
+                }};
+                shootY = 13f;
+                reload = 18f;
+                minWarmup = 0.7f;
+                range = 35*8f;
+                drawer = new DrawTurret("brown-"){{
+                    parts.addAll(
+                            new RegionPart("-barrel"){{
+                                under = true;
+                                mirror = true;
+                                moves.add(new PartMove(PartProgress.warmup,7/4f,-12/4f,0));
+                            }},
+                            new RegionPart("-blade"){{
+                                under = true;
+                                mirror = true;
+                                moves.add(new PartMove(PartProgress.warmup,2/4f,-3/4f,0));
+                            }}
+
+                    );
+                }};
             }};
             polarization = new ItemTurret("polarization"){{
                 requirements(Category.turret,with(md_items.plasma,80,md_items.al_alloy,200,md_items.polymer,150,Items.silicon,200));
@@ -2253,6 +2388,10 @@ public class md_blocks {
             size = 1;
             enableDrawStatus = false;
             drawDisabled = true;
+        }};
+
+        Block test11 = new CrustDrillGuide("test11"){{
+            requirements(Category.production,BuildVisibility.sandboxOnly,with());
         }};
 //        Block test2 = new FluxBlock("batter"){{
 //            requirements(Category.power,with());

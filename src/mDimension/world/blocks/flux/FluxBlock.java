@@ -1,9 +1,8 @@
-package mDimension.world.flux;
+package mDimension.world.blocks.flux;
 
 import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.FluxModule;
 import mindustry.Vars;
 import mindustry.content.Items;
@@ -11,7 +10,6 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.power.PowerBlock;
 import mindustry.world.meta.BlockGroup;
 
 public class FluxBlock extends Block{

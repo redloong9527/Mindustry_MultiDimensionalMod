@@ -1,26 +1,31 @@
-package mDimension.world.data;
+package mDimension.world;
 
+import arc.Core;
 import arc.Events;
+import arc.input.KeyCode;
+import arc.math.geom.Rect;
 import arc.struct.Seq;
 import arc.util.Interval;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.consumers.modules.ExtraModule;
-import mDimension.world.flux.Flux;
-import mDimension.world.flux.FluxGraph;
-import mDimension.world.flux.Fluxs;
+import mDimension.ui.BuildingInspector;
+import mDimension.world.blocks.flux.Flux;
+import mDimension.world.blocks.flux.FluxGraph;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
+import mindustry.entities.Units;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.gen.Groups;
 
 public class MDEvents {
     public static Interval timer;
     public static Seq<Building> out = new Seq<>();
     public static Seq<Building> overload = new Seq<>();
     public static Seq<FluxGraph> graphs = new Seq<>();
-    public static  void load(){
+    public static BuildingInspector inspector = new BuildingInspector();
+    public static  void init(){
         timer = new Interval(3);
         Events.run(EventType.Trigger.update,()->{
             if(timer.get(0,5*60)){
@@ -32,47 +37,47 @@ public class MDEvents {
             updateGraphs();
 
         });
-//        Events.on(EventType.BlockDestroyEvent.class,e->{
-//
-//            Building b = e.tile.build;
-//            if(b!=null){
-//                var flux = Fluxs.flux(b);
-//                if(flux!=null){
-//                    if(flux.overload){
-//                        ItemTurret t = (ItemTurret)(Blocks.scathe);
-//                        t.ammoTypes.get(Items.carbide).spawnUnit.weapons.get(0).bullet.create(b,b.x,b.y,0);
-//                    }
-//                }
-//            }
-//        });
 
-//        Events.on(EventType.BlockBuildBeginEvent.class,e->{
-//            updateGraphs();
-//        });
-//        Events.on(EventType.BlockBuildEndEvent.class,e->{
-//            updateGraphs();
-//        });
-//
-//        Events.on(EventType.PayloadDropEvent.class,e->{
-//            if(e.build!=null && ConsumeFlux.hasConsume(e.build)){
-//                updateGraphs();
-//            }
-//        });
-//
-//        Events.on(EventType.PickupEvent.class,e->{
-//            if(e.build!=null && ConsumeFlux.hasConsume(e.build)){
-//                updateGraphs();
-//            }
-//        });
-//
+        inspector.setPosition(40, 40); // 左下角
+
+
+        Events.run(EventType.Trigger.update, () -> {
+            if(Core.input.keyTap(KeyCode.backtick) && Vars.state.rules.infiniteResources){ // F4 打开检视器
+                // 获取鼠标下的建筑
+                hover = null;
+                dst = -1;
+                float x = Core.input.mouseWorldX(), y= Core.input.mouseWorldY();
+                range.setCenter(x,y);
+                Units.nearby(range,u->{
+                    if(u.dst2(x,y) < dst || dst < 0){
+                        hover = u;
+                    }
+                });
+                if(hover == null)hover = Vars.world.buildWorld(x,y);
+                if(hover == null){
+                    dst = -1;
+                    Groups.bullet.intersect(range.x,range.y,range.width,range.height,b->{
+                        if(b.dst2(x,y) < dst || dst < 0){
+                            hover = b;
+                        }
+                    });
+                }
+
+                if(hover != null){
+                    inspector.inspect(hover);
+                    if(!inspector.hasParent()){
+                        Core.scene.add(inspector);
+                    }
+                }
+            }
+        });
         Events.on(EventType.SaveLoadEvent.class,e->{
             updateGraphs(true);
         });
-
-
-
-
     }
+    static Object hover = null;
+    static float dst;
+    static Rect range = new Rect(0,0,3,3);
 
     public static void updateGraphs(){
         updateGraphs(false);

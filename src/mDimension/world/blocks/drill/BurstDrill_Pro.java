@@ -1,4 +1,4 @@
-package mDimension.world.blocks;
+package mDimension.world.blocks.drill;
 
 import mindustry.type.Item;
 import mindustry.world.Tile;

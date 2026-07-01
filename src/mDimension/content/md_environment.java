@@ -2,6 +2,7 @@ package mDimension.content;
 
 import arc.graphics.Color;
 import mDimension.world.blocks.FloorPro;
+import mDimension.world.blocks.environment.CrustFloor;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.content.StatusEffects;
@@ -22,6 +23,7 @@ public class md_environment {
             light_shale_floor,pure_light_shale_floor,yellow_ice,yellow_ice_wall,chlorite,chlorite_wall,yellow_ice_snow,depthTile1,depthTile2,depthTile3,depthTile4,depthTile5,
     //ore
     oreAluminium,WallOreTitanium,oreGraphite,WallOreCopper,
+    test100,
     //props
     darkCrystallineBoulders,
     //vent
@@ -245,6 +247,14 @@ public class md_environment {
             parent = blendGroup = magnetic_shale_stone;
             effectColor = Color.valueOf("FFE8A1").a(0.7f);
             attributes.set(md_Attribute.ammonia, 1f);
+        }};
+
+        test100 = new CrustFloor("test100"){{
+            strata = with(
+                    new Stratum(1,2,Items.sand,3),
+                    new Stratum(3,4,md_liquids.helium,0.05f),
+                    new Stratum(5,6,md_liquids.dimension_fluid,0.2f)
+            );
         }};
 
     }

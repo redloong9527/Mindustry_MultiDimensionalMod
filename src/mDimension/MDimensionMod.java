@@ -6,7 +6,7 @@ import mDimension.core.MDRenderer;
 import mDimension.core.MDShaders;
 import mDimension.meta.md_Stat;
 import mDimension.meta.md_StatUnit;
-import mDimension.world.data.MDEvents;
+import mDimension.world.MDEvents;
 import mindustry.game.EventType;
 import mindustry.graphics.Shaders;
 import mindustry.mod.Mod;
@@ -22,7 +22,7 @@ public class MDimensionMod extends Mod {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             Time.runTask(20f, () -> {
                 BaseDialog welcome = new BaseDialog("Welcome to play Multidimensional");
-                welcome.cont.add("A new journey Let's begin").row();
+                welcome.cont.add("A new journey Let's begin").colspan(2).row();
                 welcome.cont.image(Core.atlas.find("mdimension-evil")).pad(10f);
                 welcome.cont.image(Core.atlas.find("mdimension-neuro")).pad(20f);
                 Time.runTask(200f, welcome::addCloseButton);
@@ -37,6 +37,7 @@ public class MDimensionMod extends Mod {
     public void init() {
         MDShaders.init();
         MDRenderer.init();
+        MDEvents.init();
     }
 
     public void replaceRegion(String from,String to,boolean abbModName){
@@ -53,7 +54,6 @@ public class MDimensionMod extends Mod {
         super.loadContent();
         //载入
 
-        MDEvents.load();
         md_beams.load();
         md_StatUnit.load();
         md_Stat.load();

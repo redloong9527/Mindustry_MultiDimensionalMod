@@ -1,4 +1,4 @@
-package mDimension.world.flux;
+package mDimension.world.blocks.flux;
 
 import arc.graphics.Color;
 import arc.struct.Seq;
@@ -7,10 +7,8 @@ import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.FluxModule;
 import mDimension.content.md_Fx;
 import mindustry.Vars;
-import mindustry.content.Items;
 import mindustry.gen.Building;
 
-import mindustry.gen.Groups;
 import mindustry.world.Tile;
 
 

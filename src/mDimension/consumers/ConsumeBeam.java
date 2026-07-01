@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Strings;
 import mDimension.content.md_beams;
 import mDimension.meta.md_StatValues;
 import mDimension.world.data.BeamData;
@@ -23,7 +24,7 @@ public class ConsumeBeam extends Consume {
     public float minWavelength = -1;
 
     public float requiredPower = 10f;
-    //由于aunke使用的min，所以改这个diao用没有
+    //由于aunke使用min，所以改这个diao用没有
     public float maxEfficiency = 1f;
 
     public Beam inputBeam = md_beams.near_infrared_ligth;
@@ -64,7 +65,7 @@ public class ConsumeBeam extends Consume {
         //region Bar
         block.addBar(inputBeam == null?"beam-"+minWavelength+"-"+maxWavelength:"beam-"+inputBeam.name,e->
             new Bar(
-                    ()-> inputBeam.localizedName+" "+Core.bundle.format("bar.laserpower", getLaserPower(e),requiredPower),
+                    ()-> inputBeam.localizedName+" "+Core.bundle.format("bar.laserpower", Strings.fixed(getLaserPower(e),1), Strings.fixed(requiredPower,1)),
                     ()->inputBeam.color,
                     ()->getLaserPower(e)/requiredPower
             )
@@ -84,6 +85,7 @@ public class ConsumeBeam extends Consume {
 
     @Override
     public float efficiency(Building b) {
+        Items.copper.description = "amount:"+laserDataMap.size;
         if (b.dead) {
             laserDataMap.remove(b);
             return 0;
@@ -104,7 +106,7 @@ public class ConsumeBeam extends Consume {
 //        }
         module.power = module.cachePower;
         module.cachePower = 0;
-        Items.copper.description = "power:"+module.power + "\n\n";
+
 
         return Math.min(maxEfficiency, module.power/requiredPower);
     }
@@ -126,7 +128,6 @@ public class ConsumeBeam extends Consume {
             laserDataMap.put(b, module = new LaserModule());
         }
         module.cachePower += data.power;
-        Items.copper.description += "\n"+module.cachePower + ","+data.power;
     }
 
     public float getLaserPower(Building b){
@@ -155,12 +156,11 @@ public class ConsumeBeam extends Consume {
     public static void free(){
         for (int i=0;i<allConsume.size;i++) {
             ConsumeBeam c = allConsume.get(i);
-            for (ObjectMap.Entry<Building,LaserModule> e : c.laserDataMap) {
-                if (e.key.dead) {
-                    c.laserDataMap.remove(e.key);
+            for (var e : c.laserDataMap.keys()) {
+                if (e.dead) {
+                    c.laserDataMap.remove(e);
                 }
             }
-            c.laserDataMap.clear();
         }
     }
 

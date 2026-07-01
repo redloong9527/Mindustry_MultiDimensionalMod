@@ -1,4 +1,4 @@
-package mDimension.world.flux;
+package mDimension.world.blocks.flux;
 
 import arc.Core;
 import arc.graphics.Color;
@@ -7,21 +7,16 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.geom.Geometry;
-import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Tmp;
 import mDimension.consumers.ConsumeFlux;
-import mDimension.consumers.modules.FluxModule;
-import mDimension.tool.Debug;
 import mindustry.core.UI;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
-import mindustry.world.blocks.power.PowerGraph;
-import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.meta.Env;
 
 import java.util.Arrays;

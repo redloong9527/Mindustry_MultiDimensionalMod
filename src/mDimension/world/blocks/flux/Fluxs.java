@@ -1,4 +1,4 @@
-package mDimension.world.flux;
+package mDimension.world.blocks.flux;
 
 import arc.struct.Seq;
 import arc.util.Nullable;
