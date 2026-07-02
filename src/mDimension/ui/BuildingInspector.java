@@ -27,7 +27,7 @@ import java.util.Stack;
 public class BuildingInspector extends Table {
     private static final float panelWidth = 420f;
     private static final float panelHeight = 520f;
-    private static final int maxDepth = 5;
+    private static final int maxDepth = 8;
     public int Object = -1;
     public int changes = 0;
     public Stack<ObjectPage> pages=  new Stack<>();
@@ -814,28 +814,9 @@ public class BuildingInspector extends Table {
         final Seq<Field> fields = new Seq<>();
         Collapser collapser;
 
-        final boolean isArray;
-        final Object arrayInstance;
-        final int arrayLength;
 
         ClassNode(Class<?> clazz, Object instance){
             this.clazz = clazz;
-
-            if(clazz.isArray() || instance instanceof ArrayWrapper){
-                this.isArray = true;
-                if(instance instanceof ArrayWrapper array){
-                    this.arrayInstance = array.array;
-                    this.arrayLength = array.length;
-                }else{
-                    this.arrayInstance = instance;
-                    this.arrayLength = java.lang.reflect.Array.getLength(instance);
-                }
-                return;
-            }
-
-            this.isArray = false;
-            this.arrayInstance = null;
-            this.arrayLength = 0;
             for(Field f : clazz.getDeclaredFields()){
                 if(!Modifier.isStatic(f.getModifiers())){
                     fields.add(f);
@@ -852,18 +833,6 @@ public class BuildingInspector extends Table {
             this.target = target;
             this.paneY = paneY;
             this.opens = opens;
-        }
-    }
-
-    static class ArrayWrapper{
-        final Object array;
-        final int length;
-        final Class<?> componentType;
-
-        ArrayWrapper(Object array){
-            this.array = array;
-            this.length = java.lang.reflect.Array.getLength(array);
-            this.componentType = array.getClass().getComponentType();
         }
     }
 }
