@@ -1,11 +1,6 @@
 package mDimension.world.blocks;
 
 import arc.func.Cons;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mDimension.consumers.ConsumeFlux;
-import mDimension.consumers.modules.FluxModule;
-import mindustry.content.Items;
 import mindustry.gen.Building;
 import mindustry.world.blocks.production.GenericCrafter;
 

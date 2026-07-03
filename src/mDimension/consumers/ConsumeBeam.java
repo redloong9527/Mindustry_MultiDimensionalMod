@@ -1,7 +1,6 @@
 package mDimension.consumers;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Strings;

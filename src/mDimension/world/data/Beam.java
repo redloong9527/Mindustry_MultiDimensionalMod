@@ -1,20 +1,13 @@
 package mDimension.world.data;
 
-import arc.Core;
 import arc.func.Cons;
 import arc.func.Cons2;
-import arc.func.Cons3;
-import arc.func.Cons4;
-import arc.graphics.Blending;
 import arc.graphics.Color;
-import arc.graphics.Gl;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.struct.FloatSeq;
-import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mDimension.draw.MDLines;
@@ -23,7 +16,6 @@ import mDimension.meta.md_Stat;
 import mDimension.tool.Drawff;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.logic.LAccess;
 import mindustry.logic.Senseable;
@@ -80,7 +72,7 @@ public class Beam extends UnlockableContent implements Senseable {
     }
     public BeamDrawer beamDrawer= l->{
         basicDraw(l,(last,now)->{
-            float scl = scl(l);
+            float scl = scl(l)*1.15f;
             float z = Draw.z();
             Draw.color(color,0.2f);
             Lines.stroke(5*scl);
@@ -95,7 +87,7 @@ public class Beam extends UnlockableContent implements Senseable {
             Lines.line(last.x,last.y,now.x,now.y,false);
             Draw.z(z);
         },v->{
-            float scl = scl(l)*0.5f;
+            float scl = scl(l)*0.5f*1.15f;
 
             Draw.color(color,0.2f);
             Fill.circle(v.x,v.y,5*scl);
@@ -104,7 +96,7 @@ public class Beam extends UnlockableContent implements Senseable {
             Fill.circle(v.x,v.y,3*scl);
 
             Draw.color(Color.white);
-            Fill.circle(v.x,v.y,1f*scl);
+            Fill.circle(v.x,v.y,scl);
         },v->{
             float scl = scl(l)*0.5f;
             float z = Draw.z();
@@ -115,10 +107,10 @@ public class Beam extends UnlockableContent implements Senseable {
             Fill.circle(v.x,v.y,5f*scl);
             Draw.z(z+0.002f);
             Draw.color(Color.white);
-            Fill.circle(v.x,v.y,1.5f*scl);
+            Fill.circle(v.x,v.y,2f*scl);
             Draw.z(z);
         },(v,rot)->{
-            float scl = scl(l);
+            float scl = scl(l)*1.15f;
             float dst = 6f;
             Draw.color(color,0.2f);
             Lines.stroke(5*scl);

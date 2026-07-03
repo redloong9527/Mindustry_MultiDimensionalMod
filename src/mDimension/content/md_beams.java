@@ -1,7 +1,6 @@
 package mDimension.content;
 
 import arc.graphics.Color;
-import mDimension.tool.Drawff;
 import mDimension.world.data.Beam;
 
 public class md_beams {

@@ -11,15 +11,12 @@ import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Building;
-import mindustry.gen.Groups;
 import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
-import mindustry.world.blocks.power.Battery;
 import mindustry.world.consumers.ConsumePower;
 
-import static mindustry.Vars.indexer;
 //你最好把它放到第一个
 public class chargeAbility extends Ability {
     public float capacity = 20000;

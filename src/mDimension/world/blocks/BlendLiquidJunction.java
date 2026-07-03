@@ -1,6 +1,5 @@
 package mDimension.world.blocks;
 
-import annotations.Annotations.*;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;

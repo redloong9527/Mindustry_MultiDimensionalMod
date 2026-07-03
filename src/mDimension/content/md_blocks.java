@@ -12,7 +12,6 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Time;
-import arc.util.Tmp;
 import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.consumers.MultiRecipeConsume;
@@ -1187,15 +1186,134 @@ public class md_blocks {
                 }};
 
             }};
-//            ejection = new ItemTurret("ejection"){{
-//                requirements(Category.turret, ItemStack.with(md_items.polymer,80,Items.silicon,50,Items.graphite,30));
-//                researchCostMultiplier = 0.5f;
-//                consumeLiquid(Liquids.hydrogen,6/60f);
-//                ammo(
-//                        Items.copper,Items.silicon,md_items.polymer
-//                );
-//
-//            }};
+            ejection = new ItemTurret("ejection"){{
+                requirements(Category.turret, ItemStack.with(md_items.polymer,80,Items.silicon,50,Items.graphite,30));
+                researchCostMultiplier = 0.5f;
+                consumeLiquid(Liquids.hydrogen,6/60f);
+                liquidCapacity = 40;
+                //region ammo
+                ammo(
+                        Items.copper,new ArtilleryBulletType(2.9f, 30) {{
+                            hitEffect = new MultiEffect(Fx.flakExplosion, Fx.shockwaveSmaller);
+                            knockback = 1.2f;
+                            lifetime = 66f;
+                            width = 9f;
+                            height = 12f;
+                            collidesTiles = false;
+                            splashDamageRadius = 2.5f*8;
+                            splashDamage = 40;
+
+                            backColor = hitColor = trailColor = Pal.copperAmmoBack;
+                            frontColor = Pal.copperAmmoFront;
+                            despawnEffect = Fx.hitBulletColor;
+                            lifeScaleRandMax = 1.08f;
+                            lifeScaleRandMin = 0.95f;
+                            fragBullets = 4;
+                            fragBullet = new BasicBulletType(2.5f, 25, "bullet"){{
+                                width = 7;
+                                height = 10;
+                                shrinkY = 1f;
+                                lifetime = 10;
+                                backColor = Pal.copperAmmoBack;
+                                frontColor = Pal.copperAmmoFront;
+                                despawnEffect = Fx.none;
+                                collidesAir = false;
+                            }};
+                        }},
+                        Items.silicon,new ArtilleryBulletType(2.9f, 20) {{
+                            hitEffect = new MultiEffect(Fx.flakExplosion, Fx.shockwaveSmaller);
+                            knockback = 0.3f;
+                            lifetime = 66f;
+                            width = 9f;
+                            height = 12f;
+                            collidesTiles = false;
+                            splashDamageRadius = 2f*8;
+                            splashDamage = 50;
+
+                            backColor = hitColor = trailColor = Pal.siliconAmmoBack;
+                            frontColor = Pal.siliconAmmoFront;
+                            despawnEffect = Fx.hitBulletColor;
+                            lifeScaleRandMax = 1.08f;
+                            lifeScaleRandMin = 0.95f;
+                            fragBullets = 6;
+                            fragBullet = new BasicBulletType(2, 15, "bullet"){{
+                                width = 7;
+                                height = 10;
+                                shrinkY = 1f;
+                                lifetime = 13;
+                                homingPower = 0.42f;
+                                backColor = Pal.siliconAmmoBack;
+                                frontColor = Pal.siliconAmmoFront;
+                                despawnEffect = Fx.none;
+                                collidesAir = false;
+                            }};
+                        }},
+                        md_items.polymer,new ArtilleryBulletType(2.9f, 40) {{
+                            hitEffect = new MultiEffect(Fx.flakExplosion, Fx.shockwaveSmaller);
+                            knockback = 0.3f;
+                            lifetime = 66f;
+                            width = 11f;
+                            height = 13f;
+                            collidesTiles = false;
+                            splashDamageRadius = 3.2f*8;
+                            splashDamage = 60;
+                            status = md_StatusEffects.adhesion;
+                            statusDuration = 180;
+                            backColor = hitColor = trailColor = Color.valueOf("F7DE80");
+                            frontColor = Color.valueOf("FFF1D4");
+                            despawnEffect = Fx.hitBulletColor;
+                            lifeScaleRandMax = 1.08f;
+                            lifeScaleRandMin = 0.95f;
+                            fragBullets = 3;
+                            fragOffsetMax = fragOffsetMin = fragRandomSpread = 0;
+                            fragVelocityMax = fragVelocityMin = 1;
+                            fragAngle = 60f;
+                            fragSpread = 120f;
+                            fragBullet = new BasicBulletType(1.8f, 10, "bullet"){{
+                                width = 16;
+                                height = 12;
+                                shrinkY = 0.6f;
+                                lifetime = 8;
+                                hitColor = backColor = Color.valueOf("F7DE80");
+                                frontColor = Color.valueOf("FFF1D4");
+                                hitEffect = md_Fx.waveHitColor(12,10f,13,1f,0.8f);
+                                despawnEffect = Fx.none;
+                                collidesAir = false;
+                                splashDamageRadius = 1.5f*8;
+                                splashDamage = 20;
+                                fragBullets = 2;
+                                fragOffsetMax = fragOffsetMin = fragRandomSpread = 0;
+                                fragVelocityMax = fragVelocityMin = 1;
+                                fragAngle = 0;
+                                fragSpread = 180;
+                                fragBullet = new BasicBulletType(1.8f,15){{
+                                    collidesAir = false;
+                                    lifetime = 8;
+                                    width = 11;
+                                    height = 8;
+                                    shrinkY = 1f;
+                                    backColor = Color.valueOf("F7DE80");
+                                    frontColor = Color.valueOf("FFF1D4");
+                                    despawnEffect = Fx.none;
+                                }};
+                            }};
+                        }}
+                );
+                //endregion
+                shoot.shots = 3;
+                shoot.shotDelay = 0;
+                inaccuracy = 8;
+                shootSound = Sounds.shootDiffuse;
+                shootSoundVolume = 0.6f;
+                soundPitchMin = 0.6f;
+                soundPitchMax = 0.8f;
+                reload = 90f;
+                range = 30f*8;
+                size = 2;
+                targetAir = false;
+                drawer = new DrawTurret("brown-");
+
+            }};
             fracture = new ItemTurret("fracture") {{
                 requirements(Category.turret, ItemStack.with(md_items.aluminium, 120, Items.silicon, 80, Items.titanium, 80));
                 ammo(
@@ -1572,6 +1690,7 @@ public class md_blocks {
                             fragOnDespawn = false;
                             setDefaults = false;
 
+
                             fragBullets = 1;
                             fragOffsetMax = fragOffsetMin = 0;
                             fragBullet = new RefractedLaserBulletType(){{
@@ -1609,6 +1728,7 @@ public class md_blocks {
                 shootEffect = md_Fx.fluffrainShoot;
                 loopSound = Sounds.none;
                 size = 4;
+                warmupMaintainTime = 40f;
                 shoot = new ShootBarrelRandom(){{
                     float s = 2f;
                     barrels = new float[]{

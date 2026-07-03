@@ -6,13 +6,11 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.*;
 import arc.scene.event.*;
-import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 
 import arc.util.*;
-import mDimension.tool.Debug;
 import mindustry.Vars;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -120,9 +118,8 @@ public class BuildingInspector extends Table {
             close();
             return;
         }
-
     }
-
+//is null
     public void inspect(Object target){
         if(target == null) return;
         this.target = target;
@@ -364,7 +361,7 @@ public class BuildingInspector extends Table {
                 row.add(f.getName()).color(Color.white).padRight(6f);
                 row.add().growX();
 
-                String valStr = formatValue(finalValue);
+                String valStr = insertEvery(formatValue(finalValue),16,"\n");
                 Label valLabel = row.add(valStr).color(valueColor(finalValue)).padRight(4f).get();
                 valLabel.setFontScale(0.85f);
                 valLabel.setWrap(false);
@@ -424,7 +421,7 @@ public class BuildingInspector extends Table {
                 row.add().growX();
 
                 // 值
-                String valStr = formatValue(value);
+                String valStr = insertEvery(formatValue(value),16,"\n");
                 Label valLabel = row.add(valStr).color(valueColor(value)).padRight(4f).get();
                 valLabel.setFontScale(0.85f);
                 valLabel.setWrap(false);
@@ -454,6 +451,19 @@ public class BuildingInspector extends Table {
         }
     }
 
+    public String insertEvery(String text,int interval ,String insert){
+        if(text == null || interval<=0 || insert == null)return text;
+        if(text.length()<=interval)return text;
+
+        StringBuffer sb = new StringBuffer();
+        for(int i=0;i<text.length();i++){
+            sb.append(text.charAt(i));
+            if((i+1)%interval == 0 && i!= text.length()-1){
+                sb.append(insert);
+            }
+        }
+        return sb.toString();
+    }
     // FIX: 搜索过滤
     private void refreshFieldVisibility(){
         if(contentTable == null || searchQuery.isEmpty()){
@@ -504,7 +514,6 @@ public class BuildingInspector extends Table {
         Table edit = find("edit-area");
         if(edit == null) return;
         edit.clear();
-        if(editingArray == null) Debug.string("Is null",60,150*8,150*8);
 
         // FIX: 检查是否有选中内容（普通字段或数组元素）
         boolean hasSelection = (selectedField != null && selectedTarget != null)

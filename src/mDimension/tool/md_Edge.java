@@ -4,10 +4,8 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
-import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.world.Block;
-import mindustry.world.Build;
 import mindustry.world.Tile;
 
 import static mindustry.Vars.world;

@@ -3,13 +3,11 @@ package mDimension.entity.bullet;
 import arc.graphics.Color;
 import arc.struct.Seq;
 import mDimension.content.md_Fx;
-import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
-import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
 import mindustry.gen.Posc;
 //only use fragBullet

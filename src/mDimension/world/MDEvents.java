@@ -2,17 +2,16 @@ package mDimension.world;
 
 import arc.Core;
 import arc.Events;
-import arc.input.KeyCode;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import arc.util.Interval;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.consumers.modules.ExtraModule;
 import mDimension.ui.BuildingInspector;
+import mDimension.ui.MDKeyBind;
 import mDimension.world.blocks.flux.Flux;
 import mDimension.world.blocks.flux.FluxGraph;
 import mindustry.Vars;
-import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.entities.Units;
 import mindustry.game.EventType;
@@ -25,6 +24,11 @@ public class MDEvents {
     public static Seq<Building> overload = new Seq<>();
     public static Seq<FluxGraph> graphs = new Seq<>();
     public static BuildingInspector inspector = new BuildingInspector();
+    static Object hover = null;
+    static float dst;
+    static Rect range = new Rect(0,0,3,3);
+    static boolean down = false;
+
     public static  void init(){
         timer = new Interval(3);
         Events.run(EventType.Trigger.update,()->{
@@ -42,8 +46,7 @@ public class MDEvents {
 
 
         Events.run(EventType.Trigger.update, () -> {
-            if(Core.input.keyTap(KeyCode.backtick) && Vars.state.rules.infiniteResources){ // F4 打开检视器
-                // 获取鼠标下的建筑
+            if(Core.input.keyRelease(MDKeyBind.reflection_debugging) && Vars.state.rules.infiniteResources){ // F4 打开检视器
                 hover = null;
                 dst = -1;
                 float x = Core.input.mouseWorldX(), y= Core.input.mouseWorldY();
@@ -53,7 +56,12 @@ public class MDEvents {
                         hover = u;
                     }
                 });
-                if(hover == null)hover = Vars.world.buildWorld(x,y);
+                if(hover == null){
+                    hover = Vars.world.buildWorld(x,y);
+                    if(hover!=null){
+                        var build = (Building)hover;
+                    }
+                }
                 if(hover == null){
                     dst = -1;
                     Groups.bullet.intersect(range.x,range.y,range.width,range.height,b->{
@@ -62,7 +70,6 @@ public class MDEvents {
                         }
                     });
                 }
-
                 if(hover != null){
                     inspector.inspect(hover);
                     if(!inspector.hasParent()){
@@ -75,9 +82,7 @@ public class MDEvents {
             updateGraphs(true);
         });
     }
-    static Object hover = null;
-    static float dst;
-    static Rect range = new Rect(0,0,3,3);
+
 
     public static void updateGraphs(){
         updateGraphs(false);
@@ -115,4 +120,5 @@ public class MDEvents {
             }
         }
     }
+
 }

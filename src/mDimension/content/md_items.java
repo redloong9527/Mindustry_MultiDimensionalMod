@@ -1,7 +1,6 @@
 package mDimension.content;
 
 import arc.graphics.Color;
-import mindustry.content.Items;
 import mindustry.type.Item;
 
 public class md_items {

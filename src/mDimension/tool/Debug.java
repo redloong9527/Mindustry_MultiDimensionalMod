@@ -9,8 +9,6 @@ import mindustry.gen.Posc;
 import mindustry.graphics.Pal;
 import mindustry.ui.Fonts;
 
-import java.text.Format;
-
 public class Debug {
     public static void string(String s,float life,float x,float y){
         log(life).at(x,y,0, Color.white,s);

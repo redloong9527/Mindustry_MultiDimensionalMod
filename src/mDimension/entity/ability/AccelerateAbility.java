@@ -4,16 +4,12 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Align;
-import arc.util.Time;
 import arc.util.Tmp;
-import mDimension.tool.Debug;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import mindustry.ui.Fonts;
 
 public class AccelerateAbility extends Ability {
     public float level = 1f;

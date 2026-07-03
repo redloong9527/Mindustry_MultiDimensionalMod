@@ -1,9 +1,7 @@
 package mDimension.content;
 
-import arc.struct.Seq;
-import mindustry.type.Sector;
 import mindustry.type.SectorPreset;
-import static arc.struct.Seq.*;
+
 public class md_SectorPresets {
     public static SectorPreset starting_point,crystallization_oil_rift;
     public static void load(){

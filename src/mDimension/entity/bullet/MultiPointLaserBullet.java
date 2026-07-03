@@ -1,10 +1,6 @@
 package mDimension.entity.bullet;
 
 import arc.Core;
-import arc.func.Cons;
-import arc.func.Cons2;
-import arc.func.Cons3;
-import arc.func.Cons4;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -13,7 +9,6 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -24,7 +19,6 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Trail;
 
 import java.util.Arrays;
-import java.util.function.Predicate;
 
 import static mDimension.content.md_blocks.modname;
 import static mindustry.Vars.headless;

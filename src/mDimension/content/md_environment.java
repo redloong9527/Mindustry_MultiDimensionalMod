@@ -1,7 +1,6 @@
 package mDimension.content;
 
 import arc.graphics.Color;
-import mDimension.world.blocks.FloorPro;
 import mDimension.world.blocks.environment.CrustFloor;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
@@ -14,7 +13,6 @@ import mindustry.world.meta.Attribute;
 
 import mDimension.meta.*;
 
-import static mDimension.content.md_blocks.modname;
 public class md_environment {
     public static Block
             crystallization_oil_deep,crystallization_oil,magnetic_shale_wall,magnetic_shale_stone,brownSandFloor,brownSandWall,

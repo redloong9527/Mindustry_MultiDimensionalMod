@@ -1,8 +1,6 @@
 package mDimension.entity.ability;
 
-import annotations.Annotations;
 import arc.Core;
-import arc.func.Cons;
 import arc.func.Cons2;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -20,7 +18,6 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 

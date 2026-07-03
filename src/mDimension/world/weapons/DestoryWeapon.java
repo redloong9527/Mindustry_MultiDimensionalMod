@@ -15,7 +15,6 @@ import mindustry.gen.Unit;
 import mindustry.type.Weapon;
 
 import static mindustry.Vars.headless;
-import static mindustry.Vars.state;
 
 public class DestoryWeapon extends Weapon {
     public DestoryWeapon(){

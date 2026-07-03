@@ -1,7 +1,6 @@
 package mDimension.world.blocks.drill;
 
 import arc.func.Floatf;
-import arc.func.Func;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
@@ -13,7 +12,6 @@ import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.tool.Debug;
 import mDimension.world.blocks.environment.CrustFloor;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
@@ -30,8 +28,6 @@ import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-
-import java.util.Arrays;
 
 import static mindustry.Vars.world;
 

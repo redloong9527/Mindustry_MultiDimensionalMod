@@ -23,7 +23,7 @@ ext{
     jabelVersion = "93fde537c7"
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
-    sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+    sdkRoot = System.getenv("ANDROID_HOME")?:System.getenv("ANDROID_SDK_ROOT")
 }
 
 //java 8 backwards compatibility flag
@@ -95,7 +95,7 @@ jar{
 tasks.register('deploy', Jar){
     dependsOn jarAndroid
     dependsOn jar
-    archiveFileName.set("${project.name}.jar")
+    archiveFileName.set("${project.name}-${version}.jar")
 
     // 修复：分开写 from，引用带 version 的 Desktop jar
     from(zipTree("build/libs/${project.name}Desktop${version}.jar"))

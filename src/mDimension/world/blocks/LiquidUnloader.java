@@ -13,12 +13,9 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import mindustry.io.TypeIO;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -26,7 +23,6 @@ import mindustry.world.blocks.ItemSelection;
 import mindustry.world.meta.BlockGroup;
 
 import static mindustry.Vars.content;
-import static mindustry.Vars.world;
 
 public class LiquidUnloader extends Block {
     public TextureRegion centerRegion, topRegion,sideRegion;

@@ -1,6 +1,5 @@
 package mDimension.content;
 
-import annotations.Annotations.*;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -21,7 +20,6 @@ import mDimension.world.weapons.DestoryWeapon;
 import mDimension.world.weapons.OverdriveWeapon;
 import mindustry.ai.types.BuilderAI;
 import mindustry.content.Fx;
-import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.abilities.StatusFieldAbility;
@@ -35,7 +33,6 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.world.blocks.payloads.UnitPayload;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;

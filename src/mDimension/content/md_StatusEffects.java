@@ -2,20 +2,53 @@ package mDimension.content;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
+import mDimension.tool.Debug;
+import mDimension.tool.ReflectUtils;
 import mDimension.world.blocks.md_complexStatusEffect;
 import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
+import mindustry.entities.Effect;
+import mindustry.entities.units.StatusEntry;
+import mindustry.gen.Statusc;
+import mindustry.gen.Unit;
+import mindustry.gen.UnitEntity;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
 
+import static mindustry.content.StatusEffects.*;
+
 public class md_StatusEffects {
     public static StatusEffect
-            dimension_slip,cracking,move_out,embrittlement,explore,bless,coordination;
+            adhesion,dimension_slip,cracking,move_out,embrittlement,explore,bless,coordination;
     public static void load(){
+        adhesion = new md_complexStatusEffect("adhesion"){{
+            reloadMultiplier = 0.7f;
+            speedMultiplier = 0.6f;
+            color = Color.valueOf("F0E4A2");
+            stackingTime = 40f;
+            maxStacking = 1800f;
+            init(() -> {
+                affinity(burning, (unit, result, time) -> {
+                    unit.damagePierce(12 * Math.min(2,result.time/1200));
+                    Fx.burning.at(unit.x + Mathf.range(unit.bounds() / 2f), unit.y + Mathf.range(unit.bounds() / 2f));
+                    result.set(adhesion, Math.max(0,result.time - time*0.2f));
+                });
+            });
+
+            final Color form = Color.valueOf("F0DCA7"),to = Color.valueOf("F0CF83");
+            effect = new Effect(80f,e->{
+                md_Fx.rand.setSeed(e.id);
+                Draw.color(form,to,md_Fx.rand.nextFloat());
+                Fill.circle(e.x,e.y,3f*md_Fx.rand.random(1f,1.3f) * e.fout());
+            }).layer(Layer.floor+1f);
+        }};
         coordination = new StatusEffect("coordination"){{
             damageMultiplier = 1.2f;
             reloadMultiplier = 1.2f;
@@ -87,12 +120,12 @@ public class md_StatusEffects {
             armorAdditional = -5;
 
             healthMultiplier = 0.7f;
-            transitionDamage = 50;
+            transitionDamage = 20;
             init(()-> {
                 affinity(StatusEffects.blasted, (unit, result, time) -> {
                     unit.damagePierce(transitionDamage);
-                    md_Fx.polyWave(4,unit.bounds()*0.15f,0f,4f,25f,Color.white,0.7f).at(unit.x + Mathf.range(unit.bounds() / 3f), unit.y + Mathf.range(unit.bounds() / 3f));
-                    result.set(embrittlement, Math.max(result.time, 600f));
+                    md_Fx.brokenWave(10,Color.valueOf("c0c5c5").a(0.7f),12,4f,0.7f,4,1.5f,0.6f).at(unit.x + Mathf.range(unit.bounds() / 3f), unit.y + Mathf.range(unit.bounds() / 3f));
+                    result.set(embrittlement, Math.min(result.time + 20f, 600f));
                 });
             });
 

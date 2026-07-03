@@ -1,7 +1,6 @@
 package mDimension.entity.bullet;
 
 import arc.math.Mathf;
-import arc.struct.FloatSeq;
 import arc.struct.Seq;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;

@@ -8,7 +8,6 @@ import mDimension.meta.md_Stat;
 import mDimension.meta.md_StatUnit;
 import mDimension.world.MDEvents;
 import mindustry.game.EventType;
-import mindustry.graphics.Shaders;
 import mindustry.mod.Mod;
 import mindustry.ui.dialogs.BaseDialog;
 
@@ -49,10 +48,6 @@ public class MDimensionMod extends Mod {
 
     @Override
     public void loadContent() {
-
-        Shaders.init();
-        super.loadContent();
-        //载入
 
         md_beams.load();
         md_StatUnit.load();

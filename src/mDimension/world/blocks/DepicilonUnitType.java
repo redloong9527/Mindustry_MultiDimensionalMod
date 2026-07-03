@@ -1,6 +1,5 @@
 package mDimension.world.blocks;
 
-import mDimension.content.md_items;
 import mindustry.gen.TankUnit;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Pal;

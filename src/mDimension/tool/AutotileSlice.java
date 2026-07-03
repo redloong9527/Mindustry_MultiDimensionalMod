@@ -4,8 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.TextureRegion;
 import mindustry.world.Block;
 
-import java.awt.geom.Arc2D;
-
 public class AutotileSlice {
     public static final int[][] pos = new int[][]{
             {0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0},{9,0},{10,0},{11,0},

@@ -1,6 +1,5 @@
 package mDimension.draw;
 
-import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -8,7 +7,6 @@ import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.util.Tmp;
 import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
 import mindustry.world.draw.DrawBlock;
 
 public class DrawJetFlame extends DrawBlock {

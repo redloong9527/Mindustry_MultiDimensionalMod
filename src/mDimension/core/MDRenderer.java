@@ -7,7 +7,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.gl.*;
 import mindustry.Vars;
 import mindustry.game.EventType;
-import mindustry.graphics.Shaders;
 
 import static arc.Core.settings;
 

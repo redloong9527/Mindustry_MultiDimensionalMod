@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
@@ -12,23 +11,16 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.tool.md_Edge;
-import mDimension.world.blocks.environment.CrustFloor;
-import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.gen.Buildingc;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.consumers.Consume;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-
-import static mindustry.Vars.world;
 
 public class CrustDrillBooster extends Block {
     public int boostLayers = 2;

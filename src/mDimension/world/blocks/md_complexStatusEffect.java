@@ -1,10 +1,12 @@
 package mDimension.world.blocks;
 
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import mDimension.meta.md_Stat;
 import mDimension.meta.md_StatUnit;
+import mDimension.tool.ReflectUtils;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.units.StatusEntry;
@@ -12,15 +14,17 @@ import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 import mindustry.world.meta.StatUnit;
 
-public class md_complexStatusEffect extends StatusEffect {
+import java.lang.reflect.Field;
 
+public class md_complexStatusEffect extends StatusEffect {
     public float percentageDamage = 0;
     public float percentageShieldDamage = 0;
     public float armorAdditional = 0;
     public float armorMultiplier = 1;
+    public float stackingTime = 0;
+    public float maxStacking = 30*60f;
     public Acts act =e -> {};
     public Draws draw =e -> {};
-
 
 
     public md_complexStatusEffect(String name){
@@ -121,6 +125,24 @@ public class md_complexStatusEffect extends StatusEffect {
         }
 
     }
+
+    @Override
+    public void applied(Unit unit, float time, boolean extend) {
+        super.applied(unit, time, extend);
+        if(unit != null && stackingTime>0 && time <maxStacking){
+            Seq<?> entrys;
+            entrys = (Seq<?>) ReflectUtils.getValue(unit,"statuses");
+            if(entrys == null)return;
+            for(int i=0;i<entrys.size;i++){
+                StatusEntry entry = (StatusEntry) entrys.get(i);
+                if(entry.effect == this){
+                    entry.time = Math.min(entry.time+stackingTime,maxStacking);
+                    return;
+                }
+            }
+        }
+    }
+
     @Override
     public void onRemoved(Unit unit){
         unit.armor = unit.type.armor;

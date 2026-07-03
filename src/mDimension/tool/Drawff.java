@@ -9,9 +9,7 @@ import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
 import arc.util.Time;
-import arc.util.Tmp;
 import arc.util.noise.Simplex;
-import mindustry.entities.Effect;
 import mindustry.graphics.Drawf;
 
 public class Drawff {
