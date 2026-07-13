@@ -7,7 +7,7 @@ import arc.struct.Seq;
 import arc.util.Interval;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.consumers.modules.ExtraModule;
-import mDimension.ui.BuildingInspector;
+import mDimension.ui.ObjectInspector;
 import mDimension.ui.MDKeyBind;
 import mDimension.world.blocks.flux.Flux;
 import mDimension.world.blocks.flux.FluxGraph;
@@ -23,7 +23,7 @@ public class MDEvents {
     public static Seq<Building> out = new Seq<>();
     public static Seq<Building> overload = new Seq<>();
     public static Seq<FluxGraph> graphs = new Seq<>();
-    public static BuildingInspector inspector = new BuildingInspector();
+    public static ObjectInspector inspector = new ObjectInspector();
     static Object hover = null;
     static float dst;
     static Rect range = new Rect(0,0,3,3);

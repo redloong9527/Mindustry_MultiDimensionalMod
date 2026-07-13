@@ -12,6 +12,7 @@ import arc.struct.*;
 
 import arc.util.*;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.Item;
@@ -22,7 +23,9 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.Stack;
 
-public class BuildingInspector extends Table {
+import static mindustry.Vars.ui;
+
+public class ObjectInspector extends Table {
     private static final float panelWidth = 420f;
     private static final float panelHeight = 520f;
     private static final int maxDepth = 8;
@@ -47,7 +50,7 @@ public class BuildingInspector extends Table {
     private long lastUpdate;
     private static final long updateInterval = 500; // FIX: 增加到500ms，减少刷新频率
 
-    public BuildingInspector(){
+    public ObjectInspector(){
         super(Styles.black6);
         setupUI();
     }
@@ -218,8 +221,6 @@ public class BuildingInspector extends Table {
                 info.add(" @ " + Strings.fixed(u.x(),2) + "," + Strings.fixed(u.y(),2))
                         .color(Color.gray).pad(4f);
                 info.row();
-            }else {
-
             }
             info.add("Class: " + target.getClass().getSimpleName())
                     .color(Color.lightGray).fontScale(0.8f).pad(4f);
@@ -361,7 +362,7 @@ public class BuildingInspector extends Table {
                 row.add(f.getName()).color(Color.white).padRight(6f);
                 row.add().growX();
 
-                String valStr = insertEvery(formatValue(finalValue),16,"\n");
+                String valStr = !f.getName().equals("code") ?insertEvery(formatValue(finalValue),16,"\n"):formatValue(finalValue);
                 Label valLabel = row.add(valStr).color(valueColor(finalValue)).padRight(4f).get();
                 valLabel.setFontScale(0.85f);
                 valLabel.setWrap(false);
@@ -632,7 +633,10 @@ public class BuildingInspector extends Table {
                                 applyValue(""+id);
                             });
                         }
-
+                    } else if(finalType == Color.class){
+                        btns.button(Icon.pencil, Styles.cleari, () -> {
+                            ui.picker.show(Tmp.c1.set(color).a(0.5f), false, res -> applyValue( String.valueOf( res.rgba()) ) );
+                        }).size(40f);
                     }
 
                     btns.row();
@@ -733,6 +737,9 @@ public class BuildingInspector extends Table {
             }else if(type == Liquid.class){
                 int id = Integer.parseInt(text);
                 val = Vars.content.liquid(id);
+            }else if(type == Color.class){
+                int hex = Integer.parseInt(text);
+                val = new Color(hex);
             }else{
                 if(text.equals("null")) val = null;
                 else {

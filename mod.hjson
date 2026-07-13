@@ -14,7 +14,7 @@ main: "mDimension.MDimensionMod"
 description: "A to be produced mod"
 
 #the mod version
-version: 0.0.3
+version: 0.1.1
 
 #the minimum game build required to run this mod
 minGameVersion: 154

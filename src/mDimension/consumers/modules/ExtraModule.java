@@ -44,7 +44,7 @@ public class ExtraModule<Module extends BlockModule> {
         moduleMap.clear();
     }
     public void freeAllIf(Predicate<Building> condition) {
-        IntSeq ids = moduleMap.keys().toArray();
+        IntSeq ids = moduleMap.keys().toSeq();
         ids.each(id->{
             if(Groups.build.mappingEnabled()){
                 Building b = Groups.build.getByID(id);

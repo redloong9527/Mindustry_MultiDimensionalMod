@@ -22,7 +22,6 @@ public class md_Planets {
             ruleSetter = r -> {
                 r.waveTeam = Team.crux;
                 r.placeRangeCheck = false;
-                r.showSpawns = true;
                 r.coreDestroyClear = true;
                 r.env = defaultEnv;
                 r.borderDarkness = false;

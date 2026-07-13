@@ -1,6 +1,8 @@
 package mDimension.tool;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.util.Align;
 import mDimension.content.md_Fx;
@@ -10,6 +12,10 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Fonts;
 
 public class Debug {
+    public static Effect point = new Effect(20f,e->{
+        Draw.color(Pal.placing);
+        Fill.circle(e.x,e.y,e.fout()*3f);
+    });
     public static void string(String s,float life,float x,float y){
         log(life).at(x,y,0, Color.white,s);
     }
@@ -44,4 +50,14 @@ public class Debug {
             }
         }).layer(200);
     }
+
+    public static void point(float x,float y){
+        point.at(x,y);
+    };
+    public static void pointTile(int x,int y){
+        point.at(x*8,y*8);
+    };
+    public static void point(Posc pos){
+        point.at(pos.x(),pos.y());
+    };
 }

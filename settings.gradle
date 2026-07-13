@@ -1,0 +1,28 @@
+pluginManagement {
+    println("1")
+
+    repositories {
+        gradlePluginPortal()
+        println("2")
+
+        maven {
+            println("3")
+
+            url 'https://jitpack.io'
+        }
+    }
+
+    resolutionStrategy{
+        println("4")
+
+        eachPlugin{
+            println(requested.id.id)
+            if(requested.id.id == 'com.github.GglLfr.EntityAnno'){
+                useModule("com.github.GglLfr:EntityAnno:v158.0.0")
+                println("5")
+
+            }
+        }
+    }
+}
+

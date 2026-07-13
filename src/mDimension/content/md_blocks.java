@@ -31,6 +31,10 @@ import mDimension.world.blocks.drill.CrustDrillBooster;
 import mDimension.world.blocks.drill.CrustDrillGuide;
 import mDimension.world.blocks.flux.FluxCrafter;
 import mDimension.world.blocks.flux.FluxNode;
+import mDimension.world.blocks.unit.AnchorRadar;
+import mDimension.world.blocks.unit.PayloadPlatform;
+import mDimension.world.blocks.unit.PayloadPlatformConstructor;
+import mDimension.world.blocks.unit.RegionReconstructor;
 import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.Puddles;
@@ -60,6 +64,7 @@ import mindustry.world.blocks.distribution.Duct;
 import mindustry.world.blocks.distribution.OverflowGate;
 import mindustry.world.blocks.distribution.Sorter;
 import mindustry.world.blocks.liquid.Conduit;
+import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.blocks.payloads.Constructor;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
@@ -87,8 +92,7 @@ public class md_blocks {
             multiway_unloader, light_duct_bridge,shunt_router,
             light_sorter,light_invertedSorter,light_overflowGate,light_underflowGate,light_duct,armored_light_duct,stack_rail_conveyor,
     //liquid
-    siphon_pump,  fluid_unloader,fluid_conduit_bridge,directional_fluid_router,fluid_junction,fluid_conduit,
-    //drill
+    siphon_pump,  fluid_unloader,fluid_conduit_bridge,directional_fluid_router,fluid_junction,fluid_conduit,fluid_container,
     deep_water_extractor,beam_bore,small_impact_drill,ammonia_collector,crustal_drill,  drilling_casing_module,
     //ammo
     heavy_ammo,
@@ -101,11 +105,18 @@ public class md_blocks {
     //power
     internal_energy_pile,magnetic_node,graphite_combustion_chamber,composite_combustion,
     //payload
+
     small_payload_conveyor,
-            small_payload_router,
+            small_payload_router,payload_processing_platform,
     test3,ammo_constructor,
     //unit
-    infantry_factory,airborne_vessels_factory,
+     infantry_factory,airborne_vessels_factory,
+
+    shaping_assembler,
+    forging_assembler,
+    tempering_assembler,
+    polarization_assembler,
+
     anchor_radar,
     army_anchor_point_reconstructor,
             airforce_anchor_point_reconstructor
@@ -989,8 +1000,16 @@ public class md_blocks {
             requirements(Category.liquid, with(Items.copper, 1,md_items.aluminium,1));
             liquidCapacity = 60f;
             health = 100;
-
+            botColor = Color.valueOf("45413B");
             explosivenessScale = flammabilityScale = 12f/60f;
+        }};
+
+        fluid_container = new LiquidRouter("fluid-container"){{
+            requirements(Category.liquid, with(Items.titanium, 10, Items.metaglass, 15));
+            liquidCapacity = 700f;
+            size = 2;
+            solid = true;
+
         }};
         //endregion
         //region turret
@@ -1189,7 +1208,7 @@ public class md_blocks {
             ejection = new ItemTurret("ejection"){{
                 requirements(Category.turret, ItemStack.with(md_items.polymer,80,Items.silicon,50,Items.graphite,30));
                 researchCostMultiplier = 0.5f;
-                consumeLiquid(Liquids.hydrogen,6/60f);
+                consumeLiquid(Liquids.nitrogen,6/60f);
                 liquidCapacity = 40;
                 //region ammo
                 ammo(
@@ -2412,6 +2431,11 @@ public class md_blocks {
             moveForce = 200;
             health = 400;
         }};
+        payload_processing_platform = new PayloadPlatform("payload-processing-platform"){{
+            requirements(Category.units,with(Items.graphite,50, md_items.aluminium,80));
+            size = 4;
+            regionSuffix = "-plat";
+        }};
         //endregion
         //region ammo
         ammo_constructor = new Constructor("ammo-constructor"){{
@@ -2427,7 +2451,8 @@ public class md_blocks {
         infantry_factory = new UnitFactory("infantry-factory"){{
             requirements(Category.units, with(Items.silicon, 150, md_items.aluminium, 180, Items.graphite, 120));
             plans = Seq.with(
-                    new UnitPlan(md_UnitTypes.captive, 60f * 30, with(Items.silicon, 50, md_items.aluminium,55))
+                    new UnitPlan(md_UnitTypes.captive, 60f * 30, with(Items.silicon, 50, md_items.aluminium,55)),
+                    new UnitPlan(md_UnitTypes.mouse, 60f * 38, with(Items.silicon, 70, Items.copper,40,md_items.al_alloy,30))
             );
             size = 3;
             regionSuffix = "-ammo";
@@ -2490,6 +2515,20 @@ public class md_blocks {
             );
         }};
 
+        shaping_assembler = new PayloadPlatformConstructor("shaping-assembler"){{
+            requirements(Category.units, with(Items.silicon,120, md_items.al_alloy,80));
+            size = 2;
+            consumeItems(with(Items.silicon,2,md_items.al_alloy,1));
+            consumePower(1.5f);
+            addUpgrade(md_UnitTypes.captive,md_UnitTypes.zircon,30*60f);
+            addUpgrade(md_UnitTypes.shimmer,md_UnitTypes.firefly,35*60f);
+            addUpgrade(md_UnitTypes.mouse,md_UnitTypes.coyote,40*60f);
+        }};
+        //forging_assembler;
+        //tempering_assembler;
+        //polarization_assembler;
+        //phase_assembler;
+
         //endregion
 
         Block test = new FluxCrafter("testBlock"){{
@@ -2510,20 +2549,24 @@ public class md_blocks {
             drawDisabled = true;
         }};
 
-        Block test11 = new CrustDrillGuide("test11"){{
-            requirements(Category.production,BuildVisibility.sandboxOnly,with());
+        Block test11 = new PayloadPlatform("test11"){{
+            requirements(Category.units,BuildVisibility.sandboxOnly,with());
+            size = 5;
+            regionSuffix = "-dark";
         }};
-//        Block test2 = new FluxBlock("batter"){{
-//            requirements(Category.power,with());
-//            size = 2;
-//            consume(new ConsumeFlux(){{
-//                capacity = 100;
-//                retain = 100;
-//                dissipationSpeed = 0.1f/60f;
-//            }});
-//            enableDrawStatus = false;
-//            drawDisabled = true;
-//        }};
+
+        Block test12 = new PayloadPlatformConstructor("test12"){{
+            requirements(Category.units,BuildVisibility.sandboxOnly,with());
+            addUpgrade(md_UnitTypes.mouse,md_UnitTypes.coyote,35*60);
+            size = 2;
+        }};
+
+        Block test13 = new PayloadPlatformConstructor("test13"){{
+            requirements(Category.units,BuildVisibility.sandboxOnly,with());
+            addUpgrade(md_UnitTypes.coyote,md_UnitTypes.zircon,40*60);
+            size = 2;
+        }};
+
     }
     public static void loadAmmo(){
         heavy_ammo = new AmmoBlock("heavy-ammo"){{

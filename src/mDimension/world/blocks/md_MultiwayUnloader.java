@@ -25,7 +25,6 @@ public class md_MultiwayUnloader extends DirectionalUnloader{
 
     public md_MultiwayUnloader(String name){
         super(name);
-
         group = BlockGroup.transportation;
         outputFacing = false;
         update = true;
@@ -162,22 +161,6 @@ public class md_MultiwayUnloader extends DirectionalUnloader{
             }
             return s;
         }
-        @Override
-        public void draw(){
-            Draw.rect(region, x, y);
-
-            Draw.rect(topRegion, x, y, rotdeg());
-
-            if(unloadItem != null){
-                Draw.color(unloadItem.color);
-                Draw.rect(centerRegion, x, y);
-                Draw.color();
-            }else{
-                Draw.rect(arrowRegion, x, y, rotdeg());
-            }
-
-        }
-
         @Override
         public void drawSelect(){
             super.drawSelect();

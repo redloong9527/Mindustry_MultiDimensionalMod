@@ -12,6 +12,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mDimension.tool.md_Edge;
 import mindustry.ctype.Content;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
@@ -55,7 +56,7 @@ public class md_PayloadConveyor extends PayloadConveyor {
         public void onProximityUpdate(){
             super.onProximityUpdate();
 
-            Building accept = nearby(Geometry.d4(rotation).x * (size/2+1), Geometry.d4(rotation).y * (size/2+1));
+            Building accept = md_Edge.getFacingBuild(this);
             //next block must be aligned and of the same size
             if(accept != null && (
                     //same size
@@ -152,6 +153,7 @@ public class md_PayloadConveyor extends PayloadConveyor {
             if(item != null) item.destroyed();
             super.onDestroyed();
         }
+
 
         @Override
         public void draw(){

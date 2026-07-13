@@ -8,9 +8,10 @@ import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class md_Edge {
+
     public static Vec2[] getFacingNearby(Building b){
         if(b.block.size<=1)return new Vec2[]{new Vec2(b.x,b.y)};
         int size = b.block.size;
@@ -107,8 +108,11 @@ public class md_Edge {
 
         return new int[]{-1};
     }
-
     public static Tile[] getFacingTile(Building b){
+        return getFacingTile(b,-1,-1);
+    }
+
+    public static Tile[] getFacingTile(Building b,int start,int end){
         int size=b.block.size;
         int r = (b.rotation+1)%4;
         int dx = Geometry.d4x(r);
@@ -121,10 +125,12 @@ public class md_Edge {
             ox+=f4i[b.rotation].x;
             oy+=f4i[b.rotation].y;
         }
-        var res = new Tile[size];
-        for(int i=0;i<size;i++){
-            int wx = b.tile.x + ox + dx*i;
-            int wy = b.tile.y + oy + dy*i;
+        int len = start == -1||end == -1?size:end-start+1;
+        var res = new Tile[len];
+        int s = start!=-1?start:0;
+        for(int i=0;i<len;i++){
+            int wx = b.tile.x + ox + dx*(i + s);
+            int wy = b.tile.y + oy + dy*(i + s);
             res[i] = world.tile(wx,wy);
         }
 
@@ -133,6 +139,7 @@ public class md_Edge {
     public static Building getAllFacingBuild(Building b){
         Building res = null;
         for(var t:getFacingTile(b)){
+            if(t == null)return null;
             Building other = t.build;
             if(other ==null)return null;
             if(res == null){
@@ -142,6 +149,44 @@ public class md_Edge {
             }
         }
         return res;
+    }
+    //OOOOOO
+    //OOOOOO
+    //OOOOOO ->OO
+    //OOOOOO ->OO
+    //OOOOOO
+    //OOOOOO
+    public static Building getFacingBuild(Building b){
+        if (b.block.size %2 ==0) {
+            Building res = null;
+            int start = b.block.size/2-1;
+            int end = b.block.size/2;
+            //int var1=0;
+            for(var t:getFacingTile(b,start,end)){
+                if(t == null)return null;
+                //Debug.point(t.worldx(),t.worldy());
+                //Debug.string(var1 + "("+t.x+","+t.y+")",60f,150*8 + var1*10,160*8);
+                Building other = t.build;
+                //var1++;
+                if(other ==null)return null;
+                if(res == null){
+                    res = other;
+                }else if(res != other){
+                    return null;
+                }
+            }
+            return res;
+        }else{
+            int trns = b.block.size / 2 + 1;
+            Tile next = b.tile.nearby(Geometry.d4(b.rotation).x * trns, Geometry.d4(b.rotation).y * trns);
+            if (next != null && next.build != null) {
+                return next.build;
+            } else {
+                return null;
+            }
+        }
+
+
     }
 
     public static final Point2[] f4=new Point2[]{
