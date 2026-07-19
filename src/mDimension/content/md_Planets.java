@@ -23,11 +23,11 @@ public class md_Planets {
                 r.waveTeam = Team.crux;
                 r.placeRangeCheck = false;
                 r.coreDestroyClear = true;
+
                 r.env = defaultEnv;
                 r.borderDarkness = false;
             };
-            generator = new DepicilonPlanetGenerator(){{
-            }};
+            generator = new DepicilonPlanetGenerator();
             meshLoader = () -> new HexMesh(this, 6);
             cloudMeshLoader = () -> new MultiMesh(
                     new HexSkyMesh(this, 48, 2.2f, 0.10f, 5, new Color().set(Color.valueOf("a8a040")).mul(0.9f).a(0.9f), 4, 0.40f, 1.3f, 0.40f),
@@ -53,7 +53,8 @@ public class md_Planets {
             atmosphereRadOut = 0.3f;
 
             updateLighting = true;
-
+            //TODO 还没做完生成器
+            allowLaunchToNumbered = false;
             lightSrcFrom = 0.4f;
             lightSrcTo = 0.85f;
             lightDstFrom = 0.3f;

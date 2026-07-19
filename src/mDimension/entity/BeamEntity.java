@@ -6,6 +6,7 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.struct.FloatSeq;
 import arc.struct.Seq;
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.consumers.ConsumeBeam;
@@ -32,6 +33,7 @@ public class BeamEntity implements Entityc, Drawc {
     public boolean isBlocked = false;
     public int id = EntityGroup.nextId();
     public float warmup=0;
+    public float scl = 1;
 
     public int createId;
 
@@ -71,9 +73,12 @@ public class BeamEntity implements Entityc, Drawc {
     public void updateEntity(){
         warmup = Mathf.approachDelta(warmup,beamData.power > 0.01f ?1f:0f,1.5f/60f);
     }
-
+    public float scl(){
+        return  (Mathf.absin(Time.time + id*1145,3,0.15f)+0.93f)*warmup;
+    }
     @Override
     public void update() {
+        this.scl = scl();
 
         if (buildOn() == null) {
             remove();

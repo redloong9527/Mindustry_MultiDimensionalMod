@@ -28,8 +28,8 @@ public class md_TechTree {
     public static void load(){
         md_Planets.depicilon.techTree = nodeRoot("depicilon",md_blocks.coreSteady,()->{
             node(md_blocks.al_alloy_smelting,Seq.with(new Objectives.SectorComplete(md_SectorPresets.starting_point)),()->{
-               node(ammonia_chamber,Seq.with(new Objectives.OnSector(md_SectorPresets.crystallization_oil_rift)),()->{
-                   node(polymer_compressor);
+               node(ammonia_chamber,Seq.with(new Objectives.OnSector(marginal_outpost)),()->{
+                   node(polymer_compressor,Seq.with(new Objectives.OnSector(crystallization_oil_rift)));
                });
             });
             node(md_blocks.light_duct,()->{
@@ -48,7 +48,7 @@ public class md_TechTree {
 
                 });
             });
-            node(fluid_conduit,Seq.with(new Objectives.OnSector(md_SectorPresets.crystallization_oil_rift)),()->{
+            node(fluid_conduit,Seq.with(new Research(ammonia)),()->{
                 node(directional_fluid_router,()->{
                     node(fluid_junction);
                 });
@@ -66,12 +66,13 @@ public class md_TechTree {
                     });
                 });
                 node(beam_bore,()->{
-                    node(ammonia_collector);
+                    node(ammonia_collector,Seq.with(new OnSector(marginal_outpost)));
                 });
             });
             node(crack,()->{
                 node(fracture);
                 node(ionize);
+                node(ejection);
             });
             node(aluminium_wall,()->{
                 node(aluminium_wall_large,()->{
@@ -114,29 +115,38 @@ public class md_TechTree {
                     nodeProduce(nitrogen);
                 });
             });
-            node(infantry_factory,()->{
-                node(anchor_radar);
-                node(army_anchor_point_reconstructor);
+            node(infantry_factory,Seq.with(new SectorComplete(starting_point)),()->{
                 node(airborne_vessels_factory,()->{
-                    node(airforce_anchor_point_reconstructor);
+                    node(shimmer,ItemStack.with(polymer,50,silicon,100),()->{
+                        node(firefly,ItemStack.with(polymer,2000,silicon,2000,al_alloy,2000),()->{});
+                        node(lumen,ItemStack.with(copper,3000,silicon,3000),()->{});
+                    });
                 });
 
                 node(captive,ItemStack.with(),()->{
-                    node(zircon);
+                    node(zircon,ItemStack.with(silicon,2000,al_alloy,2000),()->{});
+                    node(mouse,ItemStack.with(silicon,2500,copper,2500,graphite,2500),()->{});
                 });
-                node(shimmer,ItemStack.with(polymer,50,silicon,100),()->{
-                    node(firefly);
+
+                node(payload_processing_platform,Seq.with(new SectorComplete(marginal_outpost)),()->{
+                    node(shaping_assembler);
                 });
             });
 
             node(starting_point,()->{
-                node(crystallization_oil_rift,Seq.with(
+                node(marginal_outpost,Seq.with(
                         new SectorComplete(starting_point),
-                        new Research(ammonia_collector)
-                ));
+                        new Research(infantry_factory),
+                        new Research(al_alloy)),()->{
+                    node(crystallization_oil_rift,Seq.with(
+                            new SectorComplete(marginal_outpost),
+                            new Research(ammonia_collector),
+                            new Research(shaping_assembler)
+                    ));
+
+                });
+
             });
-
-
 
 
 

@@ -1,6 +1,5 @@
 package mDimension.entity.bullet;
 
-import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
@@ -13,8 +12,6 @@ import mindustry.graphics.*;
 import mindustry.content.*;
 import mindustry.type.StatusEffect;
 
-import static arc.math.Angles.randLenVectors;
-
 public class BallLightningBulletType extends BasicBulletType {
     // 电弧范围
     public float shockRange = 60f;
@@ -22,13 +19,13 @@ public class BallLightningBulletType extends BasicBulletType {
     public float shockDamage = 20f;
     // 总电击次数
     public int shockAmount = 5;
-    // 电弧冷却时间（帧）
+    // 电弧冷却时间
     public float shockCooldown = 10f;
     // 电弧颜色
-    public Color shockColor = Pal.surge;
-    // 一个目标最多的被电击次数
     public int shockLimit = 3;
 
+    public int maxRemaining = 6;
+    public float minRemainingRange =0.15f,maxRemainingRange = 0.5f;
     public Effect shockEffect = Fx.chainLightning;
     public boolean overflow = true;
 
@@ -42,6 +39,7 @@ public class BallLightningBulletType extends BasicBulletType {
     public BallLightningBulletType(float speed, float damage, String sprite) {
         super(speed, damage, sprite);
     }
+
 
     public BallLightningBulletType(float speed, float damage) {
         super(speed, damage);
@@ -62,15 +60,19 @@ public class BallLightningBulletType extends BasicBulletType {
     @Override
     public void init(Bullet b) {
         super.init(b);
-        // 初始化子弹的冷却计时器
         if (b.data == null) {
             b.data = new BallLightningBulletData(); // 存储为 Float
         }
+        if(instantDisappear){
+            remaining(b,shock(b));
+        }
+
     }
 
     @Override
     public void update(Bullet b) {
         super.update(b);
+        if(instantDisappear)return;
 
         if (b.data == null) {
             b.data = new BallLightningBulletData();
@@ -154,7 +156,7 @@ public class BallLightningBulletType extends BasicBulletType {
                 // 检查敌人是否仍然有效
                 Vec2 endPoint = new Vec2(b.x,b.y);
                 // 绘制电弧
-                shockEffect.at(target.getX(),target.getY(), 0f, shockColor,endPoint);
+                shockEffect.at(target.getX(),target.getY(), 0f, hitColor,endPoint);
                 // 造成伤害
                 target.damage(shockDamage * b.damageMultiplier());
                 shocksMap.put(target,shocksMap.get(target)+1);
@@ -170,11 +172,11 @@ public class BallLightningBulletType extends BasicBulletType {
     }
     /// 仅视觉效果
     public void remaining(Bullet b,int count){
-        count = Math.min(count,6);
-        if(count <=0 || !b.isAdded())return;
+        count = Math.min(count,maxRemaining);
+        if(count <=0)return;
         Vec2 endPoint = new Vec2(b.x,b.y);
-        Angles.randLenVectors((long) (Time.time+b.id* 114L),count, shockRange *0.15f, shockRange *0.5f,(x, y)->{
-            shockEffect.at(b.getX()+x,b.getY()+y, 0f, shockColor,endPoint);
+        Angles.randLenVectors((long) (Time.time+b.id* 114L),count, shockRange *minRemainingRange, shockRange *maxRemainingRange,(x, y)->{
+            shockEffect.at(b.getX()+x,b.getY()+y, 0f, hitColor,endPoint);
         });
     }
 

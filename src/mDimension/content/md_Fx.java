@@ -289,14 +289,16 @@ public class md_Fx {
             Lines.line(lx,ly,cx,cy,false);
             if(nodeSpatter && rand.random(1f)<0.3f){
                 Fill.circle(cx, cy, stroke*0.8f* e.fout());
-                e.scaled(20f,ee->{
-                    Lines.stroke(stroke*0.5f*ee.foutpowdown());
+                e.scaled(18f,ee->{
+                    Draw.alpha(0.7f);
+                    Lines.stroke(stroke*0.3f*ee.foutpowdown());
                     randLenVectors((long) (ee.id+cx+cy),8,2.5f+(stroke*4f)*ee.fin(),(x, y)->{
                         Lines.lineAngle(cx+x,cy+y,Mathf.angle(x,y),ee.fslope()*stroke*1.3f);
                     });
-                    Lines.circle(cx,cy,ee.finpow() * stroke * 2.5f+2f);
+                    Lines.circle(cx,cy,ee.finpow() * stroke * 1.8f+1f);
                     Lines.stroke(stroke* e.fout());
                 });
+                Draw.alpha(1f);
             }else {
                 Fill.circle(cx, cy, stroke/2 * e.fout());
             }
@@ -850,19 +852,24 @@ public class md_Fx {
     }
 
     public static Effect hitBulletColor(float circleRad, int lines, float linesRad){
-        return new Effect(14, e -> {
+        Interp inter = circleRad>20f?Interp.pow3Out:Interp.linear;
+        float da = circleRad>20f?0.5f:0f;
+        float l = Math.max(0,(circleRad-10f)/4f);
+
+        return new Effect(14+l, e -> {
             color(Color.white, e.color, e.fin());
 
-            e.scaled(7f, s -> {
-                stroke(0.5f + s.fout());
-                Lines.circle(e.x, e.y, s.fin() * circleRad);
+            e.scaled(7f + l/2, s -> {
+                Draw.alpha(1-s.fin()*da);
+                stroke(0.1f +inter.apply(1-s.fin()));
+                Lines.circle(e.x, e.y, s.fin(inter) * circleRad);
             });
 
-            stroke(0.5f + e.fout());
+            stroke(0.3f + inter.apply(1-e.fin()));
 
-            randLenVectors(e.id, lines, e.fin() * linesRad, (x, y) -> {
+            randLenVectors(e.id, lines, e.fin(inter) * linesRad, (x, y) -> {
                 float ang = Mathf.angle(x, y);
-                lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
+                lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 * (linesRad/16f) + 0.2f);
             });
 
             Drawf.light(e.x, e.y, 20f, e.color, 0.6f * e.fout());

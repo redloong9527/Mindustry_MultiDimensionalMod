@@ -72,7 +72,7 @@ public class Beam extends UnlockableContent implements Senseable {
     }
     public BeamDrawer beamDrawer= l->{
         basicDraw(l,(last,now)->{
-            float scl = scl(l)*1.15f;
+            float scl = l.scl*1.15f;
             float z = Draw.z();
             Draw.color(color,0.2f);
             Lines.stroke(5*scl);
@@ -87,7 +87,7 @@ public class Beam extends UnlockableContent implements Senseable {
             Lines.line(last.x,last.y,now.x,now.y,false);
             Draw.z(z);
         },v->{
-            float scl = scl(l)*0.5f*1.15f;
+            float scl = l.scl*0.5f*1.15f;
 
             Draw.color(color,0.2f);
             Fill.circle(v.x,v.y,5*scl);
@@ -98,7 +98,7 @@ public class Beam extends UnlockableContent implements Senseable {
             Draw.color(Color.white);
             Fill.circle(v.x,v.y,scl);
         },v->{
-            float scl = scl(l)*0.5f;
+            float scl = l.scl*0.5f;
             float z = Draw.z();
             Draw.color(color,0.2f);
             Fill.circle(v.x,v.y,7f*scl);
@@ -110,7 +110,7 @@ public class Beam extends UnlockableContent implements Senseable {
             Fill.circle(v.x,v.y,2f*scl);
             Draw.z(z);
         },(v,rot)->{
-            float scl = scl(l)*1.15f;
+            float scl = l.scl*1.15f;
             float dst = 6f;
             Draw.color(color,0.2f);
             Lines.stroke(5*scl);
@@ -125,9 +125,7 @@ public class Beam extends UnlockableContent implements Senseable {
             MDLines.line2(v.x,v.y, v.x+rot.x*dst,v.y+rot.y*dst);
         });
     };
-    public float scl(BeamEntity l){
-        return  (Mathf.absin(Time.time + l.id*1145,3,0.15f)+0.93f)*l.warmup;
-    }
+
 
     public static void basicDraw(BeamEntity l,Cons2<Vec2,Vec2> cons,Cons<Vec2> node,Cons<Vec2> cap,Cons2<Vec2,Vec2> end){
         for(int i=1;i<l.points.size/2-1;i++){

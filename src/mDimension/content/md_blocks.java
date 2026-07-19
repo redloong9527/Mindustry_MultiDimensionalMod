@@ -28,7 +28,6 @@ import mDimension.world.blocks.*;
 import mDimension.world.blocks.drill.BurstDrill_Pro;
 import mDimension.world.blocks.drill.CrustDrill;
 import mDimension.world.blocks.drill.CrustDrillBooster;
-import mDimension.world.blocks.drill.CrustDrillGuide;
 import mDimension.world.blocks.flux.FluxCrafter;
 import mDimension.world.blocks.flux.FluxNode;
 import mDimension.world.blocks.unit.AnchorRadar;
@@ -169,10 +168,10 @@ public class md_blocks {
                     md_Fx.craftEffectLight(40, 2.5f, 4f, Color.valueOf("D1F8FF"), 6, 1f),
                     md_Fx.craftEffectLight(25, 1f, 3f, Color.valueOf("D1F8FF"), 6, 5f)
             );
-            outputItem = new ItemStack(md_items.al_alloy, 3);
+            outputItem = new ItemStack(md_items.al_alloy, 4);
             consumeItems(ItemStack.with(
-                    md_items.aluminium, 5,
-                    Items.silicon, 2
+                    md_items.aluminium, 6,
+                    Items.copper, 3
             ));
             consumePower(4f);
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("D1E4FF")) {{
@@ -205,7 +204,7 @@ public class md_blocks {
             consume(new ConsumeBeam(30, md_beams.near_infrared_ligth));
             craftTime = 80f;
             itemCapacity = 30;
-            consumeItems(ItemStack.with(md_items.aluminium, 4, Items.titanium, 12));
+            consumeItems(ItemStack.with(Items.silicon, 3, Items.titanium, 12));
             consumeLiquid(md_liquids.helium, 1.45f / 60f);
             outputItem = new ItemStack(md_items.ti_alloy, 4);
             hasItems = true;
@@ -970,7 +969,7 @@ public class md_blocks {
             fullOverride = this.name + "-private";
         }};
         fluid_conduit_bridge = new RadiusLiquidBridge("fluid-conduit-bridge"){{
-            requirements(Category.liquid, with(Items.silicon,10, md_items.polymer, 10));
+            requirements(Category.liquid, with(Items.silicon,10, Items.copper, 10));
             arrowSpacing = 6f;
             bridgeWidth = 8;
             arrowTimeScl = 15;
@@ -1002,6 +1001,8 @@ public class md_blocks {
             health = 100;
             botColor = Color.valueOf("45413B");
             explosivenessScale = flammabilityScale = 12f/60f;
+            junctionReplacement = fluid_junction;
+            bridgeReplacement = fluid_conduit_bridge;
         }};
 
         fluid_container = new LiquidRouter("fluid-container"){{
@@ -1108,18 +1109,18 @@ public class md_blocks {
                         height = 10;
                         }},
                         md_items.light_ceramic,
-                        new CatapultBulletType(25*8/60f*1.5f,40){{
+                        new CatapultBulletType(25*8/60f*1.5f,60){{
                             homingPower = 0.01f;
                             homingRange = 100f;
-                            rangeChange = 5*8f;
-                            trailLength = 12;
+                            rangeChange = 8*8f;
+                            trailLength = 10;
                             trailWidth = 2f;
                             lifetime = 40;
                             pierce = true;
                             pierceBuilding = true;
-                            pierceCap = 5;
-                            catapultRange = 80f;
-                            catapultProlongLifeTime = 2.5f;
+                            pierceCap = 6;
+                            catapultRange = 100f;
+                            catapultProlongLifeTime = 3f;
                             catapultSpeedUp = 0.8f;
 
                             width = 8;
@@ -1129,13 +1130,13 @@ public class md_blocks {
 
                             lightning = 2;
                             lightningColor = md_items.light_ceramic.color;
-                            lightningDamage = 15f;
+                            lightningDamage = 20;
                             lightningLength = 2;
                             lightningLengthRand = 2;
                         }},
                         md_items.al_alloy,
                         new CatapultBulletType(27*8/60f*1.5f,25){{
-                            rangeChange = 7*8f;
+                            rangeChange = 5*8f;
                             trailLength = 12;
                             trailWidth = 2f;
                             lifetime = 40;
@@ -1157,7 +1158,7 @@ public class md_blocks {
                             fragSpread = 180f;
                             fragRandomSpread = 0;
                             fragBullet = new ShrapnelBulletType(){{
-                                damage = 25;
+                                damage = 20;
                                 length = 2*8f;
                                 width = 6f;
                                 serrationWidth = 4f;
@@ -1206,7 +1207,7 @@ public class md_blocks {
 
             }};
             ejection = new ItemTurret("ejection"){{
-                requirements(Category.turret, ItemStack.with(md_items.polymer,80,Items.silicon,50,Items.graphite,30));
+                requirements(Category.turret, ItemStack.with(md_items.al_alloy,50,Items.silicon,50,Items.graphite,50));
                 researchCostMultiplier = 0.5f;
                 consumeLiquid(Liquids.nitrogen,6/60f);
                 liquidCapacity = 40;
@@ -1486,7 +1487,7 @@ public class md_blocks {
                             shockCooldown = 10f;
                             shockLimit = 1;
                             frontColor = Color.valueOf("f8f8ff");
-                            shockColor = backColor = trailColor = hitColor = Color.valueOf("d8e0ff");
+                            backColor = trailColor = hitColor = Color.valueOf("d8e0ff");
                             hitEffect = new MultiEffect(
                                     md_Fx.polyWave(4,25,45,5f,35f,hitColor,0.95f),
                                     md_Fx.spatter
@@ -1572,7 +1573,7 @@ public class md_blocks {
                             hitSoundVolume = 0.45f;
                             hitEffect = new MultiEffect(md_Fx.gradientWave(40f,50f),md_Fx.starExplosionBig);
 
-                            trailColor = shockColor = hitColor = backColor = md_items.polymorphic_crystal.color;
+                            trailColor = hitColor = backColor = md_items.polymorphic_crystal.color;
 
                             trailLength = 8;
                             trailWidth = 3f;
@@ -1680,7 +1681,8 @@ public class md_blocks {
                 outlineColor = Pal.darkOutline;
             }};
             fluffrain = new LiquidTurret("fluffrain"){{
-                requirements(Category.turret,with(md_items.polymer,150,Items.silicon,200,md_items.al_alloy,200,md_items.polymer,200));
+                requirements(Category.turret,with(md_items.polymer,150,Items.silicon,200,md_items.al_alloy,200,md_items.ti_alloy,180));
+                scaledHealth = 250;
                 ammo(
                         md_liquids.dimension_fluid,new BasicBulletType(15.2f*8/60f,50){{
                             lifetime = 55f;
@@ -1849,7 +1851,7 @@ public class md_blocks {
                                             lightning = 5;
                                             shockRange = 80f;
                                             shockDamage = damage;
-                                            shockColor = backColor = trailColor = hitColor = Color.valueOf("c0d8ff");
+                                            backColor = trailColor = hitColor = Color.valueOf("c0d8ff");
 
                                             collidesAir = false;
                                             collidesGround = false;
@@ -1990,7 +1992,7 @@ public class md_blocks {
                 consume(new ConsumeBeam(80,md_beams.near_infrared_ligth));
 
             }};
-            crest = new PayloadTurret("crest"){{
+            crest = new MDPayloadTurret("crest"){{
                 scaledHealth = 440;
                 squareSprite = false;
                 outlineColor = Pal.darkOutline;
@@ -2331,6 +2333,7 @@ public class md_blocks {
             
             stack = new DumpStorageBlock("stack"){{
                 requirements(Category.effect, with(md_items.aluminium,20,md_items.polymer,15,Items.silicon,20));
+                squareSprite = false;
                 buildCostMultiplier = 2;
                 size = 1;
                 health = 100;
@@ -2463,7 +2466,8 @@ public class md_blocks {
         airborne_vessels_factory = new UnitFactory("airborne-vessels-factory"){{
             requirements(Category.units, with(Items.silicon, 170, md_items.polymer, 150, Items.copper, 120));
             plans = Seq.with(
-                    new UnitPlan(md_UnitTypes.shimmer, 60f * 28, with(Items.silicon, 45, md_items.polymer,80))
+                    new UnitPlan(md_UnitTypes.shimmer, 60f * 28, with(Items.silicon, 45, md_items.polymer,70)),
+                    new UnitPlan(md_UnitTypes.lumen, 60f * 25, with(Items.silicon, 60,Items.copper,70))
             );
             size = 3;
             regionSuffix = "-ammo";
@@ -2471,7 +2475,7 @@ public class md_blocks {
             researchCostMultiplier = 0.2f;
         }};
         anchor_radar = new AnchorRadar("anchor-radar"){{
-            requirements(Category.units,with(Items.silicon,15,Items.graphite,10,md_items.al_alloy,5,Items.copper,10));
+            requirements(Category.units,BuildVisibility.sandboxOnly,with(Items.silicon,15,Items.graphite,10,md_items.al_alloy,5,Items.copper,10));
             radius = 8f*25;
             callUnitInterval = 150f;
             callEffect = new Effect(120f, e->{
@@ -2488,7 +2492,7 @@ public class md_blocks {
             }){{followParent=false;}};
         }};
         army_anchor_point_reconstructor = new RegionReconstructor("army-anchor-point-reconstructor"){{
-            requirements(Category.units, with(Items.silicon, 150, md_items.al_alloy, 120, Items.graphite, 150));
+            requirements(Category.units,BuildVisibility.sandboxOnly, with(Items.silicon, 150, md_items.al_alloy, 120, Items.graphite, 150));
             size = 3;
             craftTime = 60f*20;
             researchCostMultiplier = 0.2f;
@@ -2502,7 +2506,7 @@ public class md_blocks {
         }};
 
         airforce_anchor_point_reconstructor = new RegionReconstructor("airforce-anchor-point-reconstructor"){{
-            requirements(Category.units, with(Items.silicon, 150, md_items.al_alloy, 120, md_items.polymer, 100));
+            requirements(Category.units,BuildVisibility.sandboxOnly, with(Items.silicon, 150, md_items.al_alloy, 120, md_items.polymer, 100));
             size = 3;
             craftTime = 60f*30;
             researchCostMultiplier = 0.2f;

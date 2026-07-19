@@ -13,13 +13,19 @@ import arc.util.Tmp;
 import mDimension.entity.ability.AccelerateAbility;
 import mDimension.entity.ability.PatienceAbility;
 import mDimension.entity.bullet.BallLightningBulletType;
+import mDimension.entity.bullet.CatapultBulletType;
 import mDimension.tool.Drawff;
 import mDimension.world.blocks.DepicilonUnitType;
 import mDimension.world.weapons.BoostWeapon;
+import mDimension.world.weapons.CanBuildingBuildWeapon;
 import mDimension.world.weapons.DestoryWeapon;
 import mDimension.world.weapons.OverdriveWeapon;
+import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
+import mindustry.ai.types.FlyingFollowAI;
+import mindustry.ai.types.RepairAI;
 import mindustry.content.Fx;
+import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.abilities.StatusFieldAbility;
@@ -27,10 +33,12 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootBarrel;
+import mindustry.entities.pattern.ShootHelix;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import rhino.annotations.*;
@@ -40,13 +48,16 @@ import static arc.graphics.g2d.Lines.stroke;
 import static mindustry.Vars.tilesize;
 
 import static mDimension.content.md_blocks.modname;
+import mDimension.world.weapons.*;
 public class md_UnitTypes {
 
     public static UnitType captive , zircon;
     public static UnitType mouse,coyote;
     public static UnitType shimmer , firefly ,burst;
+    public static UnitType lumen,floating;
     //coreUnit
     public static UnitType primitive;
+
 
     public static void load(){
         captive = new DepicilonUnitType("captive"){{
@@ -87,7 +98,7 @@ public class md_UnitTypes {
                 top = false;
                 ejectEffect = Fx.casing1;
                 shoot = new ShootBarrel(){{
-                    shots = 3;
+                    shots = 2;
                     shotDelay = 4f;
                 }};
                 bullet = new BasicBulletType(2.5f, 9){{
@@ -106,6 +117,34 @@ public class md_UnitTypes {
 
                 }};
             }});
+            weapons.add(new Weapon(modname+"captive-weapon1"){{
+                reload = 70;
+                x = 13/4f;
+                y = -0.5f;
+                recoil = 0.7f;
+                top = false;
+                rotate = true;
+                rotateSpeed = 120/60f;
+                ejectEffect = Fx.none;
+                shootSound = Sounds.shootScepterSecondary;
+                shootSoundVolume = 1.2f;
+                soundPitchMin = 0.6f;
+                soundPitchMax = 0.8f;
+                bullet = new ShrapnelBulletType(){{
+                    pierceBuilding = false;
+                    pierce = true;
+                    pierceCap = 3;
+                    serrationSpaceOffset = 50f;
+                    damage = 30f;
+                    recoil = 0;
+                    length = 15*8f;
+                    hitColor=trailColor = toColor = Color.valueOf("B2E9FF");
+                    width = 4.3f;
+                    hitEffect = md_Fx.hitBulletColor(6f,5,18);
+
+                }};
+            }});
+
         }};
         zircon = new DepicilonUnitType("zircon"){{
             constructor = MechUnit::create;
@@ -125,7 +164,7 @@ public class md_UnitTypes {
             mechLegColor = Color.valueOf("4C4E5E");
             legLength = 2f;
             speed = 0.6f;
-            hitSize = 10f;
+            hitSize = 12;
             armor = 4f;
             health = 1500;
             stepSoundVolume = 0.5f;
@@ -664,8 +703,7 @@ public class md_UnitTypes {
                             ignoreRotation = true;
 
                             backColor =hitColor= Color.valueOf("FFF1B0");
-                            shockColor =Color.valueOf("FFE56E");
-                                    frontColor = Color.white;
+                            frontColor = Color.white;
                             mixColorTo = Color.white;
 
                             hitSound = Sounds.explosionQuad;
@@ -835,6 +873,159 @@ public class md_UnitTypes {
                 Draw.z(z);
             }
         };
+        lumen = new DepicilonUnitType("lumen"){{
+            defaultCommand = UnitCommand.repairCommand;
+            aiController = FlyingFollowAI::new;
+            canHeal = true;
+            hovering = true;
+            canDrown = false;
+            flying = true;
+            lowAltitude = true;
+            shadowElevation = 0.1f;
+            softShadowScl = 0.7f;
+
+            drag = 0.08f;
+            speed = 1.7f;
+            rotateSpeed = 10f;
+
+            accel = 0.13f;
+
+            health = 200f;
+            armor = 2f;
+            hitSize = 8.5f;
+
+            engineSize = 1.8f;
+            engineOffset = 5.2f;
+            itemCapacity = 20;
+            weapons.add(
+                    new md_RepairBeamWeapon(){{
+                        widthSinMag = 0.11f;
+                        reload = 20f;
+                        x = y = 0;
+                        rotate = false;
+                        shootY = 5f;
+                        beamWidth = 0.7f;
+                        aimDst = 0f;
+                        shootCone = 360;
+                        mirror = false;
+
+                        buildFraction = 0.25f;
+                        buildSpeed = 220/60f;
+                        unitFraction = 0.01f;
+                        unitSpeed = 120/60f;
+
+                        targetUnits = true;
+                        targetBuildings = true;
+                        canTargetSelf = true;
+                        autoTarget = true;
+                        controllable = false;
+                        laserColor = Pal.heal;
+                        healColor = Pal.heal;
+
+                        bullet = new BulletType() {{
+                            maxRange = 12*8f;
+                        }};
+                    }}
+            );
+        }};
+
+        floating = new DepicilonUnitType("floating"){{
+            defaultCommand = UnitCommand.assistCommand;
+            buildSpeed = 0.5f;
+            hovering = true;
+            canDrown = false;
+            flying = true;
+            lowAltitude = true;
+            shadowElevation = 0.1f;
+            softShadowScl = 0.7f;
+
+            drag = 0.08f;
+            speed = 17f/7.5f;
+            rotateSpeed = 7f;
+
+            accel = 0.13f;
+
+            health = 2500;
+            armor=6;
+            hitSize = 24;
+
+            engineSize = 2.7f;
+            engineOffset = 11.5f;
+            buildBeamOffset = 6f;
+            setEnginesMirror(
+                    new UnitEngine(11f,-6f,3,-45f),
+                    new UnitEngine(6.5f,-10.5f,3f,-45f)
+            );
+            itemCapacity = 100;
+            weapons.addAll(
+                    new CanBuildingBuildWeapon(this.name+"-build-weapon"){{
+                        speedMulti = 1.5f;
+                        mirror = true;
+                        shootY = 2f;
+                        x = 11.25f;
+                        y = 0.25f;
+                    }},
+                    new CanBuildingBuildWeapon(this.name+"-build-weapon"){{
+                        speedMulti = 1.5f;
+                        mirror = true;
+                        shootY = 2f;
+                        x = 4f;
+                        y = -5.5f;
+                    }},
+                    new Weapon(this.name+"-weapon"){{
+                        mirror = false;
+                        x = 0;
+                        y = 2f;
+                        reload = 2*60f;
+                        shootY = 3.5f;
+                        shoot = new ShootHelix() {{
+                            scl = 3.5f;
+                            mag = 0.8f;
+                        }};
+                        shootSound = Sounds.shootToxopidShotgun;
+                        shootSoundVolume = 0.75f;
+                        rotate = true;
+                        rotateSpeed = 6;
+                        shootCone = 12;
+
+                        bullet = new BasicBulletType(20*8/60f,60){{
+                            smokeEffect = new Effect(25f,Fx.shootSmokeSmite.renderer);
+                            scaleLife = true;
+                            lifetime = 1.25f*60f;
+                            homingPower = 0.01f;
+                            despawnHit = false;
+                            fragOnHit = false;
+                            splashDamage = 30f;
+                            splashDamageRadius = 7*8f;
+
+                            fragOnDespawn = true;
+                            fragBullets = 1;
+                            trailLength = 20;
+                            trailWidth = 2.5f;
+                            width = 14f;
+                            height = 20f;
+                            trailColor = backColor = hitColor = Pal.heal;
+                            fragOffsetMax = fragOffsetMin = 0;
+                            hitSound = despawnSound = Sounds.explosionAfflict;
+                            hitSoundVolume = 0.75f;
+                            hitEffect = despawnEffect = md_Fx.hitBulletColor(7*8f,9,7.5f*8);
+                            fragBullet = new BallLightningBulletType(0,0){{
+                                hitColor = Pal.heal;
+                                instantDisappear = true;
+                                shockAmount = 8;
+                                shockRange = 10*8f;
+                                minRemainingRange = 0.3f;
+                                maxRemainingRange = 0.8f;
+                                maxRemaining = 3;
+                                shockDamage = 30f;
+                                shockLimit = 2;
+                                shockEffect = new MultiEffect(md_Fx.chainLightningPro,
+                                        md_Fx.hitBulletColor(8f,7,16f));
+                            }};
+                        }};
+                    }}
+            );
+        }};
 
 
         primitive = new DepicilonUnitType("primitive"){{
@@ -878,7 +1069,7 @@ public class md_UnitTypes {
             targetable = false;
             hittable = false;
 
-            weapons.add(
+            weapons.addAll(
                     new OverdriveWeapon(modname+"primitive-weapon1"){{
                         lockedRange = 30*8f;
                         lockedTime = 50f;
@@ -886,14 +1077,17 @@ public class md_UnitTypes {
                         extraDuration = 300f;
                         aimChangeSpeed = 4.5f;
 
-
-
                         y = -4/4f;
                         x = 0;
                         shootY = 7/4f;
                         mirror = false;
                         top = false;
                     }}
+//                    new CanBuildingBuildWeapon(){{
+//                        mirror = true;
+//                        y=0;
+//                        x = 10;
+//                    }}
             );
             clipSize = 32*8f;
         }};

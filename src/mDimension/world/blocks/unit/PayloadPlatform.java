@@ -1,6 +1,7 @@
 package mDimension.world.blocks.unit;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -67,8 +68,8 @@ public class PayloadPlatform extends PayloadBlock {
         super.setBars();
         addBar("craft",(PayloadPlatformBuild b)->{
             return new Bar(
-                    ()-> Core.bundle.format("bar.progress")+":"+(int)(b.progress()*100)+"%",
-                    ()-> Pal.bar,
+                    ()-> Core.bundle.format("bar.progress",(int)(b.progress()*100)),
+                    ()-> Color.valueOf("ff9665"),
                     b::progress
             );
         });

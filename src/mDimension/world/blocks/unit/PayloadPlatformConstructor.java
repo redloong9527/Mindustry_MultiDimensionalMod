@@ -1,7 +1,6 @@
 package mDimension.world.blocks.unit;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
@@ -15,7 +14,6 @@ import arc.util.io.Writes;
 import mDimension.draw.DrawRotation;
 import mDimension.draw.DrawSimpleTurret;
 import mDimension.draw.ExtraRotation;
-import mDimension.tool.Pix;
 import mDimension.tool.md_Edge;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
@@ -24,14 +22,11 @@ import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
-import mindustry.ui.Fonts;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.draw.DrawBlock;
-import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawMulti;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.*;
@@ -254,6 +249,8 @@ public class PayloadPlatformConstructor extends Block {
             super.write(w);
             w.f(progress);
             w.f(totalProgress);
+            w.f(warmup);
+            w.f(towerRotation);
         }
 
         @Override
@@ -261,6 +258,8 @@ public class PayloadPlatformConstructor extends Block {
             super.read(r, v);
             progress = r.f();
             totalProgress = r.f();
+            warmup = r.f();
+            towerRotation = r.f();
         }
     }
 
