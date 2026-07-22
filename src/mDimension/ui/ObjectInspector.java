@@ -1,7 +1,9 @@
 package mDimension.ui;
 
+import arc.Core;
 import arc.func.Cons2;
 import arc.graphics.*;
+import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.*;
@@ -12,7 +14,6 @@ import arc.struct.*;
 
 import arc.util.*;
 import mindustry.Vars;
-import mindustry.content.Blocks;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.Item;
@@ -24,7 +25,7 @@ import java.util.*;
 import java.util.Stack;
 
 import static mindustry.Vars.ui;
-
+import static mDimension.content.md_blocks.modname;
 public class ObjectInspector extends Table {
     private static final float panelWidth = 420f;
     private static final float panelHeight = 520f;
@@ -41,6 +42,7 @@ public class ObjectInspector extends Table {
     private Object selectedTarget;
     private String searchQuery = "";
     private ScrollPane scrollPane;
+    public boolean updateList = false;
 
     // 新增：数组编辑状态
     private Object editingArray = null;
@@ -57,30 +59,95 @@ public class ObjectInspector extends Table {
 
     private void setupUI(){
         // 标题栏 + 搜索 + 关闭
+
+        table(Styles.black8,top->{
+            top.table(Styles.black5,drag->{
+                drag.name = "drag";
+                drag.image(Core.atlas.find(modname+"ui-drag")).size(25);
+                drag.addListener(new InputListener(){
+                    float dx, dy;
+                    @Override
+                    public void touchDragged(InputEvent event, float mx, float my, int pointer){
+                        if(Core.app.isMobile() && pointer != 0) return;
+                        ObjectInspector.this.x = Core.input.mouseX()-dx;
+                        ObjectInspector.this.y = Core.input.mouseY()-dy;
+                    }
+
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                        if(Core.app.isMobile() && pointer != 0) return false;
+
+                        dx = Core.input.mouseX() - ObjectInspector.this.x;
+                        dy = Core.input.mouseY() - ObjectInspector.this.y;
+                        return true;
+                    }
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button) {
+                        if(Core.app.isMobile() && pointer != 0) return;
+                        ObjectInspector self = ObjectInspector.this;
+                        self.x = Mathf.clamp(self.x,0,Core.graphics.getWidth()-self.width);
+                        self.y = Mathf.clamp(self.y,0,Core.graphics.getHeight()-self.height);
+                    }
+                });
+
+            }).left().pad(5f);
+            top.add("字段修改器").color(Pal.accent).expandX().center().pad(5f);
+            top.table(Styles.black5,scl->{
+                scl.name = "scale";
+                scl.image(Core.atlas.find(modname+"ui-scale")).size(25);
+                scl.addListener(new InputListener(){
+                    float cx,cy,ew,eh;
+                    @Override
+                    public void touchDragged(InputEvent event, float a, float b, int pointer){
+                        if(Core.app.isMobile() && pointer != 0) return;
+                        float mx = (Core.input.mouseX()-cx);
+                        float my = (Core.input.mouseY()-cy);
+                        ObjectInspector.this.setSize(ew+mx,eh+my);
+                    }
+
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
+                        if(Core.app.isMobile() && pointer != 0) return false;
+                        cx = Core.input.mouseX();
+                        cy = Core.input.mouseY();
+                        ew = ObjectInspector.this.width;
+                        eh = ObjectInspector.this.height;
+                        return true;
+                    }
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button) {
+                        if(Core.app.isMobile() && pointer != 0) return;
+                        ObjectInspector self = ObjectInspector.this;
+                        self.x = Mathf.clamp(self.x,0,Core.graphics.getWidth()-self.width);
+                        self.y = Mathf.clamp(self.y,0,Core.graphics.getHeight()-self.height);
+                    }
+                });
+            }).right().pad(5f);
+        }).growX().row();
+
         table(t -> {
 
             t.left();
-            t.add("建筑检视器").color(Pal.accent).pad(6);
 
+            var b = new ImageButton(Icon.refresh,Styles.clearTogglei);
+            b.clicked(()->{
+                updateList = b.isChecked();
+            });
+            b.resizeImage(Icon.refresh.imageSize());
+            t.add(b).size(28).right().pad(4);
             searchField = t.field("", s -> {
                 searchQuery = s.toLowerCase();
-                refreshFieldVisibility();
+                refresh();
+                //refreshFieldVisibility();
             }).growX().get();
             searchField.setMessageText("搜索字段...");
-            t.button(Icon.leftOpen,Styles.cleari,()->{
-                if(!pages.isEmpty())back();
-            }
-
-            ).size(32f).right().pad(4);;
-            t.button(Icon.refresh,Styles.cleari,()->{
-                refresh();
-            }).size(32f).right().pad(4);
-            t.button(Icon.cancel, Styles.cleari, () -> {
-                close();
-            }).size(32f).right().pad(4);
+            t.button(Icon.leftOpen,Styles.cleari,this::back).size(28).right().pad(4);
+            t.button(Icon.rotate,Styles.cleari, this::refresh).size(28).right().pad(4);
+            t.button(Icon.cancel, Styles.cleari, this::close).size(28).right().pad(4);
 
         }).growX().row();
-
         // 目标信息
         table(info -> {
             info.name = "target-info";
@@ -100,15 +167,23 @@ public class ObjectInspector extends Table {
             //edit.visible(() -> selectedField != null);
         }).growX().bottom().pad(4f);
 
+
         // FIX: 不用 fillParent，手动设置大小和位置，避免布局冲突
         setSize(panelWidth, panelHeight);
 
     }
 
+    @Override
+    public void setSize(float width, float height) {
+        super.setSize(Math.max(350,width), Math.max(350,height));
+    }
+
     // FIX: 重写 act 而不是用 update() lambda，避免布局循环
+    Interval timer = new Interval();
     @Override
     public void act(float delta){
         super.act(delta);
+
 
         // 检查目标建筑是否还存在
         if(target != null && target instanceof Healthc h&& !h.isValid()){
@@ -121,6 +196,10 @@ public class ObjectInspector extends Table {
             close();
             return;
         }
+
+        if(updateList && timer.get(0,10f)){
+            refresh();
+        }
     }
 //is null
     public void inspect(Object target){
@@ -130,9 +209,14 @@ public class ObjectInspector extends Table {
         selectedTarget = null;
         searchField.setText("");
         searchQuery = "";
+        if (!visible) {
+            setSize(panelWidth, panelHeight);
+            setPosition(40,40);
+        }
         refresh();
         setVisible(true);
         toFront();
+
     }
 
 
@@ -147,6 +231,7 @@ public class ObjectInspector extends Table {
     }
 
     public void back(){
+        if(pages.isEmpty())return;
         var backPage = pages.pop();
 
         if(backPage == null || backPage.target == null) return;
@@ -331,6 +416,7 @@ public class ObjectInspector extends Table {
             return;
         }
         for(Field f : fields){
+            if(!searchQuery.isEmpty() && !f.getName().toLowerCase().contains(searchQuery))continue;
             f.setAccessible(true);
             Object value;
             try {
@@ -635,7 +721,7 @@ public class ObjectInspector extends Table {
                         }
                     } else if(finalType == Color.class){
                         btns.button(Icon.pencil, Styles.cleari, () -> {
-                            ui.picker.show(Tmp.c1.set(color).a(0.5f), false, res -> applyValue( String.valueOf( res.rgba()) ) );
+                            ui.picker.show((Color) finalCurrent, true, res -> applyValue( String.valueOf( res.rgba()) ) );
                         }).size(40f);
                     }
 
@@ -646,7 +732,7 @@ public class ObjectInspector extends Table {
                     }).growX().height(40).colspan(10).padTop(4f);
                 }).growX().colspan(10).pad(4f).row();
             } else {
-                t.add("[只读]").color(Color.gray).fontScale(0.8f).colspan(10).left();
+                t.add("[只读]").color(Color.gray).fontScale(0.8f).left();
             }
         }).pad(6f).growX();
     }

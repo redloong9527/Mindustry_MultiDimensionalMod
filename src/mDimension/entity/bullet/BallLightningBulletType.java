@@ -97,10 +97,11 @@ public class BallLightningBulletType extends BasicBulletType {
             }
         }
     }
-
+    Seq<Healthc> targets = new Seq<>();
+    ObjectIntMap<Healthc> shocksMap = new ObjectIntMap<>();
     public int shock(Bullet b){
         // 收集范围内的所有有效敌人
-        Seq<Healthc> targets = new Seq<>();
+        targets.clear();
         Units.nearbyEnemies(b.team, b.x, b.y, shockRange, enemy -> {
             if (!enemy.dead() && enemy.isValid() && enemy.targetable(b.team)) {
                 targets.add(enemy);
@@ -114,7 +115,7 @@ public class BallLightningBulletType extends BasicBulletType {
         int remainingStrikes = shockAmount;
         // 如果有敌人，循环电击直到消耗完所有次数
         if (targets.size > 0) {
-            ObjectMap<Healthc,Integer> shocksMap = new ObjectMap<>();
+            shocksMap.clear();
             for(Healthc u:targets){
                 shocksMap.put(u,0);
             }

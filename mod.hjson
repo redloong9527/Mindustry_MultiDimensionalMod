@@ -5,7 +5,7 @@ displayName: "Multi Dimensional"
 name:"mdimension"
 
 #your name
-author: "arknights player"
+author: "Bilibili:arknights player / Github:undefined-1026"
 
 #the fully qualified main class of the mod
 main: "mDimension.MDimensionMod"
@@ -14,10 +14,10 @@ main: "mDimension.MDimensionMod"
 description: "A to be produced mod"
 
 #the mod version
-version: 0.1.1
+version: 0.1.2
 
 #the minimum game build required to run this mod
-minGameVersion: 154
+minGameVersion: 159
 
 #this is a java mod
 java: true
