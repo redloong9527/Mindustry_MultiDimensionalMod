@@ -5,7 +5,7 @@ import mindustry.type.Item;
 
 public class md_items {
     public static Item
-            bauxite,aluminium,al_alloy,ti_alloy,polymer,carbon_fibre,polymorphic_crystal,plasma,light_ceramic,nihility_alloy;
+            bauxite,aluminium,germanium,chromium,uranium,al_alloy,ti_alloy,polymer,carbon_fibre,polymorphic_crystal,plasma,light_ceramic,nihility_alloy;
 
     public static void load(){
         bauxite = new Item("bauxite",Color.valueOf("ffebd0")){{
@@ -14,10 +14,25 @@ public class md_items {
             alwaysUnlocked = true;
             hidden = true;
         }};
-        aluminium = new Item("aluminium",Color.valueOf("ffeded")){{
+        aluminium = new Item("aluminium",Color.valueOf("F7A08D")){{
             healthScaling = 0.3f;
             hardness = 1;
             cost = 0.4f;
+        }};
+        germanium = new Item("germanium",Color.valueOf("EDDB75")){{
+            healthScaling = 0.4f;
+            hardness = 1;
+            cost = 0.6f;
+        }};
+        chromium = new Item("chromium",Color.valueOf("C9B3D6")){{
+            healthScaling = 0.8f;
+            hardness = 1;
+            cost = 2f;
+        }};
+        uranium = new Item("uranium",Color.valueOf("375229")){{
+            healthScaling = 0.8f;
+            hardness = 1;
+            cost = 3f;
         }};
         al_alloy = new Item("al-alloy",Color.valueOf("ededff")){{
             healthScaling = 0.5f;

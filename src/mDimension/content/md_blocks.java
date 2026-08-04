@@ -96,7 +96,7 @@ public class md_blocks {
     //ammo
     heavy_ammo,
     //turret
-    ionize,crack,ejection, fracture,break_water, polarization,dawn,fluffrain,crest,test4,test5,
+    ionize,crack,ejection, fracture,break_water,  ,dawn,fluffrain,crest,test4,test5,
     //wall
     aluminium_wall,aluminium_wall_large,al_alloy_wall,al_alloy_wall_large,
     //core

@@ -499,6 +499,21 @@ public class md_Fx {
         }
     }),
 
+    regionTrail = new Effect(15f,e->{
+        if(e.data instanceof TextureRegion region){
+            color(e.color,e.fout());
+            float scl = (0.6f+0.4f*e.fout())/4f;
+            Draw.rect(region,e.x,e.y,region.width * scl,region.height *scl,e.rotation);
+        }
+    }),
+
+    circleLineTrail = new Effect(15f,e->{
+        color(e.color,e.fout());
+        float r = (0.6f+0.4f*e.fout())*e.rotation;
+        Lines.stroke(1.2f+0.5f*e.fout());
+        Lines.circle(e.x,e.y,r);
+    }).layer(99.99f),
+
 
 
     none = Fx.none;

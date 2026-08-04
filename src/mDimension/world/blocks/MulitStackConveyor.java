@@ -138,7 +138,32 @@ public class MulitStackConveyor extends StackConveyor {
         public int getMaximumAccepted(Item item) {
             return block.itemCapacity - items.total();
         }
+        @Override
+        public void drawCached(){
+            Draw.rect(regions[state], x, y, rotdeg());
 
+            for(int i = 0; i < 4; i++){
+                if((blendprox & (1 << i)) == 0){
+                    Draw.rect((rotation - i)<=1?edgeRegion1:edgeRegion2, x, y, (rotation - i) * 90);
+                }
+            }
+
+            //draw inputs
+            if(state == stateLoad){
+                for(int i = 0; i < 4; i++){
+                    int dir = Mathf.mod(rotation - i, 4);
+                    var near = nearby(dir);
+                    if((blendprox & (1 << i)) != 0 && i != 0 && near != null && !near.block.squareSprite){
+                        Draw.rect(sliced(regions[0], SliceMode.bottom), x + Geometry.d4x(dir) * tilesize*0.75f, y + Geometry.d4y(dir) * tilesize*0.75f, (float)(dir*90));
+                    }
+                }
+            }else if(state == stateUnload){ //front unload
+                //TOOD hacky front check
+                if((blendprox & (1)) != 0 && front() != null && !front().block.squareSprite){
+                    Draw.rect(sliced(regions[0], SliceMode.top), x + Geometry.d4x(rotation) * tilesize*0.75f, y + Geometry.d4y(rotation) * tilesize*0.75f, rotation * 90f);
+                }
+            }
+        }
         @Override
         public void draw(){
             Draw.z(Layer.block - 0.2f);
