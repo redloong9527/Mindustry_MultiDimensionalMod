@@ -2,6 +2,7 @@ package mDimension.content;
 
 import arc.graphics.Color;
 import mDimension.world.blocks.environment.CrustFloor;
+import mDimension.world.blocks.environment.LiquidOre;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.content.StatusEffects;
@@ -20,8 +21,10 @@ public class md_environment {
             inlayMetalTiles4,darkCrystalFloor,darkCrystallineStone,darkDenseRedStone,darkRedStone,
             light_shale_floor,pure_light_shale_floor,yellow_ice,yellow_ice_wall,chlorite,chlorite_wall,yellow_ice_snow,depthTile1,depthTile2,depthTile3,depthTile4,depthTile5,
     //ore
-    oreAluminium,WallOreTitanium,oreGraphite,WallOreCopper,
+    oreAluminium,WallOreTitanium,oreGraphite,oreGermanium,oreChromium,WallOreCopper,
     test100,
+
+    oreAmmonia,
     //props
     darkCrystallineBoulders,
     //vent
@@ -100,6 +103,18 @@ public class md_environment {
         WallOreCopper = new OreBlock("ore-wall-copper",Items.copper){{
             wallOre = true;
         }};
+
+        oreGermanium = new OreBlock("ore-germanium", md_items.germanium){{
+            oreThreshold = 0.846f;
+            oreScale = 24.428572f;
+        }};
+
+        oreChromium = new OreBlock("ore-chromium",md_items.chromium){{
+            oreDefault = true;
+            oreThreshold = 0.882f;
+            oreScale = 25.380953f;
+        }};
+
 
 
         light_shale_floor = new Floor("light-stone-floor"){{

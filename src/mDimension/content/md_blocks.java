@@ -12,6 +12,7 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Time;
+import mDimension.consumers.ConsumeBeamBoost;
 import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.consumers.MultiRecipeConsume;
@@ -28,12 +29,10 @@ import mDimension.world.blocks.*;
 import mDimension.world.blocks.drill.BurstDrill_Pro;
 import mDimension.world.blocks.drill.CrustDrill;
 import mDimension.world.blocks.drill.CrustDrillBooster;
+import mDimension.world.blocks.drill.DirectionalPump;
 import mDimension.world.blocks.flux.FluxCrafter;
 import mDimension.world.blocks.flux.FluxNode;
-import mDimension.world.blocks.unit.AnchorRadar;
-import mDimension.world.blocks.unit.PayloadPlatform;
-import mDimension.world.blocks.unit.PayloadPlatformConstructor;
-import mDimension.world.blocks.unit.RegionReconstructor;
+import mDimension.world.blocks.payload.*;
 import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.Puddles;
@@ -96,7 +95,7 @@ public class md_blocks {
     //ammo
     heavy_ammo,
     //turret
-    ionize,crack,ejection, fracture,break_water,  ,dawn,fluffrain,crest,test4,test5,
+    ionize,crack,ejection, fracture,break_water,dawn,fluffrain,polarization,crest,test4,test5,
     //wall
     aluminium_wall,aluminium_wall_large,al_alloy_wall,al_alloy_wall_large,
     //core
@@ -107,19 +106,19 @@ public class md_blocks {
 
     small_payload_conveyor,
             small_payload_router,payload_processing_platform,
-    test3,ammo_constructor,
+            test3,ammo_constructor,
     //unit
-     infantry_factory,airborne_vessels_factory,
+    infantry_factory,airborne_vessels_factory,
 
     shaping_assembler,
-    forging_assembler,
-    tempering_assembler,
-    polarization_assembler,
+            forging_assembler,
+            tempering_assembler,
+            polarization_assembler,
 
     anchor_radar,
-    army_anchor_point_reconstructor,
+            army_anchor_point_reconstructor,
             airforce_anchor_point_reconstructor
-    ;
+                    ;
     //endregion
     public static void load() {
         loadAmmo();
@@ -739,8 +738,7 @@ public class md_blocks {
         beam_bore = new BeamDrill("beam-bore") {
             {
                 requirements(Category.production, with(md_items.aluminium, 30, Items.silicon, 20));
-                consumePower(12 / 60f);
-
+                consumeLiquid(md_liquids.ammonia,0.5f/60f);
                 drillTime = 150;
                 tier = 3;
                 size = 2;
@@ -751,13 +749,7 @@ public class md_blocks {
                 heatColor = Color.valueOf("E6C845");
                 boostHeatColor = Color.valueOf("F26B4D");
 
-                consume(new ConsumeBeam(5, md_beams.near_infrared_ligth).boost());
-            }
-
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.addPercent(Stat.booster, (optionalBoostIntensity));
+                consume(new ConsumeBeamBoost(5, md_beams.near_infrared_ligth,optionalBoostIntensity).boost());
             }
         };
         small_impact_drill = new BurstDrill_Pro("small-impact-drill") {{
@@ -781,11 +773,9 @@ public class md_blocks {
             arrowSpacing = 3f;
 
             researchCost = with();
-            liquidBoostIntensity = 2.5f;
+            liquidBoostIntensity = 2;
 
             fogRadius = 4;
-
-            consumePower(10 / 60f);
             consumeLiquid(Liquids.nitrogen, 1f / 60f).boost();
         }};
         ammonia_collector = new AttributeCrafter("ammonia-collector") {{
@@ -948,13 +938,21 @@ public class md_blocks {
             }};
         //endregion
         //region liquid
-        siphon_pump = new Pump("siphon-pump"){{
+        siphon_pump = new DirectionalPump("siphon-pump"){{
             requirements(Category.liquid,with(Items.silicon,30, md_items.aluminium,50));
             pumpAmount = 15/60f;
-            liquidCapacity = 80f;
+            liquidCapacity = 120f;
             size = 2;
             consumePower(80/60f);
             researchCost = with(Items.silicon,300, md_items.aluminium,500);
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawPumpLiquid(),
+                    new DrawRegion(),
+                    new DrawRegion("-rotate",1.5f),
+                    new DrawRegion("-top"),
+                    new DrawRotation("-rotation",true)
+            );
         }};
         fluid_unloader = new LiquidUnloader("fluid-unloader"){{
             requirements(Category.liquid,with(Items.silicon,10, md_items.polymer, 5,md_items.al_alloy,5));

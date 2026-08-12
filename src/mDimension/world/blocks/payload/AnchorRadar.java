@@ -1,4 +1,4 @@
-package mDimension.world.blocks.unit;
+package mDimension.world.blocks.payload;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;

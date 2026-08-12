@@ -1,11 +1,10 @@
-package mDimension.world.blocks.unit;
+package mDimension.world.blocks.payload;
 
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.*;
@@ -24,13 +23,12 @@ import mindustry.io.TypeIO;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.payloads.*;
-
+import mDimension.world.blocks.payload.MDPayloadBlock;
+import mDimension.world.blocks.payload.MDPayloadBlock.MDPayloadBlockBuild;
 import static mindustry.Vars.*;
 
-public class PayloadPlatform extends PayloadBlock {
+public class PayloadPlatform extends MDPayloadBlock {
 
     public PayloadPlatform(String name){
         super(name);
@@ -75,7 +73,7 @@ public class PayloadPlatform extends PayloadBlock {
         });
     }
 
-    public class PayloadPlatformBuild extends PayloadBlockBuild<Payload>{
+    public class PayloadPlatformBuild extends MDPayloadBlockBuild<Payload> {
         public float warmup= 0;
         public float progress= 0;
         public UnlockableContent targetType;

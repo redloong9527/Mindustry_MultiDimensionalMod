@@ -16,6 +16,7 @@ public class DirectionalLiquidRouter extends LiquidRouter {
         rotateDraw = false;
         drawArrow = true;
         liquidPadding = 0.75f;
+        solid = false;
     }
 
     public TextureRegion[] icons(){

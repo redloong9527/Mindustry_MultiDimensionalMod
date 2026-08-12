@@ -1,13 +1,19 @@
-package mDimension.world.blocks;
+package mDimension.world.blocks.payload;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.util.Time;
+import arc.util.Tmp;
+import mDimension.tool.md_Edge;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
+import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.*;
+
+import static mindustry.Vars.tilesize;
 
 //PayloadRouter
 public class md_PayloadRouter extends PayloadRouter {
@@ -25,7 +31,31 @@ public class md_PayloadRouter extends PayloadRouter {
 
     public class md_PayloadRouterBuild extends PayloadRouterBuild{
 
+        @Override
+        public void onProximityUpdate(){
+            super.onProximityUpdate();
 
+            Building accept = md_Edge.getFacingBuild(this);
+            //next block must be aligned and of the same size
+            if(accept != null && (
+                    //same size
+                    (accept.block.size == size && tileX() + Geometry.d4(rotation).x * size == accept.tileX() && tileY() + Geometry.d4(rotation).y * size == accept.tileY()) ||
+
+                            //differing sizes
+                            (accept.block.size > size &&
+                                    (rotation % 2 == 0 ? //check orientation
+                                            Math.abs(accept.y - y) <= (accept.block.size * tilesize - size * tilesize)/2f : //check Y alignment
+                                            Math.abs(accept.x - x) <= (accept.block.size * tilesize - size * tilesize)/2f   //check X alignment
+                                    )))){
+                next = accept;
+            }else{
+                next = null;
+            }
+
+            int ntrns = 1 + size/2;
+            Tile next = tile.nearby(Geometry.d4(rotation).x * ntrns, Geometry.d4(rotation).y * ntrns);
+            blocked = (next != null && next.solid() && !(next.block().outputsPayload || next.block().acceptsPayload)) || (this.next != null && this.next.payloadCheck(rotation));
+        }
         @Override
         public float fract() {
             return progress / moveTime;
@@ -116,6 +146,30 @@ public class md_PayloadRouter extends PayloadRouter {
 //            Lines.circle(x,y,4+0.4f);
 //            Fill.circle(x,y,(progress/moveTime)*4);
 //            Draw.reset();
+        }
+
+        public void updatePayload(){
+            if(item != null){
+                if(animation > fract()){
+                    animation = Mathf.lerp(animation, 0.8f, 0.15f);
+                }
+
+                animation = Math.max(animation, fract());
+
+                float fract = animation;
+                float rot = Mathf.slerp(itemRotation, rotdeg(), fract);
+
+                if(fract < 0.5f){
+                    Tmp.v1.trns(itemRotation + 180, (0.5f - fract) * tilesize * size);
+                }else{
+                    Tmp.v1.trns(rotdeg(), (fract - 0.5f) * tilesize * size);
+                }
+                Tmp.v1.add(md_Edge.bias(Tmp.v2,this));
+
+                float vx = Tmp.v1.x, vy = Tmp.v1.y;
+
+                item.set(x + vx, y + vy, rot);
+            }
         }
 
         @Override

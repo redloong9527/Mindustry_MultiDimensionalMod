@@ -1,4 +1,4 @@
-package mDimension.world.blocks;
+package mDimension.world.blocks.payload;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -292,6 +292,7 @@ public class md_PayloadConveyor extends PayloadConveyor {
                 }else{
                     Tmp.v1.trns(rotdeg(), (fract - 0.5f) * tilesize * size);
                 }
+                Tmp.v1.add(md_Edge.bias(Tmp.v2,this));
 
                 float vx = Tmp.v1.x, vy = Tmp.v1.y;
 
@@ -338,5 +339,6 @@ public class md_PayloadConveyor extends PayloadConveyor {
         public float fract(){
             return (progress / moveTime);
         }
+
     }
 }

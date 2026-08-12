@@ -13,7 +13,7 @@ import mindustry.ui.Fonts;
 
 public class Debug {
     public static Effect point = new Effect(20f,e->{
-        Draw.color(Pal.placing);
+        Draw.color(e.color);
         Fill.circle(e.x,e.y,e.fout()*3f);
     });
     public static void string(String s,float life,float x,float y){
@@ -52,12 +52,15 @@ public class Debug {
     }
 
     public static void point(float x,float y){
-        point.at(x,y);
+        point.at(x,y,Pal.placing);
+    };
+    public static void point(float x,float y,Color color){
+        point.at(x,y,color);
     };
     public static void pointTile(int x,int y){
-        point.at(x*8,y*8);
+        point.at(x*8,y*8,Pal.placing);
     };
     public static void point(Posc pos){
-        point.at(pos.x(),pos.y());
+        point.at(pos.x(),pos.y(),Pal.placing);
     };
 }

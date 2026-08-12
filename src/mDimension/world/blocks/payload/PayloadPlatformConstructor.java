@@ -1,4 +1,4 @@
-package mDimension.world.blocks.unit;
+package mDimension.world.blocks.payload;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;

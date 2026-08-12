@@ -5,13 +5,13 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import mindustry.gen.Building;
+import mindustry.graphics.Shaders;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 
 import static mindustry.Vars.*;
 
 public class md_Edge {
-
     public static Vec2[] getFacingNearby(Building b){
         if(b.block.size<=1)return new Vec2[]{new Vec2(b.x,b.y)};
         int size = b.block.size;
@@ -156,6 +156,35 @@ public class md_Edge {
     //OOOOOO ->OO
     //OOOOOO
     //OOOOOO
+
+    public static Tile getFacingVoidTile(Building b){
+        if (b.block.size %2 ==0) {
+            int start = b.block.size/2-1;
+            int end = b.block.size/2;
+            //int var1=0;
+            for(var t:getFacingTile(b,start,end)){
+                if(!t.solid())return t;
+            }
+            return null;
+        }else{
+            int trns = b.block.size / 2 + 1;
+            Tile next = b.tile.nearby(Geometry.d4(b.rotation).x * trns, Geometry.d4(b.rotation).y * trns);
+            return next.solid() ? null : next;
+        }
+    }
+    public static Vec2 bias(Vec2 scr,Building b){
+        var tile = getFacingVoidTile(b);
+        if(tile == null)return scr.set(0,0);
+        scr.set(tile.worldx()-b.x,tile.worldy()-b.y);
+        if(Math.abs(scr.x)>Math.abs(scr.y)){
+            scr.x = 0;
+            scr.y = Math.signum(scr.y) * 0.01f;
+        }else{
+            scr.y = 0;
+            scr.x = Math.signum(scr.x) * 0.01f;
+        }
+        return scr;
+    }
     public static Building getFacingBuild(Building b){
         if (b.block.size %2 ==0) {
             Building res = null;
@@ -185,8 +214,6 @@ public class md_Edge {
                 return null;
             }
         }
-
-
     }
 
     public static final Point2[] f4=new Point2[]{
