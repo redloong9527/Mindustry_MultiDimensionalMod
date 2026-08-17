@@ -21,7 +21,7 @@ import mindustry.world.meta.StatUnit;
 import static mindustry.Vars.tilesize;
 import static arc.Core.*;
 
-public class md_RepairBeamWeapon extends RepairBeamWeapon {
+public class MD_RepairBeamWeapon extends RepairBeamWeapon {
     public float buildSpeed=0;
     public float buildFraction=0.1f;
     public float unitSpeed=100/60f;
@@ -31,8 +31,8 @@ public class md_RepairBeamWeapon extends RepairBeamWeapon {
     //public float threshold = -1;
     public Cons<Unit> targetUnitCons = u->{};
 
-    public md_RepairBeamWeapon(){super();}
-    public md_RepairBeamWeapon(String name){super(name);}
+    public MD_RepairBeamWeapon(){super();}
+    public MD_RepairBeamWeapon(String name){super(name);}
 
     @Override
     public void init(){

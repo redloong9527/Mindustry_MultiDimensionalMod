@@ -2,11 +2,11 @@ package mDimension.content;
 
 import arc.struct.Seq;
 
-import static mDimension.content.md_items.*;
-import static mDimension.content.md_liquids.*;
-import static mDimension.content.md_blocks.*;
-import static mDimension.content.md_UnitTypes.*;
-import static mDimension.content.md_SectorPresets.*;
+import static mDimension.content.MD_Items.*;
+import static mDimension.content.MD_Liquids.*;
+import static mDimension.content.MD_blocks.*;
+import static mDimension.content.MD_UnitTypes.*;
+import static mDimension.content.MD_SectorPresets.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.*;
 import static mindustry.game.Objectives.*;
@@ -18,7 +18,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.SectorPreset;
 
 
-public class md_TechTree {
+public class MD_TechTree {
     private static TechTree.TechNode context = null;
     public static Seq<TechTree.TechNode> all = new Seq<>();
     public static Seq<TechTree.TechNode> roots = new Seq<>();
@@ -26,18 +26,18 @@ public class md_TechTree {
 
 
     public static void load(){
-        md_Planets.depicilon.techTree = nodeRoot("depicilon",md_blocks.coreSteady,()->{
-            node(md_blocks.al_alloy_smelting,Seq.with(new Objectives.SectorComplete(md_SectorPresets.starting_point)),()->{
+        MD_Planets.depicilon.techTree = nodeRoot("depicilon", MD_blocks.coreSteady,()->{
+            node(MD_blocks.al_alloy_smelting,Seq.with(new Objectives.SectorComplete(MD_SectorPresets.starting_point)),()->{
                node(ammonia_chamber,Seq.with(new Objectives.OnSector(marginal_outpost)),()->{
                    node(polymer_compressor,Seq.with(new Objectives.OnSector(crystallization_oil_rift)));
                });
             });
-            node(md_blocks.light_duct,()->{
-                node(md_blocks.armored_light_duct,()->{
-                    node(md_blocks.stack_rail_conveyor);
+            node(MD_blocks.light_duct,()->{
+                node(MD_blocks.armored_light_duct,()->{
+                    node(MD_blocks.stack_rail_conveyor);
                 });
-                node(md_blocks.multiway_unloader);
-                node(md_blocks.light_duct_bridge);
+                node(MD_blocks.multiway_unloader);
+                node(MD_blocks.light_duct_bridge);
                 node(shunt_router,()->{
                     node(light_sorter,()->{
                         node(light_invertedSorter);

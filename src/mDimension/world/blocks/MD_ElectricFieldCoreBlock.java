@@ -29,7 +29,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 
 import static mindustry.Vars.tilesize;
 
-public class md_ElectricFieldCoreBlock extends CoreBlock {
+public class MD_ElectricFieldCoreBlock extends CoreBlock {
     public float powerProduction = 5f;
     public float lightningTime = 30f;
     public int lightnings = 10;
@@ -44,7 +44,7 @@ public class md_ElectricFieldCoreBlock extends CoreBlock {
     public float statusDuration = 60f * 2f;
     public StatusEffect lightningStatu = StatusEffects.none;
 
-    public md_ElectricFieldCoreBlock(String name){
+    public MD_ElectricFieldCoreBlock(String name){
         super(name);
         outputsPower = true;
         consumesPower = false;

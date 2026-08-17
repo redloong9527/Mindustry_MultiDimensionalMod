@@ -1,18 +1,13 @@
 package mDimension.content;
-import arc.graphics.Color;
-import mDimension.entity.bullet.BoomerangBulletType;
 import mindustry.content.*;
 import mindustry.entities.bullet.LiquidBulletType;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
-
-import static mDimension.content.md_blocks.modname;
 
 public class original_reset {
     public static void load() {
         LiquidTurret tsunami = (LiquidTurret) Blocks.tsunami;
         tsunami.ammoTypes.put(
-                md_liquids.dimension_fluid,new LiquidBulletType(md_liquids.dimension_fluid){{
+                MD_Liquids.dimension_fluid,new LiquidBulletType(MD_Liquids.dimension_fluid){{
                     lifetime = 50f;
                     speed = 6f;
                     knockback = 1.3f;

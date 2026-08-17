@@ -2,7 +2,7 @@ package mDimension.entity.bullet;
 
 import arc.graphics.Color;
 import arc.struct.Seq;
-import mDimension.content.md_Fx;
+import mDimension.content.MD_Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -32,7 +32,7 @@ public class RefractedLaserBulletType extends BulletType {
     protected Seq<Healthc> totalTarget = new Seq<>(Healthc.class);
     protected Posc node;
     //need e.data of Healthc[]
-    public Effect LaserEffect = md_Fx.RefractedLaser;
+    public Effect LaserEffect = MD_Fx.RefractedLaser;
     public Color laserColor = Color.valueOf("FFE791");
 
 

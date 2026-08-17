@@ -3,7 +3,7 @@ package mDimension.content;
 import arc.graphics.Color;
 import mindustry.type.Item;
 
-public class md_items {
+public class MD_Items {
     public static Item
             bauxite,aluminium,germanium,chromium,uranium,al_alloy,ti_alloy,polymer,carbon_fibre,polymorphic_crystal,plasma,light_ceramic,nihility_alloy;
 

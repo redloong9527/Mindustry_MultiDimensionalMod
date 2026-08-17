@@ -2,7 +2,6 @@ package mDimension.content;
 
 import arc.graphics.Color;
 import mDimension.world.blocks.environment.CrustFloor;
-import mDimension.world.blocks.environment.LiquidOre;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.content.StatusEffects;
@@ -14,7 +13,7 @@ import mindustry.world.meta.Attribute;
 
 import mDimension.meta.*;
 
-public class md_environment {
+public class MD_environment {
     public static Block
             crystallization_oil_deep,crystallization_oil,magnetic_shale_wall,magnetic_shale_stone,brownSandFloor,brownSandWall,
     light_shale_wall,pure_light_shale_wall,darkCrystallineStoneWall,darkRedStoneWall,
@@ -35,7 +34,7 @@ public class md_environment {
     public static void load(){
         loadCacheLayer();
         crystallization_oil_deep = new Floor("crystallization-oil-deep"){{
-            liquidDrop = md_liquids.crystallization_oil;
+            liquidDrop = MD_Liquids.crystallization_oil;
             cacheLayer = crystallization_deep;
             supportsOverlay = true;
             overlayAlpha = 0.6f;
@@ -51,7 +50,7 @@ public class md_environment {
         crystallization_oil = new Floor("crystallization-oil-floor"){{
             liquidMultiplier = 0.5f;
             variants = 3;
-            liquidDrop = md_liquids.crystallization_oil;
+            liquidDrop = MD_Liquids.crystallization_oil;
             cacheLayer = crystallization_deep;
             supportsOverlay = true;
             overlayAlpha = 0.6f;
@@ -84,7 +83,7 @@ public class md_environment {
         }};
 
 
-        oreAluminium = new OreBlock("ore-aluminium",md_items.aluminium){{
+        oreAluminium = new OreBlock("ore-aluminium", MD_Items.aluminium){{
             oreDefault = true;
             oreThreshold = 0.846f;
             oreScale = 24.428572f;
@@ -104,12 +103,12 @@ public class md_environment {
             wallOre = true;
         }};
 
-        oreGermanium = new OreBlock("ore-germanium", md_items.germanium){{
+        oreGermanium = new OreBlock("ore-germanium", MD_Items.germanium){{
             oreThreshold = 0.846f;
             oreScale = 24.428572f;
         }};
 
-        oreChromium = new OreBlock("ore-chromium",md_items.chromium){{
+        oreChromium = new OreBlock("ore-chromium", MD_Items.chromium){{
             oreDefault = true;
             oreThreshold = 0.882f;
             oreScale = 25.380953f;
@@ -265,8 +264,8 @@ public class md_environment {
         test100 = new CrustFloor("test100"){{
             strata = with(
                     new Stratum(1,2,Items.sand,3),
-                    new Stratum(3,4,md_liquids.helium,0.05f),
-                    new Stratum(5,6,md_liquids.dimension_fluid,0.2f)
+                    new Stratum(3,4, MD_Liquids.helium,0.05f),
+                    new Stratum(5,6, MD_Liquids.dimension_fluid,0.2f)
             );
         }};
 

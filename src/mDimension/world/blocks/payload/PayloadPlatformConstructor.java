@@ -14,7 +14,7 @@ import arc.util.io.Writes;
 import mDimension.draw.DrawRotation;
 import mDimension.draw.DrawSimpleTurret;
 import mDimension.draw.ExtraRotation;
-import mDimension.tool.md_Edge;
+import mDimension.tool.MD_Edge;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
@@ -175,7 +175,7 @@ public class PayloadPlatformConstructor extends Block {
         @Override
         public void updateProximity() {
             super.updateProximity();
-            Building other = md_Edge.getAllFacingBuild(this);
+            Building other = MD_Edge.getAllFacingBuild(this);
 
             if(other instanceof PayloadPlatform.PayloadPlatformBuild b && other.team == team ){
                 boss = b;

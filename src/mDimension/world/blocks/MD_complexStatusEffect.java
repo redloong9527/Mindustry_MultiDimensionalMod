@@ -14,9 +14,7 @@ import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 import mindustry.world.meta.StatUnit;
 
-import java.lang.reflect.Field;
-
-public class md_complexStatusEffect extends StatusEffect {
+public class MD_complexStatusEffect extends StatusEffect {
     public float percentageDamage = 0;
     public float percentageShieldDamage = 0;
     public float armorAdditional = 0;
@@ -27,7 +25,7 @@ public class md_complexStatusEffect extends StatusEffect {
     public Draws draw =e -> {};
 
 
-    public md_complexStatusEffect(String name){
+    public MD_complexStatusEffect(String name){
         super(name);
     }
     public interface Acts{

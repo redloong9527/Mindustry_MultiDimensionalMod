@@ -11,14 +11,14 @@ import mindustry.type.Planet;
 import mindustry.content.Planets;
 import mindustry.world.meta.Env;
 
-public class md_Planets {
+public class MD_Planets {
     public static Planet depicilon,test;
     public static void load(){
         depicilon = new Planet("depicilon",Planets.sun,1f,3){{
             loadPlanetData = true;
             orbitRadius = 75;
             defaultEnv = Env.terrestrial;
-            defaultCore = md_blocks.coreSteady;
+            defaultCore = MD_blocks.coreSteady;
             ruleSetter = r -> {
                 r.waveTeam = Team.crux;
                 r.placeRangeCheck = false;

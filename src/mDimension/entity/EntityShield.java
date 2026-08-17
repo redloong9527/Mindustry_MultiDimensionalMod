@@ -10,7 +10,7 @@ import arc.math.geom.Position;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.content.md_Fx;
+import mDimension.content.MD_Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.EntityGroup;
 import mindustry.game.Team;
@@ -85,7 +85,7 @@ public class EntityShield implements Entityc , Drawc {
             hit = 1f;
         }
         if(broken){
-            md_Fx.shieldBreak.at(x,y,0,color,this);
+            MD_Fx.shieldBreak.at(x,y,0,color,this);
             remove();
         }else{
             deflectBullets();

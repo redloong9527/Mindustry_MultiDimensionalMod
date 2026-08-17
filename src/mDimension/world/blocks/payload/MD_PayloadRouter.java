@@ -7,7 +7,7 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.util.Time;
 import arc.util.Tmp;
-import mDimension.tool.md_Edge;
+import mDimension.tool.MD_Edge;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.world.Tile;
@@ -16,9 +16,9 @@ import mindustry.world.blocks.payloads.*;
 import static mindustry.Vars.tilesize;
 
 //PayloadRouter
-public class md_PayloadRouter extends PayloadRouter {
+public class MD_PayloadRouter extends PayloadRouter {
     public TextureRegion overRegion;
-    public md_PayloadRouter(String name,int size){
+    public MD_PayloadRouter(String name, int size){
         super(name);
         this.size = size;
     }
@@ -35,7 +35,7 @@ public class md_PayloadRouter extends PayloadRouter {
         public void onProximityUpdate(){
             super.onProximityUpdate();
 
-            Building accept = md_Edge.getFacingBuild(this);
+            Building accept = MD_Edge.getFacingBuild(this);
             //next block must be aligned and of the same size
             if(accept != null && (
                     //same size
@@ -164,7 +164,7 @@ public class md_PayloadRouter extends PayloadRouter {
                 }else{
                     Tmp.v1.trns(rotdeg(), (fract - 0.5f) * tilesize * size);
                 }
-                Tmp.v1.add(md_Edge.bias(Tmp.v2,this));
+                Tmp.v1.add(MD_Edge.bias(Tmp.v2,this));
 
                 float vx = Tmp.v1.x, vy = Tmp.v1.y;
 

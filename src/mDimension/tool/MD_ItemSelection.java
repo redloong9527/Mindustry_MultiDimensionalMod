@@ -2,9 +2,7 @@ package mDimension.tool;
 
 import arc.Core;
 import arc.func.Boolf;
-import arc.func.Cons;
 import arc.func.Cons2;
-import arc.func.Prov;
 import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.ButtonGroup;
@@ -23,7 +21,7 @@ import mindustry.world.Block;
 import static mindustry.Vars.control;
 import static mindustry.Vars.state;
 
-public class md_ItemSelection {
+public class MD_ItemSelection {
     private static TextField search;
     private static int rowCount;
 

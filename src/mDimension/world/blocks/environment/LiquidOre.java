@@ -17,13 +17,12 @@ import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.OverlayFloor;
-import mindustry.world.blocks.environment.SteamVent;
 import mindustry.world.blocks.liquid.LiquidBlock;
 
 import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.color;
-import static mDimension.content.md_Fx.rand;
-import static mDimension.content.md_Fx.v;
+import static mDimension.content.MD_Fx.rand;
+import static mDimension.content.MD_Fx.v;
 import static mindustry.Vars.tilesize;
 
 public class LiquidOre extends OverlayFloor {

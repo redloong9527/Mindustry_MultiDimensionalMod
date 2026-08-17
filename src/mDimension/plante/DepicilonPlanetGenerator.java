@@ -40,7 +40,7 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
     {
         seed = 1145;
         baseSeed = 114;
-        defaultLoadout = md_Loadouts.basicDepicilon;
+        defaultLoadout = MD_Loadouts.basicDepicilon;
     }
 
     //alternate, less direct generation
@@ -58,26 +58,26 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
 
     Block[][] arr =
             {
-                    {md_environment.crystallization_oil_deep, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, md_environment.crystallization_oil, md_environment.magnetic_shale_stone, md_environment.magnetic_shale_stone},
-                    {md_environment.crystallization_oil_deep, Blocks.darksand, Blocks.darksand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, md_environment.crystallization_oil, md_environment.magnetic_shale_stone, md_environment.magnetic_shale_stone, md_environment.magnetic_shale_stone},
-                    {md_environment.crystallization_oil_deep, Blocks.darksand, Blocks.sand, Blocks.salt, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, md_environment.crystallization_oil, md_environment.magnetic_shale_stone, md_environment.magnetic_shale_stone, md_environment.magnetic_shale_stone},
-                    {md_environment.crystallization_oil_deep, md_environment.crystallization_oil, Blocks.sand, Blocks.salt, Blocks.salt, Blocks.salt, Blocks.sand, md_environment.magnetic_shale_stone, md_environment.magnetic_shale_stone, md_environment.magnetic_shale_stone, Blocks.snow, md_environment.yellow_ice_snow, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, md_environment.crystallization_oil_deep, md_environment.crystallization_oil, Blocks.sand, Blocks.salt, Blocks.sand, Blocks.sand, md_environment.darkCrystalFloor, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, md_environment.crystallization_oil_deep, md_environment.crystallization_oil, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.moss, md_environment.yellow_ice_snow, Blocks.snow, Blocks.snow, md_environment.yellow_ice, Blocks.snow, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, Blocks.sand, Blocks.sand, Blocks.moss, Blocks.moss, Blocks.snow, md_environment.darkCrystalFloor, md_environment.darkCrystalFloor, md_environment.darkCrystalFloor, md_environment.yellow_ice, Blocks.snow, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, md_environment.crystallization_oil, Blocks.darksand, Blocks.darksand, md_environment.darkCrystalFloor, Blocks.moss, md_environment.darkCrystalFloor, Blocks.hotrock, md_environment.darkCrystalFloor, md_environment.yellow_ice, Blocks.snow, md_environment.yellow_ice, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.moss, Blocks.sporeMoss, Blocks.snow, md_environment.darkCrystalFloor, md_environment.darkCrystalFloor, md_environment.yellow_ice, Blocks.snow, md_environment.yellow_ice, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, Blocks.darksand, Blocks.darksand, Blocks.sporeMoss, md_environment.yellow_ice, md_environment.yellow_ice, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, md_environment.crystallization_oil, Blocks.darksand, Blocks.sporeMoss, Blocks.sporeMoss, md_environment.yellow_ice, md_environment.yellow_ice, Blocks.snow, Blocks.snow, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, md_environment.crystallization_oil, Blocks.darksand, Blocks.sporeMoss, Blocks.moss, Blocks.sporeMoss, md_environment.yellow_ice_snow, Blocks.snow, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice},
-                    {md_environment.crystallization_oil_deep, Blocks.darksand, Blocks.snow, md_environment.yellow_ice, md_environment.yellow_ice_snow, Blocks.snow, Blocks.snow, Blocks.snow, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice, md_environment.yellow_ice}
+                    {MD_environment.crystallization_oil_deep, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, MD_environment.crystallization_oil, MD_environment.magnetic_shale_stone, MD_environment.magnetic_shale_stone},
+                    {MD_environment.crystallization_oil_deep, Blocks.darksand, Blocks.darksand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, MD_environment.crystallization_oil, MD_environment.magnetic_shale_stone, MD_environment.magnetic_shale_stone, MD_environment.magnetic_shale_stone},
+                    {MD_environment.crystallization_oil_deep, Blocks.darksand, Blocks.sand, Blocks.salt, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, MD_environment.crystallization_oil, MD_environment.magnetic_shale_stone, MD_environment.magnetic_shale_stone, MD_environment.magnetic_shale_stone},
+                    {MD_environment.crystallization_oil_deep, MD_environment.crystallization_oil, Blocks.sand, Blocks.salt, Blocks.salt, Blocks.salt, Blocks.sand, MD_environment.magnetic_shale_stone, MD_environment.magnetic_shale_stone, MD_environment.magnetic_shale_stone, Blocks.snow, MD_environment.yellow_ice_snow, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, MD_environment.crystallization_oil_deep, MD_environment.crystallization_oil, Blocks.sand, Blocks.salt, Blocks.sand, Blocks.sand, MD_environment.darkCrystalFloor, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, MD_environment.crystallization_oil_deep, MD_environment.crystallization_oil, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.moss, MD_environment.yellow_ice_snow, Blocks.snow, Blocks.snow, MD_environment.yellow_ice, Blocks.snow, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, Blocks.sand, Blocks.sand, Blocks.moss, Blocks.moss, Blocks.snow, MD_environment.darkCrystalFloor, MD_environment.darkCrystalFloor, MD_environment.darkCrystalFloor, MD_environment.yellow_ice, Blocks.snow, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, MD_environment.crystallization_oil, Blocks.darksand, Blocks.darksand, MD_environment.darkCrystalFloor, Blocks.moss, MD_environment.darkCrystalFloor, Blocks.hotrock, MD_environment.darkCrystalFloor, MD_environment.yellow_ice, Blocks.snow, MD_environment.yellow_ice, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.moss, Blocks.sporeMoss, Blocks.snow, MD_environment.darkCrystalFloor, MD_environment.darkCrystalFloor, MD_environment.yellow_ice, Blocks.snow, MD_environment.yellow_ice, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, Blocks.darksand, Blocks.darksand, Blocks.sporeMoss, MD_environment.yellow_ice, MD_environment.yellow_ice, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, MD_environment.crystallization_oil, Blocks.darksand, Blocks.sporeMoss, Blocks.sporeMoss, MD_environment.yellow_ice, MD_environment.yellow_ice, Blocks.snow, Blocks.snow, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, MD_environment.crystallization_oil, Blocks.darksand, Blocks.sporeMoss, Blocks.moss, Blocks.sporeMoss, MD_environment.yellow_ice_snow, Blocks.snow, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice},
+                    {MD_environment.crystallization_oil_deep, Blocks.darksand, Blocks.snow, MD_environment.yellow_ice, MD_environment.yellow_ice_snow, Blocks.snow, Blocks.snow, Blocks.snow, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice, MD_environment.yellow_ice}
             };
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
             Blocks.sporeMoss, Blocks.sporeCluster,
             Blocks.moss, Blocks.sporeCluster,
-            Blocks.taintedWater, md_environment.crystallization_oil_deep,
-            md_environment.crystallization_oil, Blocks.darksandWater
+            Blocks.taintedWater, MD_environment.crystallization_oil_deep,
+            MD_environment.crystallization_oil, Blocks.darksandWater
     );
 
     ObjectMap<Block, Block> tars = ObjectMap.of(
@@ -293,7 +293,7 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
                                 if(Mathf.within(x, y, rad - 1) && !other.floor().isLiquid){
                                     Floor floor = other.floor();
                                     //TODO does not respect tainted floors
-                                    other.setFloor((Floor)(floor == Blocks.sand || floor == Blocks.salt ? md_environment.crystallization_oil : md_environment.crystallization_oil));
+                                    other.setFloor((Floor)(floor == Blocks.sand || floor == Blocks.salt ? MD_environment.crystallization_oil : MD_environment.crystallization_oil));
                                 }
                             }
                         }
@@ -434,11 +434,11 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
                 boolean spore = floor != Blocks.sand && floor != Blocks.salt;
                 //do not place rivers on ice, they're frozen
                 //ignore pre-existing liquids
-                if(!(floor == md_environment.yellow_ice || floor == md_environment.yellow_ice_snow || floor == Blocks.snow || floor.asFloor().isLiquid)){
+                if(!(floor == MD_environment.yellow_ice || floor == MD_environment.yellow_ice_snow || floor == Blocks.snow || floor.asFloor().isLiquid)){
                     floor = spore ?
-                            (deep ? md_environment.crystallization_oil_deep : md_environment.crystallization_oil) :
-                            (deep ? md_environment.crystallization_oil_deep :
-                                    (floor == Blocks.sand || floor == Blocks.salt ? md_environment.crystallization_oil : md_environment.crystallization_oil));
+                            (deep ? MD_environment.crystallization_oil_deep : MD_environment.crystallization_oil) :
+                            (deep ? MD_environment.crystallization_oil_deep :
+                                    (floor == Blocks.sand || floor == Blocks.salt ? MD_environment.crystallization_oil : MD_environment.crystallization_oil));
                 }
             }
         });
@@ -463,7 +463,7 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
                     }
                 }
 
-                floor = floor == md_environment.crystallization_oil ? md_environment.crystallization_oil: md_environment.crystallization_oil_deep;
+                floor = floor == MD_environment.crystallization_oil ? MD_environment.crystallization_oil: MD_environment.crystallization_oil_deep;
             }
         });
 
@@ -488,7 +488,7 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
                         }
                     }
 
-                    floor = floor == md_environment.crystallization_oil_deep ? Blocks.deepwater : Blocks.taintedWater;
+                    floor = floor == MD_environment.crystallization_oil_deep ? Blocks.deepwater : Blocks.taintedWater;
                 }
             });
         }
@@ -501,7 +501,7 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
 
 
         //wang ge
-        tech(37,md_environment.inlayMetalTiles4,Blocks.metalTiles8,md_environment.inlayMetalTiles4.asFloor().wall);
+        tech(37, MD_environment.inlayMetalTiles4,Blocks.metalTiles8, MD_environment.inlayMetalTiles4.asFloor().wall);
 
         pass((x, y) -> {
             //random moss
@@ -522,7 +522,7 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
             //hotrock tweaks
             if(floor == Blocks.hotrock){
                 if(Math.abs(0.5f - noise(x - 90, y, 4, 0.8, 80)) > 0.035){
-                    floor = md_environment.darkCrystalFloor;
+                    floor = MD_environment.darkCrystalFloor;
                 }else{
                     ore = Blocks.air;
                     boolean all = true;
@@ -536,11 +536,11 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
                         floor = Blocks.magmarock;
                     }
                 }
-            }else if(genLakes && floor != md_environment.darkCrystalFloor && floor != md_environment.yellow_ice && floor.asFloor().hasSurface()){
+            }else if(genLakes && floor != MD_environment.darkCrystalFloor && floor != MD_environment.yellow_ice && floor.asFloor().hasSurface()){
                 float noise = noise(x + 782, y, 5, 0.75f, 260f, 1f);
                 if(noise > 0.67f && !roomseq.contains(e -> Mathf.within(x, y, e.x, e.y, 14))){
                     if(noise > 0.72f){
-                        floor = noise > 0.78f ? Blocks.taintedWater : (floor == Blocks.sand ? md_environment.crystallization_oil : md_environment.crystallization_oil);
+                        floor = noise > 0.78f ? Blocks.taintedWater : (floor == Blocks.sand ? MD_environment.crystallization_oil : MD_environment.crystallization_oil);
                     }else{
                         floor = (floor == Blocks.sand ? floor : Blocks.darksand);
                     }
@@ -646,14 +646,14 @@ public class DepicilonPlanetGenerator extends PlanetGenerator {
         }
         inverseFloodFill(tiles.getn(spawn.x, spawn.y));
 
-        Seq<OreBlock> ores = Seq.with((OreBlock) md_environment.oreAluminium,(OreBlock)md_environment.WallOreCopper,(OreBlock)md_environment.WallOreTitanium);
+        Seq<OreBlock> ores = Seq.with((OreBlock) MD_environment.oreAluminium,(OreBlock) MD_environment.WallOreCopper,(OreBlock) MD_environment.WallOreTitanium);
         float poles = Math.abs(sector.tile.v.y);
         float nmag = 0.5f;
         float scl = 1f;
         float addscl = 1.3f;
 
         if(Simplex.noise3d(seed, 2, 0.5, scl, sector.tile.v.x, sector.tile.v.y, sector.tile.v.z)*nmag + poles > 0.25f*addscl){
-            ores.add((OreBlock)md_environment.oreGraphite);
+            ores.add((OreBlock) MD_environment.oreGraphite);
         }
 
         //218 doesn't have thorium generation due to proximity (TODO remove the special case and replace with hidden preset)

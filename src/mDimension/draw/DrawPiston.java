@@ -5,7 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Vec2;
 import arc.util.Eachable;
-import mDimension.tool.md_Edge;
+import mDimension.tool.MD_Edge;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.world.Block;
@@ -46,7 +46,7 @@ public class DrawPiston extends DrawBlock {
     @Override
     public void draw(Building b) {
         for(int i = 0;i<4;i++){
-            Vec2 rotat = md_Edge.direction(i);
+            Vec2 rotat = MD_Edge.direction(i);
             float process = strokeFunction.strokeFunction(b,i);
             Draw.rect(regions[(i<2 && !fourPiston)?0:(fourPiston?i:1)],b.x+rotat.x*process,b.y+rotat.y*process,fourPiston?0:i*90);
         }

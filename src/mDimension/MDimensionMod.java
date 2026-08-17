@@ -49,22 +49,22 @@ public class MDimensionMod extends Mod {
     @Override
     public void loadContent() {
 
-        md_beams.load();
+        MD_beams.load();
         md_StatUnit.load();
         md_Stat.load();
-        md_StatusEffects.load();
-        md_items.load();
-        md_liquids.load();
-        md_environment.load();
-        md_UnitTypes.load();
-        md_blocks.load();
+        MD_StatusEffects.load();
+        MD_Items.load();
+        MD_Liquids.load();
+        MD_environment.load();
+        MD_UnitTypes.load();
+        MD_blocks.load();
         original_reset.load();
 
-        md_Loadouts.load();
-        md_Planets.load();
+        MD_Loadouts.load();
+        MD_Planets.load();
 
-        md_SectorPresets.load();
-        md_TechTree.load();
+        MD_SectorPresets.load();
+        MD_TechTree.load();
 
     }
 

@@ -5,30 +5,23 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
-import arc.struct.Seq;
 import arc.util.Time;
-import mDimension.tool.Debug;
-import mDimension.tool.ReflectUtils;
-import mDimension.world.blocks.md_complexStatusEffect;
+import mDimension.world.blocks.MD_complexStatusEffect;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
-import mindustry.entities.units.StatusEntry;
-import mindustry.gen.Statusc;
-import mindustry.gen.Unit;
-import mindustry.gen.UnitEntity;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
 
 import static mindustry.content.StatusEffects.*;
 
-public class md_StatusEffects {
+public class MD_StatusEffects {
     public static StatusEffect
             adhesion,dimension_slip,cracking,move_out,embrittlement,explore,bless,coordination;
     public static void load(){
-        adhesion = new md_complexStatusEffect("adhesion"){{
+        adhesion = new MD_complexStatusEffect("adhesion"){{
             reloadMultiplier = 0.7f;
             speedMultiplier = 0.6f;
             color = Color.valueOf("F0E4A2");
@@ -44,9 +37,9 @@ public class md_StatusEffects {
 
             final Color form = Color.valueOf("F0DCA7"),to = Color.valueOf("F0CF83");
             effect = new Effect(80f,e->{
-                md_Fx.rand.setSeed(e.id);
-                Draw.color(form,to,md_Fx.rand.nextFloat());
-                Fill.circle(e.x,e.y,3f*md_Fx.rand.random(1f,1.3f) * e.fout());
+                MD_Fx.rand.setSeed(e.id);
+                Draw.color(form,to, MD_Fx.rand.nextFloat());
+                Fill.circle(e.x,e.y,3f* MD_Fx.rand.random(1f,1.3f) * e.fout());
             }).layer(Layer.floor+1f);
         }};
         coordination = new StatusEffect("coordination"){{
@@ -60,11 +53,11 @@ public class md_StatusEffects {
             damageMultiplier = 0.8f;
             speedMultiplier = 1.1f;
             damage = 4f;
-            effect = md_Fx.dimension_vapor;
+            effect = MD_Fx.dimension_vapor;
             effectChance = 0.03f;
         }};
 
-        cracking = new md_complexStatusEffect("cracking"){{
+        cracking = new MD_complexStatusEffect("cracking"){{
             percentageShieldDamage = 0.3f/60f;
             damage = 100f/60f;
             color = Color.valueOf("ffffff");
@@ -81,14 +74,14 @@ public class md_StatusEffects {
                     Lines.circle(e.x, e.y, e.hitSize*size);
                     Draw.reset();
                     if(Time.time%18f<Time.delta&&!Vars.state.isPaused()) {
-                        md_Fx.polygonalStar(50f, 3,Color.valueOf("ffe299"), e.hitSize * 0.6f, e.hitSize * 0.15f,0)
+                        MD_Fx.polygonalStar(50f, 3,Color.valueOf("ffe299"), e.hitSize * 0.6f, e.hitSize * 0.15f,0)
                                 .at(e.x + Mathf.range(e.bounds() / 3f), e.y + Mathf.range(e.bounds() / 3f),Mathf.range(120f));
                     }
                 }
             };
         }};
 
-        move_out = new md_complexStatusEffect("move-out"){{
+        move_out = new MD_complexStatusEffect("move-out"){{
             color = Color.valueOf("ffffff");
             percentageDamage = -0.02f/60f;
             armorMultiplier = 0.5f;
@@ -107,14 +100,14 @@ public class md_StatusEffects {
                 opposite(dimension_slip);
 
                 trans(dimension_slip,(unit,s,time)->{
-                    md_Fx.regionFlash.at(unit.x,unit.y,unit.rotation-90f,unit.type.fullIcon);
+                    MD_Fx.regionFlash.at(unit.x,unit.y,unit.rotation-90f,unit.type.fullIcon);
                     s.time = 0;
                     s.effect = dimension_slip;
                 });
             });
         }};
 
-        embrittlement = new md_complexStatusEffect("embrittlement"){{
+        embrittlement = new MD_complexStatusEffect("embrittlement"){{
 
             armorMultiplier = 0.5f;
             armorAdditional = -5;
@@ -124,13 +117,13 @@ public class md_StatusEffects {
             init(()-> {
                 affinity(StatusEffects.blasted, (unit, result, time) -> {
                     unit.damagePierce(transitionDamage);
-                    md_Fx.brokenWave(10,Color.valueOf("c0c5c5").a(0.7f),12,4f,0.7f,4,1.5f,0.6f).at(unit.x + Mathf.range(unit.bounds() / 3f), unit.y + Mathf.range(unit.bounds() / 3f));
+                    MD_Fx.brokenWave(10,Color.valueOf("c0c5c5").a(0.7f),12,4f,0.7f,4,1.5f,0.6f).at(unit.x + Mathf.range(unit.bounds() / 3f), unit.y + Mathf.range(unit.bounds() / 3f));
                     result.set(embrittlement, Math.min(result.time + 20f, 600f));
                 });
             });
 
         }};
-        explore = new md_complexStatusEffect("explore"){{
+        explore = new MD_complexStatusEffect("explore"){{
             color = Color.valueOf("ffffff");
             intervalDamageTime = 60f;
             intervalDamagePierce = true;
@@ -139,12 +132,12 @@ public class md_StatusEffects {
             percentageShieldDamage = 0.02f/60f;
             act = e->{
                 if(Time.time%(intervalDamageTime/4)<Time.delta&&!Vars.state.isPaused()) {
-                    md_Fx.Mulitpleslash(40f, 1, new Color(1f, 0.85f, 0.87f), e.hitSize * 2.5f, 4f, e.hitSize).at(e.x, e.y);
+                    MD_Fx.Mulitpleslash(40f, 1, new Color(1f, 0.85f, 0.87f), e.hitSize * 2.5f, 4f, e.hitSize).at(e.x, e.y);
                 }
             };
         }};
 
-        bless = new md_complexStatusEffect("bless"){{
+        bless = new MD_complexStatusEffect("bless"){{
             color = Color.valueOf("ffffff");
             percentageDamage = -0.05f/60f;
             damage = -50/60f;
@@ -156,7 +149,7 @@ public class md_StatusEffects {
             armorMultiplier = 1.15f;
             effectChance = 0.10f;
             act = e->{
-                effect = md_Fx.polygonalStar(40f,2,Color.valueOf("EDFFE0"),0.8f*e.hitSize,5f,90f);
+                effect = MD_Fx.polygonalStar(40f,2,Color.valueOf("EDFFE0"),0.8f*e.hitSize,5f,90f);
             };
         }};
 

@@ -6,7 +6,7 @@ import mindustry.type.*;
 
 import static mindustry.content.Liquids.water;
 
-public class md_liquids {
+public class MD_Liquids {
     public static Liquid
             helium,dimension_fluid , crystallization_oil , ammonia;
     public static void load(){
@@ -38,13 +38,13 @@ public class md_liquids {
             cellRad = 4.2f;
             cellRange = 10;
             colorStep = 5;
-            effect = md_StatusEffects.dimension_slip;
+            effect = MD_StatusEffects.dimension_slip;
             boilPoint = 2f;
             viscosity = 0.85f;
             temperature = 0.1f;
             heatCapacity = 1.8f;
-            vaporEffect = md_Fx.dimension_vapor;
-            particleEffect = md_Fx.dimension_vapor_small;
+            vaporEffect = MD_Fx.dimension_vapor;
+            particleEffect = MD_Fx.dimension_vapor_small;
             colorFrom = Color.valueOf("FFB578");
             colorTo = Color.valueOf("FFE491");
             cells = 7;

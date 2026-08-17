@@ -6,7 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.Time;
-import mDimension.content.md_Fx;
+import mDimension.content.MD_Fx;
 import mindustry.content.Fx;
 import mindustry.core.UI;
 import mindustry.entities.Effect;
@@ -22,18 +22,18 @@ import mindustry.world.meta.StatValues;
 
 /**这个生产类的输出液体不是连续的，所以输出液体的数量是一次输出的
  * 但是液体消耗还是每帧的量，*/
-public class md_LaunchPadCrafter extends GenericCrafter {
+public class MD_LaunchPadCrafter extends GenericCrafter {
     public Effect launchEffect = Fx.none;
     public Effect landEffect = Fx.none;
     public float baseHoverTime = 60f;
     public float launchTime = 400f;
     public float landTime = 250f;
     public float loadStayTime = 50f;
-    public md_LaunchPadCrafter(String name) {
+    public MD_LaunchPadCrafter(String name) {
         super(name);
 
         if(launchEffect == Fx.none){
-            launchEffect = craftEffect = md_Fx.loadLaunch(400f,this.name+"-pod",17f*8f,0f,1f,1f);
+            launchEffect = craftEffect = MD_Fx.loadLaunch(400f,this.name+"-pod",17f*8f,0f,1f,1f);
         }
     }
     @Override
@@ -118,7 +118,7 @@ public class md_LaunchPadCrafter extends GenericCrafter {
                     launchEffect.at(x,y);
                 }
                 isLaunched = true;
-                md_Fx.regionFlash.at(x,y,0,Core.atlas.find(name+"-pod"));
+                MD_Fx.regionFlash.at(x,y,0,Core.atlas.find(name+"-pod"));
                 isRenderLandEffect = false;
                 progress %= 1f;
             }

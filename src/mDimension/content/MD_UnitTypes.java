@@ -13,7 +13,6 @@ import arc.util.Tmp;
 import mDimension.entity.ability.AccelerateAbility;
 import mDimension.entity.ability.PatienceAbility;
 import mDimension.entity.bullet.BallLightningBulletType;
-import mDimension.entity.bullet.CatapultBulletType;
 import mDimension.tool.Drawff;
 import mDimension.world.blocks.DepicilonUnitType;
 import mDimension.world.weapons.BoostWeapon;
@@ -23,9 +22,7 @@ import mDimension.world.weapons.OverdriveWeapon;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.ai.types.FlyingFollowAI;
-import mindustry.ai.types.RepairAI;
 import mindustry.content.Fx;
-import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.ShieldRegenFieldAbility;
 import mindustry.entities.abilities.StatusFieldAbility;
@@ -41,15 +38,14 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import rhino.annotations.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static mindustry.Vars.tilesize;
 
-import static mDimension.content.md_blocks.modname;
+import static mDimension.content.MD_blocks.modname;
 import mDimension.world.weapons.*;
-public class md_UnitTypes {
+public class MD_UnitTypes {
 
     public static UnitType captive , zircon;
     public static UnitType mouse,coyote;
@@ -112,8 +108,8 @@ public class md_UnitTypes {
                     width = 6.5f;
                     height = 10f;
                     lifetime = 50f;
-                    despawnEffect = md_Fx.hitBulletColor(4f,3,12);
-                    hitEffect = md_Fx.hitBulletColor(6f,5,18);
+                    despawnEffect = MD_Fx.hitBulletColor(4f,3,12);
+                    hitEffect = MD_Fx.hitBulletColor(6f,5,18);
 
                 }};
             }});
@@ -140,7 +136,7 @@ public class md_UnitTypes {
                     length = 15*8f;
                     hitColor=trailColor = toColor = Color.valueOf("B2E9FF");
                     width = 4.3f;
-                    hitEffect = md_Fx.hitBulletColor(6f,5,18);
+                    hitEffect = MD_Fx.hitBulletColor(6f,5,18);
 
                 }};
             }});
@@ -171,10 +167,10 @@ public class md_UnitTypes {
 
             abilities.add(
                     new StatusFieldAbility(
-                            md_StatusEffects.coordination,
+                            MD_StatusEffects.coordination,
                             4*60f,3.8f*60f,3*8f
                     ){{
-                        activeEffect = md_Fx.polyWave(4,20f,0,1f,40f,Color.valueOf("D9FFFC"),0.95f);
+                        activeEffect = MD_Fx.polyWave(4,20f,0,1f,40f,Color.valueOf("D9FFFC"),0.95f);
                     }}
             );
 
@@ -217,8 +213,8 @@ public class md_UnitTypes {
                             width = 12;
                             height = 16;
                             lifetime = 50f;
-                            despawnEffect = md_Fx.hitBulletColor(7f,4,30);
-                            hitEffect = md_Fx.hitBulletColor(13f,8,40);
+                            despawnEffect = MD_Fx.hitBulletColor(7f,4,30);
+                            hitEffect = MD_Fx.hitBulletColor(13f,8,40);
                             despawnHit = true;
                             fragBullets = 1;
                             fragOffsetMin = 0;
@@ -230,7 +226,7 @@ public class md_UnitTypes {
                                 despawnHit = true;
                                 hitSound = Sounds.explosionCrawler;
 
-                                trailEffect = md_Fx.Mulitpleslash(50,1,Color.valueOf("EBF8FF"),12,5,6);
+                                trailEffect = MD_Fx.Mulitpleslash(50,1,Color.valueOf("EBF8FF"),12,5,6);
                                 trailInterval = 18f;
                                 hitSoundVolume = 0.4f;
                                 fragBullets = 3;
@@ -240,7 +236,7 @@ public class md_UnitTypes {
                                 width = height = 7f;
                                 shrinkX = shrinkY = 0.3f;
                                 hitSize = 6f;
-                                hitEffect = md_Fx.hitBulletColor(20f,10,50);
+                                hitEffect = MD_Fx.hitBulletColor(20f,10,50);
                                 fragBullet = new ShrapnelBulletType(){{
                                     lifetime = 18f;
                                     serrationSpaceOffset = 60;
@@ -520,9 +516,9 @@ public class md_UnitTypes {
                     collides = false;
                     despawnHit = true;
                     hitColor = Color.valueOf("FFEF97");
-                    despawnEffect = new MultiEffect(md_Fx.spark(25f,15,7*8,16f),
-                            md_Fx.spikeWaveColor(22f,5*8f,2f,10,0.4f,2.5f),
-                            md_Fx.polyStarExplosion(20,3,9*8,5f,0,true)
+                    despawnEffect = new MultiEffect(MD_Fx.spark(25f,15,7*8,16f),
+                            MD_Fx.spikeWaveColor(22f,5*8f,2f,10,0.4f,2.5f),
+                            MD_Fx.polyStarExplosion(20,3,9*8,5f,0,true)
                     );
 
                     hitEffect = Fx.pulverize;
@@ -584,7 +580,7 @@ public class md_UnitTypes {
 
                 bullet = new BasicBulletType(35f*8f/60f,13){{
                     smokeEffect = Fx.none;
-                    shootEffect = md_Fx.shoot1small;
+                    shootEffect = MD_Fx.shoot1small;
                     homingPower = 0.01f;
                     homingRange = 10*8f;
                     lifetime = 25f/35f * 60f;
@@ -668,7 +664,7 @@ public class md_UnitTypes {
                         damage = 1.4f;
                         drawHeat = true;
                         effectColor = Color.valueOf("FFE096");
-                        effect = md_Fx.triangle.layer(Layer.flyingUnit+1f);
+                        effect = MD_Fx.triangle.layer(Layer.flyingUnit+1f);
                         effectChance = 0.25f;
                     }},
                     new ShieldRegenFieldAbility(15,1200,75,40)
@@ -687,7 +683,7 @@ public class md_UnitTypes {
                         reload = 180f;
                         range = 7.5f*8;
                         bullet = new BallLightningBulletType(){{
-                            shootEffect = md_Fx.polyStarExplosion(45,4,50,6,45,false);
+                            shootEffect = MD_Fx.polyStarExplosion(45,4,50,6,45,false);
                             overflow = false;
                             shockAmount = 3;
                             shockLimit = 1;
@@ -695,7 +691,7 @@ public class md_UnitTypes {
                             shockDamage = 150f;
                             shockRange = 120f;
 
-                            shockEffect =md_Fx.chainLightningBig;
+                            shockEffect = MD_Fx.chainLightningBig;
                             sprite = "large-orb";
                             width = height = 25f;
 
@@ -721,11 +717,11 @@ public class md_UnitTypes {
                             hitSoundVolume = 0.65f;
 
                             despawnEffect = new MultiEffect(
-                                    md_Fx.Mulitpleslash(40f,10,hitColor,64f,5f,70f),
-                                    md_Fx.brokenWaveColor(32f,56,16f,3f,18,0.7f,3f),
-                                    md_Fx.brokenWaveColor(38f,45,13f,3f,12,0.45f,4f),
-                                    md_Fx.polyStarExplosion(30f,3,120,8,0,true),
-                                    md_Fx.polyStarExplosion(30f,3,75,6,60,true)
+                                    MD_Fx.Mulitpleslash(40f,10,hitColor,64f,5f,70f),
+                                    MD_Fx.brokenWaveColor(32f,56,16f,3f,18,0.7f,3f),
+                                    MD_Fx.brokenWaveColor(38f,45,13f,3f,12,0.45f,4f),
+                                    MD_Fx.polyStarExplosion(30f,3,120,8,0,true),
+                                    MD_Fx.polyStarExplosion(30f,3,75,6,60,true)
                             );
                             hitEffect = Fx.none;
                             keepVelocity = false;
@@ -753,7 +749,7 @@ public class md_UnitTypes {
                                 homingPower = 0.12f;
                                 homingRange = 30*8f;
                                 frontColor = trailColor = backColor = hitColor = Color.valueOf("FFF1B0");
-                                despawnEffect = hitEffect = md_Fx.Mulitpleslash(20,2,hitColor,16,3f,4f);
+                                despawnEffect = hitEffect = MD_Fx.Mulitpleslash(20,2,hitColor,16,3f,4f);
                             }};
                         }
 
@@ -898,7 +894,7 @@ public class md_UnitTypes {
             engineOffset = 5.2f;
             itemCapacity = 20;
             weapons.add(
-                    new md_RepairBeamWeapon(){{
+                    new MD_RepairBeamWeapon(){{
                         widthSinMag = 0.11f;
                         reload = 20f;
                         x = y = 0;
@@ -1008,7 +1004,7 @@ public class md_UnitTypes {
                             fragOffsetMax = fragOffsetMin = 0;
                             hitSound = despawnSound = Sounds.explosionAfflict;
                             hitSoundVolume = 0.75f;
-                            hitEffect = despawnEffect = md_Fx.hitBulletColor(7*8f,9,7.5f*8);
+                            hitEffect = despawnEffect = MD_Fx.hitBulletColor(7*8f,9,7.5f*8);
                             fragBullet = new BallLightningBulletType(0,0){{
                                 hitColor = Pal.heal;
                                 instantDisappear = true;
@@ -1019,8 +1015,8 @@ public class md_UnitTypes {
                                 maxRemaining = 3;
                                 shockDamage = 30f;
                                 shockLimit = 2;
-                                shockEffect = new MultiEffect(md_Fx.chainLightningPro,
-                                        md_Fx.hitBulletColor(8f,7,16f));
+                                shockEffect = new MultiEffect(MD_Fx.chainLightningPro,
+                                        MD_Fx.hitBulletColor(8f,7,16f));
                             }};
                         }};
                     }}

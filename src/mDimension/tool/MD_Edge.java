@@ -5,13 +5,12 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import mindustry.gen.Building;
-import mindustry.graphics.Shaders;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 
 import static mindustry.Vars.*;
 
-public class md_Edge {
+public class MD_Edge {
     public static Vec2[] getFacingNearby(Building b){
         if(b.block.size<=1)return new Vec2[]{new Vec2(b.x,b.y)};
         int size = b.block.size;

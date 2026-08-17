@@ -10,7 +10,7 @@ import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.tool.md_Edge;
+import mDimension.tool.MD_Edge;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
@@ -138,7 +138,7 @@ public class CrustDrillBooster extends Block {
         @Override
         public void updateProximity() {
             super.updateProximity();
-            Building b = md_Edge.getAllFacingBuild(this);
+            Building b = MD_Edge.getAllFacingBuild(this);
             if(b instanceof CrustDrill.CrustDrillBuild c){
                 c.links.addUnique(pos());
             }

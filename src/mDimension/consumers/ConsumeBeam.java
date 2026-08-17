@@ -4,7 +4,7 @@ import arc.Core;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Strings;
-import mDimension.content.md_beams;
+import mDimension.content.MD_beams;
 import mDimension.meta.md_StatValues;
 import mDimension.world.data.BeamData;
 import mDimension.world.data.Beam;
@@ -26,7 +26,7 @@ public class ConsumeBeam extends Consume {
     //由于aunke使用min，所以改这个diao用没有
     public float maxEfficiency = 1f;
 
-    public Beam inputBeam = md_beams.near_infrared_ligth;
+    public Beam inputBeam = MD_beams.near_infrared_ligth;
     public int maxSize = 256;
 
     public static Seq<ConsumeBeam> allConsume = new Seq<>();
@@ -113,7 +113,7 @@ public class ConsumeBeam extends Consume {
     public boolean canConsume(BeamData date){
         return (minWavelength < 0 || minWavelength <= date.wavelengthLevel) &&
                 (maxWavelength < 0 || date.wavelengthLevel <= maxWavelength) &&
-                (inputBeam == null || inputBeam.name.equals(date.beam));
+                (inputBeam == null || inputBeam.equals(date.beam));
     }
 
     public void accrue(Building b,BeamData data){

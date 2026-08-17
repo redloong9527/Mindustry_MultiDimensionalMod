@@ -7,7 +7,7 @@ import arc.struct.ObjectMap;
 import arc.struct.OrderedMap;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.content.md_Fx;
+import mDimension.content.MD_Fx;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Building;
@@ -23,11 +23,11 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 
-public class MDPayloadTurret extends Turret {
+public class MD_PayloadTurret extends Turret {
     public ObjectMap<UnlockableContent, BulletType> ammoTypes = new OrderedMap<>();
     public int maxAmmo = 5;
 
-    public MDPayloadTurret(String name) {
+    public MD_PayloadTurret(String name) {
         super(name);
         acceptsPayload = true;
     }
@@ -131,7 +131,7 @@ public class MDPayloadTurret extends Turret {
                         bp.block(),
                         new Vec2(bp.x() - x, bp.y() - y)
                 };
-                md_Fx.payloadInput.at(x, y, 0, Color.white, eff);
+                MD_Fx.payloadInput.at(x, y, 0, Color.white, eff);
                 if (type == null) return;
                 totalAmmo += (int) type.ammoMultiplier;
 
@@ -153,7 +153,7 @@ public class MDPayloadTurret extends Turret {
                         up.unit.type,
                         new Vec2(up.x() - x, up.y() - y)
                 };
-                md_Fx.payloadInput.at(x, y, 0, Color.white, eff);
+                MD_Fx.payloadInput.at(x, y, 0, Color.white, eff);
                 if (type == null) return;
                 totalAmmo += (int) type.ammoMultiplier;
 

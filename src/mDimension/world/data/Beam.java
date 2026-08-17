@@ -6,9 +6,8 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.Time;
+import arc.struct.Seq;
 import arc.util.Tmp;
 import mDimension.draw.MDLines;
 import mDimension.entity.BeamEntity;
@@ -19,12 +18,16 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.graphics.Layer;
 import mindustry.logic.LAccess;
 import mindustry.logic.Senseable;
+import mindustry.world.blocks.production.BeamDrill;
 
 public class Beam extends UnlockableContent implements Senseable {
 
     public int energyLevel = 3;
+    public Seq<Beam> all = new Seq<>();
 
-    public int lenght = 15;
+    public int length = 15;
+
+    public int beamID = -1;
     //no achieve
     public boolean hasDamage = false;
 
@@ -33,6 +36,7 @@ public class Beam extends UnlockableContent implements Senseable {
     public boolean targetGround = true;
 
     public Color color = Color.white;
+    public Color toColor = Color.white;
     //如果是的，会在子分支里显示，并且无法被激光使用的棱镜转向
     public boolean isParticle  = false;
 
@@ -56,6 +60,11 @@ public class Beam extends UnlockableContent implements Senseable {
             this.databaseTag = "laser";
         }
     }
+    {
+        this.beamID = all.size;
+        all.add(this);
+    }
+
     @Override
     public ContentType getContentType() {
         return ContentType.error;
@@ -70,7 +79,7 @@ public class Beam extends UnlockableContent implements Senseable {
     public void setStats() {
         stats.add(md_Stat.energyLevel,energyLevel);
     }
-    public BeamDrawer beamDrawer= l->{
+    public Cons<BeamEntity> beamDrawer= l->{
         basicDraw(l,(last,now)->{
             float scl = l.scl*1.15f;
             float z = Draw.z();
@@ -172,11 +181,6 @@ public class Beam extends UnlockableContent implements Senseable {
         Draw.reset();
     }
 
-
-
-    public interface BeamDrawer{
-        void draw(BeamEntity laserEntity);
-    }
 
 
 }

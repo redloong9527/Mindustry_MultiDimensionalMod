@@ -6,7 +6,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.tool.md_Edge;
+import mDimension.tool.MD_Edge;
 import mDimension.world.blocks.environment.CrustFloor;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
@@ -37,7 +37,7 @@ public class CrustDrillGuide extends CrustDrillBooster {
         public int getGuide(){
             int res = -1;
             float count=0;
-            if(md_Edge.getAllFacingBuild(this) instanceof CrustDrill.CrustDrillBuild boss){
+            if(MD_Edge.getAllFacingBuild(this) instanceof CrustDrill.CrustDrillBuild boss){
                 for(CrustFloor.Stratum s:boss.floor.strata){
                     float amount=0;
                     if((s.liquidStack!=null && s.liquidStack.liquid == config) || (s.itemStack!=null && s.itemStack.item == config)){
@@ -73,7 +73,7 @@ public class CrustDrillGuide extends CrustDrillBooster {
 
         @Override
         public void buildConfiguration(Table table) {
-            Building b =  md_Edge.getAllFacingBuild(this);
+            Building b =  MD_Edge.getAllFacingBuild(this);
             if (b == null) return;
             if (b instanceof CrustDrill.CrustDrillBuild boss) {
                 configs.clear();

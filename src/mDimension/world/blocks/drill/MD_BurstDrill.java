@@ -4,9 +4,9 @@ import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.BurstDrill;
 
-public class BurstDrill_Pro extends BurstDrill {
+public class MD_BurstDrill extends BurstDrill {
     public float dominantItemsMulti = 1f;
-    public BurstDrill_Pro(String name){
+    public MD_BurstDrill(String name){
         super(name);
     }
 

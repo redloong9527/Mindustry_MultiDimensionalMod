@@ -12,8 +12,8 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.tool.md_Edge;
-import mDimension.tool.md_ItemSelection;
+import mDimension.tool.MD_Edge;
+import mDimension.tool.MD_ItemSelection;
 import mindustry.ctype.UnlockableContent;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
@@ -24,11 +24,10 @@ import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.blocks.payloads.*;
-import mDimension.world.blocks.payload.MDPayloadBlock;
-import mDimension.world.blocks.payload.MDPayloadBlock.MDPayloadBlockBuild;
+
 import static mindustry.Vars.*;
 
-public class PayloadPlatform extends MDPayloadBlock {
+public class PayloadPlatform extends MD_PayloadBlock {
 
     public PayloadPlatform(String name){
         super(name);
@@ -186,7 +185,7 @@ public class PayloadPlatform extends MDPayloadBlock {
                             }
                         }
                     });
-                    if(md_Edge.getAllFacingBuild(c) == this){
+                    if(MD_Edge.getAllFacingBuild(c) == this){
                         links.addUnique(c.pos());
                         c.boss = this;
 
@@ -293,7 +292,7 @@ public class PayloadPlatform extends MDPayloadBlock {
 //            ItemSelection.buildTable(PayloadPlatform.this, table,
 //                    configs,
 //                    () -> (UnlockableContent)config(), this::configure,false, selectionRows, selectionColumns);
-            md_ItemSelection.multiSelect(PayloadPlatform.this,table,configs,
+            MD_ItemSelection.multiSelect(PayloadPlatform.this,table,configs,
                     config::contains,(u,isChecked)->{
                         configure(u);
                     },false,selectionRows, selectionColumns
@@ -370,7 +369,7 @@ public class PayloadPlatform extends MDPayloadBlock {
             payRotation = Angles.moveToward(payRotation, rotdeg(), payloadRotateSpeed * delta());
             payVector.approach(dest, payloadSpeed * delta());
 
-            Building front = md_Edge.getFacingBuild(this);
+            Building front = MD_Edge.getFacingBuild(this);
             DEBUG_buinding = front;
             boolean canDump = front == null || !front.tile.solid();
             boolean canMove = front != null && (front.block.outputsPayload || front.block.acceptsPayload);
@@ -396,7 +395,7 @@ public class PayloadPlatform extends MDPayloadBlock {
         }
 
         public boolean movePayload(Payload todump) {
-            var e = md_Edge.getFacingBuild(this);
+            var e = MD_Edge.getFacingBuild(this);
             if (e != null && e.team == this.team && e.acceptPayload(this, todump)) {
                 e.handlePayload(this, todump);
                 return true;

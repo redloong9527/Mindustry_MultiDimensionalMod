@@ -3,7 +3,7 @@ package mDimension.content;
 import mindustry.game.Schematic;
 import mindustry.game.Schematics;
 
-public class md_Loadouts {
+public class MD_Loadouts {
     public static Schematic
             basicDepicilon;
     public static void load(){

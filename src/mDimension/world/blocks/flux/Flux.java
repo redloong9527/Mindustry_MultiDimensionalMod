@@ -5,7 +5,7 @@ import arc.struct.Seq;
 import arc.util.Nullable;
 import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.FluxModule;
-import mDimension.content.md_Fx;
+import mDimension.content.MD_Fx;
 import mindustry.Vars;
 import mindustry.gen.Building;
 
@@ -47,7 +47,7 @@ public interface Flux{
 
     default void FluxGraphRemoved() {
         if (flux() != null && this instanceof Building self) {
-            md_Fx.polyWave(4,20,0,2,20, Color.valueOf("fff090"),1f).at(self.x,self.y);
+            MD_Fx.polyWave(4,20,0,2,20, Color.valueOf("fff090"),1f).at(self.x,self.y);
             flux().graph.remove(self);
 
             for(int i = 0; i < flux().links.size; ++i) {

@@ -5,18 +5,10 @@ import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.Interval;
 import arc.util.Time;
 import arc.util.Tmp;
-import mDimension.content.md_Fx;
-import mDimension.tool.Debug;
-import mindustry.entities.Effect;
 import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
-import mindustry.graphics.Trail;
-
-import static mindustry.Vars.headless;
 
 public class BoomerangBulletType extends BasicBulletType {
     public float reverseAcc = -1;

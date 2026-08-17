@@ -5,7 +5,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.geom.Vec2;
 import arc.struct.ObjectMap;
 import arc.util.Time;
-import mDimension.content.md_Fx;
+import mDimension.content.MD_Fx;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 
@@ -50,7 +50,7 @@ public class SprintAbility extends Ability {
                     progressMap.put(unit, 0f);
                 }
                 unit.vel.add(new Vec2((float) Math.cos(unit.rotation / 57.29f) * speed, (float) Math.sin(unit.rotation / 57.29f) * speed));
-                md_Fx.waveColor(30f, unit.hitSize, 3f).at(unit.x, unit.y, unit.team.color);
+                MD_Fx.waveColor(30f, unit.hitSize, 3f).at(unit.x, unit.y, unit.team.color);
             }else if(progressMap.get(unit)<=reload){
                 progressMap.put(unit,progressMap.get(unit)+ Time.delta);
             }

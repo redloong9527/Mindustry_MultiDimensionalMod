@@ -10,7 +10,7 @@ import arc.struct.*;
 import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.Tmp;
-import mDimension.tool.md_Edge;
+import mDimension.tool.MD_Edge;
 import mindustry.core.Renderer;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.*;
@@ -154,7 +154,7 @@ public class RadiusItemBridge extends ItemBridge {
             if(source instanceof ItemBridgeBuild bridge){
                 if(tile == world.tile(bridge.link))return true;
             }
-            int[] rels = md_Edge.isInDiagonal(this,link);
+            int[] rels = MD_Edge.isInDiagonal(this,link);
             if(rels[0]>=0){
                 var facing = Edges.getFacingEdge(source, this);
                 int rel = facing == null ? -1 : relativeTo(facing);
@@ -201,7 +201,7 @@ public class RadiusItemBridge extends ItemBridge {
                 for(int j = 0; j < incoming.size; j++){
                     int v = incoming.items[j];
                     Tile sourceBridge = world.tile(v);
-                    int[] rels = md_Edge.isInDiagonal(this,sourceBridge);
+                    int[] rels = MD_Edge.isInDiagonal(this,sourceBridge);
                     if(rels[0]>=0){
                         if(i != rels[0] && i != rels[1]){
                             return false;

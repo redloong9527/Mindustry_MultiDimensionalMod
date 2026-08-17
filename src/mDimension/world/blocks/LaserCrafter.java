@@ -4,11 +4,11 @@ import arc.graphics.Color;
 import arc.math.geom.Vec2;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.content.md_Fx;
-import mDimension.content.md_beams;
+import mDimension.content.MD_Fx;
+import mDimension.content.MD_beams;
 import mDimension.entity.BeamEntity;
 import mDimension.meta.md_StatValues;
-import mDimension.tool.md_Edge;
+import mDimension.tool.MD_Edge;
 import mDimension.world.data.Beam;
 import mindustry.entities.units.BuildPlan;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -30,7 +30,7 @@ public class LaserCrafter extends GenericCrafter {
 
     public Vec2[] craftPos;
     public Vec2[] craftRotation;
-    public Beam beam = md_beams.near_infrared_ligth;
+    public Beam beam = MD_beams.near_infrared_ligth;
     private int beamAmount;
     private Vec2[] beamPos;
     public LaserCrafter(String name){
@@ -70,10 +70,10 @@ public class LaserCrafter extends GenericCrafter {
     public void init() {
         super.init();
         if(craftPos == null){
-            craftPos = md_Edge.getFacingNearby(this);
+            craftPos = MD_Edge.getFacingNearby(this);
         }else{
             for(Vec2 v:craftPos){
-                md_Edge.LimitInSquare(v,(this.size-1)*8f);
+                MD_Edge.LimitInSquare(v,(this.size-1)*8f);
             }
         }
         if(craftRotation == null){
@@ -105,10 +105,10 @@ public class LaserCrafter extends GenericCrafter {
             }
             for(int i = 0;i<beamAmount;i++) {
                 if (crafterLasers[i] == null) {
-                    Vec2 p = md_Edge.transpose(craftPos[i].cpy(),rotation).add(x,y);
+                    Vec2 p = MD_Edge.transpose(craftPos[i].cpy(),rotation).add(x,y);
                     BeamEntity laserEntity = new BeamEntity(beam);
-                    laserEntity.create(p.x, p.y,md_Edge.transpose(craftRotation[i].cpy(),rotation), i);
-                    md_Fx.waveColor(5f, 3f, 1f).at(p.x * 8, p.y * 8, Color.valueOf("FFFFFF"));
+                    laserEntity.create(p.x, p.y, MD_Edge.transpose(craftRotation[i].cpy(),rotation), i);
+                    MD_Fx.waveColor(5f, 3f, 1f).at(p.x * 8, p.y * 8, Color.valueOf("FFFFFF"));
                 } else {
                     crafterLasers[i].setPower(efficiency*warmup*beamPower/beamAmount);
                 }

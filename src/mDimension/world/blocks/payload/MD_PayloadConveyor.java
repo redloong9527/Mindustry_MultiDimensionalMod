@@ -12,7 +12,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.tool.md_Edge;
+import mDimension.tool.MD_Edge;
 import mindustry.ctype.Content;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
@@ -22,8 +22,8 @@ import mindustry.world.blocks.payloads.*;
 
 import static mindustry.Vars.tilesize;
 
-public class md_PayloadConveyor extends PayloadConveyor {
-    public md_PayloadConveyor(String name,int size){
+public class MD_PayloadConveyor extends PayloadConveyor {
+    public MD_PayloadConveyor(String name, int size){
         super(name);
         this.size = size;
     }
@@ -56,7 +56,7 @@ public class md_PayloadConveyor extends PayloadConveyor {
         public void onProximityUpdate(){
             super.onProximityUpdate();
 
-            Building accept = md_Edge.getFacingBuild(this);
+            Building accept = MD_Edge.getFacingBuild(this);
             //next block must be aligned and of the same size
             if(accept != null && (
                     //same size
@@ -292,7 +292,7 @@ public class md_PayloadConveyor extends PayloadConveyor {
                 }else{
                     Tmp.v1.trns(rotdeg(), (fract - 0.5f) * tilesize * size);
                 }
-                Tmp.v1.add(md_Edge.bias(Tmp.v2,this));
+                Tmp.v1.add(MD_Edge.bias(Tmp.v2,this));
 
                 float vx = Tmp.v1.x, vy = Tmp.v1.y;
 

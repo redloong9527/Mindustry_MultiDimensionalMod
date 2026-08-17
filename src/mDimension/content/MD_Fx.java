@@ -33,7 +33,7 @@ import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.tilesize;
 
-public class md_Fx {
+public class MD_Fx {
     public static final Rand rand = new Rand();
     public static final Vec2 v = new Vec2();
     public static final Vec2 v1 = new Vec2();

@@ -15,7 +15,7 @@ import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mDimension.content.md_Fx;
+import mDimension.content.MD_Fx;
 import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.EntityGroup;
@@ -53,9 +53,9 @@ public class RegionReconstructor extends UnitBlock {
     public Seq<UnitType[]> upgrades = new Seq<>();
 
     public Effect
-            craftEffect = md_Fx.squareWave(25f,2f,3*tilesize/2f+3f,2f).wrap(Color.valueOf("e8f0ff") , 45f), upgradeInUnitEffect = md_Fx.regionFlashColorInUnit,
-    upgradeEffect = md_Fx.squareWave(20f,size * tilesize /2f,(size + regionSize*2)* tilesize,2.5f),
-            upgradePosEffect = md_Fx.Line(20f,7f,12f,10f);
+            craftEffect = MD_Fx.squareWave(25f,2f,3*tilesize/2f+3f,2f).wrap(Color.valueOf("e8f0ff") , 45f), upgradeInUnitEffect = MD_Fx.regionFlashColorInUnit,
+    upgradeEffect = MD_Fx.squareWave(20f,size * tilesize /2f,(size + regionSize*2)* tilesize,2.5f),
+            upgradePosEffect = MD_Fx.Line(20f,7f,12f,10f);
     public Sound
             upgradeSound = Sounds.explosionPlasmaSmall,craftSound = Sounds.shootSap;
     public float upgradeMaxPit = 1.3f, upgradeMinPit = 0.9f;

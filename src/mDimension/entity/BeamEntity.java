@@ -10,12 +10,13 @@ import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.consumers.ConsumeBeam;
-import mDimension.content.md_beams;
-import mDimension.tool.md_Edge;
+import mDimension.content.MD_beams;
+import mDimension.tool.MD_Edge;
+import mDimension.world.beam.BeamBlock;
 import mDimension.world.data.BeamData;
 import mDimension.world.data.Beam;
 import mDimension.world.blocks.LaserCrafter;
-import mDimension.world.blocks.md_BeamDeflector;
+import mDimension.world.blocks.MD_BeamDeflector;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
@@ -47,8 +48,12 @@ public class BeamEntity implements Entityc, Drawc {
 
     public Seq<Building> passBuild = new Seq<Building>(6);
 
-    public Beam laser = md_beams.near_infrared_ligth;
+    public Beam laser = MD_beams.near_infrared_ligth;
     public BeamData beamData;
+    public int step = 0;
+    public int cycleLength = 0;
+    public float cx,cy;
+
 
 
 
@@ -64,7 +69,7 @@ public class BeamEntity implements Entityc, Drawc {
     public void start(float x,float y,Vec2 r){
         points.add(x +r.x*4,y +r.y*4);
     }
-    public void turn(float x,float y){
+    public void node(float x, float y){
         points.add(x,y);
     }
     public void end(float x,float y,Vec2 r){
@@ -74,7 +79,7 @@ public class BeamEntity implements Entityc, Drawc {
         warmup = Mathf.approachDelta(warmup,beamData.power > 0.01f ?1f:0f,1.5f/60f);
     }
     public float scl(){
-        return  (Mathf.absin(Time.time + id*1145,3,0.15f)+0.93f)*warmup;
+        return  (Mathf.absin(Time.time + id*1145,3,0.15f)+1)*warmup;
     }
     @Override
     public void update() {
@@ -91,15 +96,17 @@ public class BeamEntity implements Entityc, Drawc {
                 remove();
                 return;
             }
-            int length = this.beamData.length;
+
             points.clear();
             passBuild.clear();
             start(x,y,launchRotation);
             isBlocked = false;
-            float cx = x,cy = y;
+            cx=x;cy=y;
             rotation.set(launchRotation);
             updateEntity();
-            for (int i = 1; i <= length; i++) {
+            cycleLength = beamData.length;
+            for (int i = 1; i <= cycleLength; i++) {
+                step = i;
                 cx += rotation.x*8;
                 cy += rotation.y*8;
                 Building onBuild = buildOn(cx, cy);
@@ -116,25 +123,10 @@ public class BeamEntity implements Entityc, Drawc {
                     isBlocked = true;
                     break;
                 }
-                //你知道的，不+1会很诡异
-                if(onBuild.block instanceof md_BeamDeflector deflector){
-                    if(i+1<=length){
-                        Vec2 cacheRotat = md_Edge.transpose(deflector.afterRotation.cpy(),onBuild.rotation);
-                        if(cacheRotat.x != rotation.x || cacheRotat.y != rotation.y) {
-                            turn(cx, cy);
-                            passBuild.add(onBuild);
-                            length =(int) Math.max(
-                                    (length-i)*(rotation.len()/cacheRotat.len())+i
-                                    ,0);
-                            rotation.set(cacheRotat);
-                            Items.lead.description=""+(length-i);
-                            if(length-i == 0){
-                                cx+=rotation.x*5;
-                                cy+=rotation.y*5;
-                                break;
-                            }
-                        }
-                    }
+                if(onBuild instanceof BeamBlock.BeamBlockBuild beamBuild){
+                    if(beamBuild.handleBeam(this)){
+                        break;
+                    };
                     continue;
                 }
                 if (ConsumeBeam.getLaserConsume(onBuild.block).size != 0) {
@@ -166,7 +158,8 @@ public class BeamEntity implements Entityc, Drawc {
 
     @Override
     public void draw() {
-        if(warmup>0.01f)laser.beamDrawer.draw(this);
+        Draw.mixcol(laser.toColor,(scl-1) * 2.5f);
+        if(warmup>0.01f)laser.beamDrawer.get(this);
         Draw.reset();
     }
 
