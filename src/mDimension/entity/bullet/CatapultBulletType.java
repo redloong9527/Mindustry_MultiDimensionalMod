@@ -1,12 +1,12 @@
 package mDimension.entity.bullet;
 
 import arc.math.Mathf;
-import arc.struct.Seq;
+import mDimension.tool.Debug;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.*;
 
-import static mindustry.Vars.indexer;
+
 
 public class CatapultBulletType extends BasicBulletType {
 
@@ -28,13 +28,14 @@ public class CatapultBulletType extends BasicBulletType {
     public Unit res = null;
     @Override
     public void hitEntity(Bullet b, Hitboxc entity, float health) {
+
         super.hitEntity(b, entity, health);
         if(b.type.pierce){
             dst = -1;
             res = null;
             Units.nearbyEnemies(b.team, b.x, b.y, catapultRange, h -> {
                 if (!b.collided.contains(h.id()) && (b.dst2(h) < dst || dst<0)){
-                    res = null;
+                    res = h;
                     dst = b.dst2(h);
                 }
             });

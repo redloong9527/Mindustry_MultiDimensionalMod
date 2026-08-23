@@ -145,7 +145,7 @@ public class MD_ElectricFieldCoreBlock extends CoreBlock {
             for(int i = 0;i<5;i++){
                 Lines.arc(x,y,rad*1.22f,1/6.5f,(Time.time)/3 + i*(360f/5f));
             }
-//            if(Time.time%15<=Time.delta&&!Vars.state.isPaused()){
+//            if(Time.progress%15<=Time.delta&&!Vars.state.isPaused()){
 //                md_Fx.leakage.at(x,y,0,team.color.cpy().a(0.9f),new float[]{rad,rad,1});
 //            }
             Draw.color(Color.white.cpy().lerp(this.team.color, 0.4F));

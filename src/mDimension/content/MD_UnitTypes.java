@@ -10,6 +10,7 @@ import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
+import mDimension.ai.TransportAI;
 import mDimension.entity.ability.AccelerateAbility;
 import mDimension.entity.ability.PatienceAbility;
 import mDimension.entity.bullet.BallLightningBulletType;
@@ -21,6 +22,7 @@ import mDimension.world.weapons.DestoryWeapon;
 import mDimension.world.weapons.OverdriveWeapon;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
+import mindustry.ai.types.CargoAI;
 import mindustry.ai.types.FlyingFollowAI;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -45,6 +47,8 @@ import static mindustry.Vars.tilesize;
 
 import static mDimension.content.MD_blocks.modname;
 import mDimension.world.weapons.*;
+import mindustry.type.unit.ErekirUnitType;
+
 public class MD_UnitTypes {
 
     public static UnitType captive , zircon;
@@ -53,6 +57,9 @@ public class MD_UnitTypes {
     public static UnitType lumen,floating;
     //coreUnit
     public static UnitType primitive;
+
+    //?
+    public static UnitType laborers;
 
 
     public static void load(){
@@ -1086,6 +1093,33 @@ public class MD_UnitTypes {
 //                    }}
             );
             clipSize = 32*8f;
+        }};
+
+
+        laborers = new DepicilonUnitType("laborers"){{
+            controller = u -> new TransportAI();
+            constructor = BuildingTetherPayloadUnit::create;
+            isEnemy = false;
+            allowedInPayloads = false;
+            logicControllable = false;
+            playerControllable = false;
+            envDisabled = 0;
+            payloadCapacity = 0f;
+            trailLength = 5;
+
+            lowAltitude = false;
+            flying = true;
+            drag = 0.06f;
+            speed = 3;
+            rotateSpeed = 9f;
+            accel = 0.1f;
+            itemCapacity = 50;
+            health = 120;
+            hitSize = 9;
+            engineSize = 2f;
+            engineOffset = 6;
+            hidden = true;
+            setEnginesMirror(new UnitEngine(3, -4.5f, 7/4f, -45));
         }};
 
     }

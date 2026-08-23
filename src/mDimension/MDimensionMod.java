@@ -6,6 +6,7 @@ import mDimension.core.MDRenderer;
 import mDimension.core.MDShaders;
 import mDimension.meta.md_Stat;
 import mDimension.meta.md_StatUnit;
+import mDimension.ui.MD_CreateEmoji;
 import mDimension.world.MDEvents;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
@@ -15,6 +16,7 @@ import mindustry.ui.dialogs.BaseDialog;
 import mDimension.content.*;
 
 public class MDimensionMod extends Mod {
+    public static final String MODNAME = "mdimension";
 
     public MDimensionMod() {
 
@@ -65,7 +67,6 @@ public class MDimensionMod extends Mod {
 
         MD_SectorPresets.load();
         MD_TechTree.load();
-
     }
 
 }

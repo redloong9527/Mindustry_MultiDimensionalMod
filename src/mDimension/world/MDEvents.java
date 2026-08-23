@@ -45,7 +45,9 @@ public class MDEvents {
         inspector.setPosition(40, 40); // 左下角
 
 
-        Events.run(EventType.Trigger.update, () -> {
+        if(!Vars.mods.list().contains(m->
+                m.meta.name.equals("fieldmodifier") && m.enabled())
+        )Events.run(EventType.Trigger.update, () -> {
             if(Core.input.keyRelease(MDKeyBind.reflection_debugging) && Vars.state.rules.infiniteResources){ // F4 打开检视器
                 hover = null;
                 dst = -1;

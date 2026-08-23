@@ -1,7 +1,9 @@
 package mDimension.tool;
 
 import arc.Core;
+import arc.func.Boolc;
 import arc.func.Boolf;
+import arc.func.Boolp;
 import arc.func.Cons2;
 import arc.math.Mathf;
 import arc.scene.style.TextureRegionDrawable;
@@ -24,8 +26,11 @@ import static mindustry.Vars.state;
 public class MD_ItemSelection {
     private static TextField search;
     private static int rowCount;
-
     public static <T extends UnlockableContent> void multiSelect(@Nullable Block block, Table table, Seq<T> items, Boolf<T> holder, Cons2<T,Boolean> consumer, boolean closeSelect, int rows, int columns){
+        multiSelect(block,  table,  items, holder,  consumer,  closeSelect,  rows,  columns,null);
+    }
+
+    public static <T extends UnlockableContent> void multiSelect(@Nullable Block block, Table table, Seq<T> items, Boolf<T> holder, Cons2<T,Boolean> consumer, boolean closeSelect, int rows, int columns, Boolp canConfig){
         ButtonGroup<ImageButton> group = new ButtonGroup<>();
         group.setMinCheckCount(0);
         group.setMaxCheckCount(-1);
@@ -53,7 +58,9 @@ public class MD_ItemSelection {
                                 }
                 ).tooltip(item.localizedName).group(group).get();
                 //VVVVVVVV
-                button.changed(() -> consumer.get(item,button.isChecked()));
+                button.changed(() -> {
+                    if(canConfig == null || canConfig.get())consumer.get(item,button.isChecked());
+                });
                 button.getStyle().imageUp = new TextureRegionDrawable(item.uiIcon);
 
                 //VVVVVVVV

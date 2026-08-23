@@ -33,6 +33,7 @@ import mDimension.world.blocks.drill.DirectionalPump;
 import mDimension.world.blocks.flux.FluxCrafter;
 import mDimension.world.blocks.flux.FluxNode;
 import mDimension.world.blocks.payload.*;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.Puddles;
@@ -59,6 +60,7 @@ import mindustry.world.blocks.defense.turrets.ContinuousTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.distribution.Duct;
+import mindustry.world.blocks.distribution.Junction;
 import mindustry.world.blocks.distribution.OverflowGate;
 import mindustry.world.blocks.distribution.Sorter;
 import mindustry.world.blocks.liquid.Conduit;
@@ -82,13 +84,15 @@ public class MD_blocks {
     public static final String modname = "mdimension-";
     //region defined
     public static Block
-    small_silicon_arc_furnace,aluminium_electrolysis_cell, al_alloy_smelting,infrared_laser,ultraviolet_laser,nihility_exciter,ngm_launch_pad,
-            ti_alloy_smelting, helium_factory, test2,diagonal_beam_merging_prism,
-            water_pyrolyzer,carbon_fibre_binder,heavy_pulverizer,polymer_compressor,phase_adder,ammonia_chamber,
+            small_silicon_arc_furnace, aluminium_electrolysis_cell, al_alloy_smelting, infrared_laser, ultraviolet_laser, nihility_exciter, ngm_launch_pad,
+            ti_alloy_smelting, helium_factory, test2, diagonal_beam_merging_prism,
+            water_pyrolyzer, carbon_fibre_binder, heavy_pulverizer, polymer_compressor, phase_adder, ammonia_chamber,
     //distribution
-    beam_merging_prism,
-            multiway_unloader, light_duct_bridge,shunt_router,
-            light_sorter,light_invertedSorter,light_overflowGate,light_underflowGate,light_duct,armored_light_duct,stack_rail_conveyor,
+    beam_merging_prism, light_junction,
+            multiway_unloader, light_duct_bridge, shunt_router,
+            light_sorter, light_invertedSorter, light_overflowGate, light_underflowGate, light_duct, armored_light_duct, stack_rail_conveyor,
+
+            moving_node,
     //liquid
     siphon_pump,  fluid_unloader,fluid_conduit_bridge,directional_fluid_router,fluid_junction,fluid_conduit,fluid_container,
     deep_water_extractor,beam_bore,small_impact_drill,ammonia_collector,crustal_drill,  drilling_casing_module,
@@ -129,6 +133,7 @@ public class MD_blocks {
                     Items.graphite, 20
             ));
             researchCostMultiplier = 0.05f;
+            itemCapacity = 20;
 
             consumeItem(Items.sand, 3);
             outputItem = new ItemStack(Items.silicon, 2);
@@ -860,6 +865,13 @@ public class MD_blocks {
                     bridgeReplacement = light_duct_bridge;
                 }
             };
+            light_junction = new Junction("light-junction"){{
+                requirements(Category.distribution, with(MD_Items.aluminium, 3));
+                researchCost = with();
+                health = 150;
+                speed = 22;
+                displayedSpeed = 16f;
+            }};
             light_duct_bridge = new RadiusItemBridge("al-alloy-duct-bridge") {{
                 requirements(Category.distribution, with(Items.silicon, 10, Items.copper, 10));
                 arrowSpacing = 6f;
@@ -877,40 +889,44 @@ public class MD_blocks {
                 squareSprite = false;
             }};
             shunt_router = new ShuntDuctRouter("shunt-router"){{
-                requirements(Category.distribution, with(MD_Items.aluminium, 4));
+                requirements(Category.distribution, with(MD_Items.aluminium, 6));
+                squareSprite = false;
                 researchCost = with( MD_Items.aluminium, 10);
                 health = 150;
                 speed = 4f;
                 regionRotated1 = 1;
                 solid = false;
             }};
-            light_sorter = new Sorter("light-sorter"){{
-                requirements(Category.distribution, with(MD_Items.aluminium, 3));
-                buildCostMultiplier = 3f;
+            light_sorter = new MD_Sorter("light-sorter"){{
+                requirements(Category.distribution, with(MD_Items.aluminium, 4));
+                squareSprite = false;
                 researchCost = with();
-                health = 150;
+                health = 120;
             }};
 
-            light_invertedSorter = new Sorter("light-inverted-sorter"){{
-                requirements(Category.distribution, with(MD_Items.aluminium, 3));
+            light_invertedSorter = new MD_Sorter("light-inverted-sorter"){{
+                requirements(Category.distribution, with(MD_Items.aluminium, 4));
+                squareSprite = false;
                 buildCostMultiplier = 3f;
                 invert = true;
                 researchCost = with( );
-                health = 150;
+                health = 120;
             }};
             light_overflowGate = new OverflowGate("light-overflow-gate"){{
-                requirements(Category.distribution, with(MD_Items.aluminium, 3));
+                requirements(Category.distribution, with(MD_Items.aluminium, 4));
+                squareSprite = false;
                 buildCostMultiplier = 3f;
                 researchCost = with( );
-                health = 150;
+                health = 120;
             }};
 
             light_underflowGate = new OverflowGate("light-underflow-gate"){{
-                requirements(Category.distribution, with(MD_Items.aluminium, 3));
+                requirements(Category.distribution, with(MD_Items.aluminium, 4));
+                squareSprite = false;
                 buildCostMultiplier = 3f;
                 invert = true;
                 researchCost = with( );
-                health = 150;
+                health = 120;
             }};
 
             multiway_unloader = new MD_MultiwayUnloader("multiway-unloader") {{
@@ -921,7 +937,7 @@ public class MD_blocks {
                 ));
                 squareSprite = false;
                 size = 1;
-                health = 120;
+                health = 100;
                 speed = 3f;
                 solid = false;
                 underBullets = true;
@@ -931,10 +947,22 @@ public class MD_blocks {
 
             stack_rail_conveyor = new MulitStackConveyor("stack-rail-conveyor") {{
                 requirements(Category.distribution, with(MD_Items.aluminium, 1, MD_Items.al_alloy, 1, Items.silicon, 1));
-                health = 210;
+                health = 150;
                 armor = 3;
                 itemCapacity = 15;
                 speed = 6 / 60f;
+            }};
+
+            moving_node = new ActiveTransferBlock("moving-node"){{
+                requirements(Category.distribution,new BuildVisibility(()->
+                        !Vars.state.rules.onlyDepositCore
+                        ), with(MD_Items.aluminium, 50, MD_Items.al_alloy, 30, Items.silicon, 50,MD_Items.polymer,50));
+                squareSprite = false;
+                health = 200;
+                size = 2;
+                itemCapacity = 50;
+                consumePower(300f/60);
+                haloColor = Color.valueOf("E3E9FF");
             }};
         //endregion
         //region liquid

@@ -18,15 +18,27 @@ public class BlendLiquidJunction extends LiquidJunction {
         side = Core.atlas.find(name+"-side");
     }
     public class BlendLiquidJunctionBuild extends LiquidJunctionBuild{
+        public int blend = 0;
         @Override
-        public void draw() {
-            super.draw();
+        public void updateProximity() {
+            super.updateProximity();
+            blend = 0;
             for(int i=0;i<proximity.size;i++){
                 Building other = proximity.get(i);
                 int r = relativeTo(other);
                 if(!(other instanceof BlendLiquidJunctionBuild)&&
                         (other instanceof Conduit.ConduitBuild || other.block.hasLiquids)){
-                    Draw.rect(side,x,y,r*90);
+                    blend |= 1<<r;
+                }
+            }
+        }
+
+        @Override
+        public void draw() {
+            super.draw();
+            for(int i=0;i<4;i++){
+                if((blend & 1<<i) == 1){
+                    Draw.rect(side,x,y,i*90);
                 }
             }
         }
