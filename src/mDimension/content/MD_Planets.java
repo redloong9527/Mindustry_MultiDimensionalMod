@@ -71,20 +71,21 @@ public class MD_Planets {
             alwaysUnlocked = true;
             allowSelfSectorLaunch = true;
             landCloudColor = Pal.spore.cpy().a(0.65f);
-
+            maxZoom = 5f;
+            minZoom = 0.35f;
             rings.addAll(
-                    new PlanetRing(1.3f,1.5f,Color.valueOf("B59B61"),40f,30f){{alphaOut = 1f;alphaIn =0.5f;}},
-                    new PlanetRing(1.5f,2.1f,Color.valueOf("F5DC90"),40f,30f),
-                    new PlanetRing(2.2f,2.6f,Color.valueOf("C7C166"),40f,30f){{alphaOut = 0.75f;}},
-                    new PlanetRing(2.68f,2.85f,Color.valueOf("87812B"),40f,30f),
+                    new PlanetRing(2.3f,2.5f,Color.valueOf("B59B61"),40f,30f){{alphaOut = 1f;alphaIn =0.5f;}},
+                    new PlanetRing(2.5f,3.1f,Color.valueOf("F5DC90"),40f,30f),
+                    new PlanetRing(3.2f,3.6f,Color.valueOf("C7C166"),40f,30f){{alphaOut = 0.75f;}},
+                    new PlanetRing(3.68f,3.85f,Color.valueOf("87812B"),40f,30f),
 
-                    new PlanetRing(2.1f,2.2f,Color.valueOf("C99B74"),40f,30f){{alphaOut = 0.28f;alphaIn =0.35f;}},
-                    new PlanetRing(2.6f,2.68f,Color.valueOf("C99B74"),40f,30f){{alphaOut = 0.13f;alphaIn =0.2f;}},
-                    new PlanetRing(2.85f,3.25f,Color.valueOf("C99B74"),40f,30f){{alphaOut = 0f;alphaIn =0.1f;}}
+                    new PlanetRing(3.1f,3.2f,Color.valueOf("C99B74"),40f,30f){{alphaOut = 0.28f;alphaIn =0.35f;}},
+                    new PlanetRing(3.6f,3.68f,Color.valueOf("C99B74"),40f,30f){{alphaOut = 0.13f;alphaIn =0.2f;}},
+                    new PlanetRing(3.85f,4.25f,Color.valueOf("C99B74"),40f,30f){{alphaOut = 0f;alphaIn =0.1f;}}
             );
 
             auroras.addAll(
-                    new PlanetAurora(Color.valueOf("62DE78"),35f,25f,14)
+                    new PlanetAurora(Color.valueOf("62DE78"),35f,25f,10)
             );
 
         }};
