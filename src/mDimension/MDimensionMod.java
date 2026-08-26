@@ -59,6 +59,7 @@ public class MDimensionMod extends Mod {
         MD_Liquids.load();
         MD_environment.load();
         MD_UnitTypes.load();
+        MD_crops.load();
         MD_blocks.load();
         original_reset.load();
 

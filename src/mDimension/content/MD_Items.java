@@ -1,11 +1,16 @@
 package mDimension.content;
 
 import arc.graphics.Color;
+import mDimension.world.data.SeedItem;
 import mindustry.type.Item;
 
 public class MD_Items {
     public static Item
-            bauxite,aluminium,germanium,chromium,uranium,al_alloy,ti_alloy,polymer,carbon_fibre,polymorphic_crystal,plasma,light_ceramic,nihility_alloy;
+            bauxite,aluminium,germanium,chromium,uranium,al_alloy,ti_alloy,polymer,carbon_fibre,polymorphic_crystal,plasma,light_ceramic,nihility_alloy
+
+            //seed
+            ,seed1
+            ;
 
     public static void load(){
         bauxite = new Item("bauxite",Color.valueOf("ffebd0")){{
@@ -90,5 +95,7 @@ public class MD_Items {
             cost = 3f;
             hardness  = 3;
         }};
+
+        seed1 = new SeedItem("seed",Color.yellow);
     }
 }

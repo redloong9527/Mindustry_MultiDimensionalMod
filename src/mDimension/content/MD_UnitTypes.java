@@ -10,6 +10,7 @@ import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
+import mDimension.ai.SeedingAI;
 import mDimension.ai.TransportAI;
 import mDimension.entity.ability.AccelerateAbility;
 import mDimension.entity.ability.PatienceAbility;
@@ -59,7 +60,7 @@ public class MD_UnitTypes {
     public static UnitType primitive;
 
     //?
-    public static UnitType laborers;
+    public static UnitType laborers,farmer;
 
 
     public static void load(){
@@ -1120,6 +1121,32 @@ public class MD_UnitTypes {
             engineOffset = 6;
             hidden = true;
             setEnginesMirror(new UnitEngine(3, -4.5f, 7/4f, -45));
+        }};
+
+        farmer = new DepicilonUnitType("farmer"){{
+            controller = u -> new SeedingAI();
+            constructor = BuildingTetherPayloadUnit::create;
+            isEnemy = false;
+            allowedInPayloads = false;
+            logicControllable = false;
+            playerControllable = false;
+            envDisabled = 0;
+            payloadCapacity = 0f;
+
+            lowAltitude = false;
+            flying = true;
+            drag = 0.05f;
+            speed = 2;
+            rotateSpeed = 9f;
+            accel = 0.08f;
+            itemCapacity = 50;
+            health = 120;
+            hitSize = 9;
+            engineSize = 2f;
+            engineOffset = 6;
+            hidden = true;
+            setEnginesMirror(new UnitEngine(3, -4.5f, 7/4f, -45));
+
         }};
 
     }
