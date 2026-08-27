@@ -3,6 +3,7 @@ package mDimension.tool;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.Rand;
@@ -11,6 +12,8 @@ import arc.struct.FloatSeq;
 import arc.util.Time;
 import arc.util.noise.Simplex;
 import mindustry.graphics.Drawf;
+
+import javax.swing.plaf.synth.Region;
 
 public class Drawff {
     public static Rand rand = new Rand();
@@ -129,6 +132,38 @@ public class Drawff {
         float h = -2f*Math.abs(x-0.5f)+1;
         h/=(2*fadingDst);
         return Mathf.clamp(h);
+    }
+
+    public static void flipSpinSprite(TextureRegion region,float x,float y,float r,float tran,boolean alongTheY){
+        float w = region.width*0.25f;
+        float h = region.height*0.25f;
+
+        float a = Draw.getColorAlpha();
+
+        Draw.rect(region,x,y,w,h,r);
+        if(alongTheY){
+            w*=-1;
+            Draw.alpha(med(r,tran));
+        }else{
+            h*=-1;
+            Draw.alpha(1-med(r-90f,tran));
+        }
+
+        Draw.rect(region,x,y,w,h,r);
+
+        Draw.alpha(a);
+    }
+
+    public static float med(float a, float s){
+        a = Mathf.mod(a,360f);
+        float b = Mathf.mod(a-45f,180);
+        float d = Angles.angleDist(b,90);
+        if(d<s){
+            float m = Mathf.clamp((b-90+s)/s/2,-1f,1f);
+            if(a>180f)m = 1-m;
+            return m;
+        }
+        return a <135f || a > 315f?0:1f;
     }
 
 

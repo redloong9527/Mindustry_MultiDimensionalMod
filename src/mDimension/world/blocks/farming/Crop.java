@@ -9,6 +9,8 @@ import arc.math.Rand;
 import arc.util.Interval;
 import arc.util.Nullable;
 import arc.util.Time;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mDimension.world.data.SeedItem;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
@@ -27,6 +29,8 @@ import mindustry.world.Tile;
 import mindustry.world.modules.ItemModule;
 import mindustry.world.modules.LiquidModule;
 import mindustry.world.modules.PowerModule;
+
+import static mindustry.Vars.world;
 
 public class Crop extends Block {
     public int stageAmount = 3;
@@ -53,8 +57,8 @@ public class Crop extends Block {
         alwaysReplace = true;
         instantDeconstruct = true;
         unitMoveBreakable = true;
-        breakEffect = Fx.breakProp;
-        breakSound = Sounds.rockBreak;
+        destroyEffect = breakEffect = Fx.breakProp;
+        destroySound = breakSound = Sounds.plantBreak;
         hasColor = true;
         noUpdateDisabled = false;
         canOverdrive = false;
@@ -63,7 +67,13 @@ public class Crop extends Block {
         drawDisabled = false;
         customShadow = true;
         allowDerelictRepair = false;
+        drawTeamOverlay = false;
         SeedItem.map.put(seed,this);
+    }
+
+    @Override
+    public int minimapColor(Tile tile) {
+        return this.mapColor.rgba();
     }
 
     @Override
@@ -81,9 +91,12 @@ public class Crop extends Block {
 
     public class CorpBuild extends Building{
         public float life = 0;
+        public int tryHarvestingBuildPos = -1;
         public float growthProgress(){
             return Mathf.clamp(life/growthTime);
         }
+
+        public boolean adult(){return life>growthTime;}
 
         public Building create(Block block, Team team) {
             this.block = block;
@@ -112,6 +125,10 @@ public class Crop extends Block {
             if ((this.timeScaleDuration -= Time.delta) <= 0.0F) {
                 this.timeScale = 1.0F;
             }
+            if(tryHarvestingBuildPos!=-1){
+                var b = world.build(tryHarvestingBuildPos);
+                if(!(b instanceof HarvestingBlock.HarvestingBlockBuild h) || h.target!=this.tile)tryHarvestingBuildPos = -1;
+            }
 
             this.updateConsumption();
             if (this.enabled || !this.block.noUpdateDisabled) {
@@ -138,9 +155,10 @@ public class Crop extends Block {
                     }
                 }
             }
-            Build.beginBreak(null,Team.derelict,tile.x,tile.y);
+            block.breakSound.at(tile, block.breakPitchChange ? Mathf.random(0.7f, 1.3f) : 0.4f);
+            block.breakEffect.at(tile.drawx(), tile.drawy(), block.size, block.mapColor);
+            Call.setTile(this.tile,Blocks.air,Team.derelict,0);
         }
-
 
         @Override
         public void draw(){
@@ -183,6 +201,20 @@ public class Crop extends Block {
         @Override
         public void drawSelect() {
             super.drawSelect();
+        }
+
+        @Override
+        public void write(Writes write) {
+            super.write(write);
+            write.f(life);
+            write.i(tryHarvestingBuildPos);
+        }
+
+        @Override
+        public void read(Reads read, byte revision) {
+            super.read(read, revision);
+            life = read.f();
+            tryHarvestingBuildPos = read.i();
         }
     }
 

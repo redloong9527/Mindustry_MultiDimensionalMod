@@ -1139,14 +1139,12 @@ public class MD_UnitTypes {
             speed = 2;
             rotateSpeed = 9f;
             accel = 0.08f;
-            itemCapacity = 50;
+            itemCapacity = 0;
             health = 120;
             hitSize = 9;
-            engineSize = 2f;
-            engineOffset = 6;
+            engineSize = 1.8f;
+            engineOffset = 4.5f;
             hidden = true;
-            setEnginesMirror(new UnitEngine(3, -4.5f, 7/4f, -45));
-
         }};
 
     }

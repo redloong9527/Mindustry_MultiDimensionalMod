@@ -30,6 +30,7 @@ import mDimension.world.blocks.drill.MD_BurstDrill;
 import mDimension.world.blocks.drill.CrustDrill;
 import mDimension.world.blocks.drill.CrustDrillBooster;
 import mDimension.world.blocks.drill.DirectionalPump;
+import mDimension.world.blocks.farming.HarvestingBlock;
 import mDimension.world.blocks.farming.PlanterBlock;
 import mDimension.world.blocks.flux.FluxCrafter;
 import mDimension.world.blocks.flux.FluxNode;
@@ -100,7 +101,7 @@ public class MD_blocks {
     //produce
             beam_bore,small_impact_drill,ammonia_collector,crustal_drill,  drilling_casing_module,
 
-            planter,
+            planter,harvestingArm,
     //ammo
     heavy_ammo,
     //turret
@@ -836,6 +837,17 @@ public class MD_blocks {
         planter = new PlanterBlock("planter"){{
             requirements(Category.production,with(Items.silicon,120,Items.graphite,150,MD_Items.polymer,100,MD_Items.aluminium,150));
             size = 3;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion(),
+                    new DrawRegion("-top"),
+                    new DrawRotation("-rotate",true)
+            );
+        }};
+        harvestingArm = new HarvestingBlock("harvesting-arm"){{
+            requirements(Category.production,with(Items.silicon,40,MD_Items.al_alloy,20,MD_Items.polymer,80));
+            size = 1;
+
         }};
         //endregion
         //region distribution

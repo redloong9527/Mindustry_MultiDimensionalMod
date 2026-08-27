@@ -514,6 +514,15 @@ public class MD_Fx {
         Lines.circle(e.x,e.y,r);
     }).layer(99.99f),
 
+    planter = new Effect(30f,e->{
+        Draw.color(Color.white.cpy().lerp(e.color,0.5f).mul(e.fout()*0.2f+0.6f));
+        randLenVectors(e.id,5,e.fin()*3f,(x,y)->{
+            Fill.poly(e.x+x,e.y+y,4,e.fout()*1.2f);
+        });
+        Lines.stroke(e.fout());
+        Lines.poly(e.x,e.y,4,e.fin()*4f);
+    }).layer(Layer.blockProp+0.5f),
+
 
 
     none = Fx.none;
