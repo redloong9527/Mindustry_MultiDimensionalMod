@@ -95,9 +95,7 @@ public class MDEvents {
             int ind = 0;
             Items.coal.description = "";
             for (FluxGraph graph : graphs) {
-                if (graph.deprecate) {
-                    graphs.remove(graph);
-                } else if (graph.init) {
+                if (graph.init) {
                     //Items.coal.description += "\n\n\nindex:" + ind + " allSize:" + graphs.size + "\n" + graph.getDebugLog();
                     if(loadSave){
                         graph.saveLoad();

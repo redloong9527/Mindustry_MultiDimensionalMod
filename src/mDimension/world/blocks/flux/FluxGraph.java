@@ -29,7 +29,6 @@ public class FluxGraph {
     private final Seq<Building> outArray2 = new Seq<>(false, INITIAL_CAPACITY, Building.class);
 
     // 图状态
-    public boolean deprecate = false;
     public boolean init = false;
     private int lastChange = -2;
 
@@ -96,7 +95,6 @@ public class FluxGraph {
     public void deprecate() {
         clear();
         MDEvents.graphs.remove(this);
-        deprecate = true;
     }
 
     // ========== BFS（对齐原版 PowerGraph） ==========
@@ -236,10 +234,10 @@ public class FluxGraph {
             return;
         }
 
-        if (lastChange != world.tileChanges) {
-            lastChange = world.tileChanges;
-            updateGraph();
-        }
+//        if (lastChange != world.tileChanges) {
+//            lastChange = world.tileChanges;
+//            updateGraph();
+//        }
 
         float amount = getChangeAmount();
         changeCapacity(amount);
@@ -267,8 +265,15 @@ public class FluxGraph {
         }
 
         bfs(start);
+        check();
     }
-
+    void check(){
+        all.each(b->{
+            if(b instanceof Flux f && f.flux().graph != this){
+                f.flux().graph = this;
+            };
+        });
+    }
     private Building findValidStart() {
         var items = all.items;
         for (int i = 0; i < all.size; i++) {
@@ -342,7 +347,6 @@ public class FluxGraph {
                 "all=" + all.size +
                 ", storage=" + storage.size +
                 ", consumer=" + consumer.size +
-                ", deprecate=" + deprecate +
                 '}';
     }
 }

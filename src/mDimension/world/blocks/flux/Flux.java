@@ -6,6 +6,7 @@ import arc.util.Nullable;
 import mDimension.consumers.ConsumeFlux;
 import mDimension.consumers.modules.FluxModule;
 import mDimension.content.MD_Fx;
+import mDimension.tool.Debug;
 import mindustry.Vars;
 import mindustry.gen.Building;
 
@@ -44,6 +45,7 @@ public interface Flux{
             b.damagePierce(b.block.health *0.25f +1f);
         }
     }
+
 
     default void FluxGraphRemoved() {
         if (flux() != null && this instanceof Building self) {

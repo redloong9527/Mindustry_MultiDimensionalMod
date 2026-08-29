@@ -13,6 +13,7 @@ import static arc.Core.settings;
 public class MDRenderer {
     public static MDRenderer renderer;
     private FrameBuffer buffer;
+    public static final float extBloomLayer = 42f;
 
     public static Well well;
     protected MDRenderer(){
@@ -31,11 +32,12 @@ public class MDRenderer {
         if(settings.getBool("pixelate") || !settings.getBool("bloom")){
             return;
         }
-        Draw.draw(210.5f, () -> {
+
+        Draw.draw(extBloomLayer-0.01f, () -> {
             Vars.renderer.bloom.capture();
         });
 
-        Draw.draw(211.5f, () -> {
+        Draw.draw(extBloomLayer+1.01f, () -> {
             Vars.renderer.bloom.render();
         });
 

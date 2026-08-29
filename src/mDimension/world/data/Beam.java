@@ -9,6 +9,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Tmp;
+import mDimension.core.MDRenderer;
 import mDimension.draw.MDLines;
 import mDimension.entity.BeamEntity;
 import mDimension.meta.md_Stat;
@@ -30,6 +31,7 @@ public class Beam extends UnlockableContent implements Senseable {
     public int beamID = -1;
     //no achieve
     public boolean hasDamage = false;
+    public float layer = MDRenderer.extBloomLayer;
 
     public boolean targetAir = false;
 
@@ -136,13 +138,13 @@ public class Beam extends UnlockableContent implements Senseable {
     };
 
 
-    public static void basicDraw(BeamEntity l,Cons2<Vec2,Vec2> cons,Cons<Vec2> node,Cons<Vec2> cap,Cons2<Vec2,Vec2> end){
+    public void basicDraw(BeamEntity l,Cons2<Vec2,Vec2> cons,Cons<Vec2> node,Cons<Vec2> cap,Cons2<Vec2,Vec2> end){
         for(int i=1;i<l.points.size/2-1;i++){
-            Draw.z(Layer.blockOver);
+            Draw.z(layer);
             node.get(Tmp.v2.set(l.points.get(i*2),l.points.get(i*2+1)));
         }
         for(int i=1;i<l.points.size/2;i++){
-            Draw.z(Layer.blockOver+0.01f);
+            Draw.z(layer+0.1f);
             cons.get(Tmp.v1.set(l.points.get(i*2-2),l.points.get(i*2-1))
                     ,Tmp.v2.set(l.points.get(i*2),l.points.get(i*2+1))
             );
@@ -150,7 +152,7 @@ public class Beam extends UnlockableContent implements Senseable {
         int size = l.points.size;
         float tx = l.points.get(size-2);
         float ty = l.points.get(size-1);
-        Draw.z(Layer.blockOver+0.01f);
+        Draw.z(layer+0.01f);
         cap.get(Tmp.v1.set(l.points.get(0),l.points.get(1)));
         if(l.isBlocked){
             cap.get(Tmp.v1.set(tx,ty));

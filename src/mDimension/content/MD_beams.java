@@ -5,14 +5,14 @@ import mDimension.world.data.Beam;
 
 public class MD_beams {
     public static Beam
-            near_infrared_ligth,ultraviolet_ligth,nihility_light;
+            near_infrared_light, ultraviolet_light,nihility_light;
     public static void load() {
-        near_infrared_ligth = new Beam("near-infrared-laser", Color.valueOf("FF6E61").a(0.7f)) {{
+        near_infrared_light = new Beam("near-infrared-laser", Color.valueOf("FF6E61").a(0.7f)) {{
             energyLevel = 3;
             length = 18;
 
         }};
-        ultraviolet_ligth = new Beam("ultraviolet-light", Color.valueOf("E363FF").a(0.7f)) {{
+        ultraviolet_light = new Beam("ultraviolet-light", Color.valueOf("E363FF").a(0.7f)) {{
             energyLevel = 5;
             length = 12;
 

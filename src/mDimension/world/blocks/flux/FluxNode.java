@@ -6,17 +6,24 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
+import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Interval;
 import arc.util.Tmp;
 import mDimension.consumers.ConsumeFlux;
+import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.core.UI;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
+import mindustry.input.Placement;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
+import mindustry.world.blocks.power.BeamNode;
+import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.meta.Env;
 
 import java.util.Arrays;
@@ -36,11 +43,10 @@ public class FluxNode extends FluxBlock {
     public TextureRegion laserEnd;
     public FluxNode(String name){
         super(name);
-        configurable = true;
         consumesPower = false;
         outputsPower = false;
         canOverdrive = false;
-        swapDiagonalPlacement = true;
+        allowRectanglePlacement = true;
         schematicPriority = -10;
         drawDisabled = false;
         envEnabled |= Env.space;
@@ -80,17 +86,39 @@ public class FluxNode extends FluxBlock {
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid) {
-        super.drawPlace(x, y, rotation, valid);
-        for(int i = 0; i < 4; i ++) {
-            var dir = Geometry.d8edge[i];
-            int offset = size / 2;
-            //find first block with power in range
-            int w = (range + offset);
+    public void drawPlace(int x, int y, int rotation, boolean valid){
+        for(int i = 0; i < 4; i++){
+            int maxLen = range + size/2;
+            Building dest = null;
+            var dir = Geometry.d8[i*2+1];
+            int dx = dir.x, dy = dir.y;
+            int offset = size/2;
+            for(int j = 1 + offset; j <= range + offset; j++){
+                var other = world.build(x + j * dir.x, y + j * dir.y);
 
-            Drawf.dashLine(Pal.placing,(x + dir.x*0.5f) * tilesize,(y + dir.y*0.5f) * tilesize,(x + w*dir.x)* tilesize,(y + w*dir.y)* tilesize);
+                //hit insulated wall
+                if(other != null && other.isInsulated()){
+                    break;
+                }
+
+                if(other instanceof Flux){
+                    maxLen = j;
+                    dest = other;
+                    break;
+                }
+            }
+
+            Drawf.dashLine(Pal.placing,
+                    x * tilesize + dx * (tilesize * size / 2f + 2),
+                    y * tilesize + dy * (tilesize * size / 2f + 2),
+                    x * tilesize + dx * (maxLen) * tilesize,
+                    y * tilesize + dy * (maxLen) * tilesize
+            );
+
+            if(dest != null){
+                Drawf.square(dest.x, dest.y, dest.block.size * tilesize/2f+2.5f, 45f);
+            }
         }
-
     }
 
     public void drawLaser(float x1, float y1, float x2, float y2){
@@ -104,6 +132,22 @@ public class FluxNode extends FluxBlock {
 
     }
 
+    @Override
+    public void changePlacementPath(Seq<Point2> points, int rotation, boolean diagonal){
+        if(!diagonal){
+            var start = points.first();
+            int endx = points.max(p->Math.abs(p.x - start.x)).x - start.x;
+            int endy = points.max(p->Math.abs(p.y - start.y)).y - start.y;
+            var dp = Tmp.p1.set(Mathf.sign(endx),Mathf.sign(endy));
+            int d = Math.min(Math.abs(endx) , Math.abs(endy));
+            points.clear();
+            for(int i=0;i<d;i+=range+size-1){
+                points.add(new Point2(dp.x*i,dp.y*i).add(start.x,start.y));
+            }
+
+            points.add(new Point2(dp.x*d,dp.y*d).add(start.x,start.y));
+        }
+    }
 
     public class FluxNodeBuild extends FluxBlockBuild{
         public Building[] links = new Building[4];
@@ -132,6 +176,7 @@ public class FluxNode extends FluxBlock {
 
         @Override
         public void pickedUp(){
+            super.pickedUp();
             Arrays.fill(links, null);
             Arrays.fill(dests, null);
         }
@@ -158,7 +203,7 @@ public class FluxNode extends FluxBlock {
                     }
                 }
             }
-            if (flux.graph != null && flux.graph.init && !flux.graph.deprecate) {
+            if (flux.graph != null && flux.graph.init) {
                 int h = flux.graph.hashCode();
                 int r = h & 0xff0000;
                 int g = h & 0x00ff00;

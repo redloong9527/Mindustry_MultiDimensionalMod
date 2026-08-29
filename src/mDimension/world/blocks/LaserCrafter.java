@@ -30,7 +30,7 @@ public class LaserCrafter extends GenericCrafter {
 
     public Vec2[] craftPos;
     public Vec2[] craftRotation;
-    public Beam beam = MD_beams.near_infrared_ligth;
+    public Beam beam = MD_beams.near_infrared_light;
     private int beamAmount;
     private Vec2[] beamPos;
     public LaserCrafter(String name){
@@ -106,7 +106,7 @@ public class LaserCrafter extends GenericCrafter {
             for(int i = 0;i<beamAmount;i++) {
                 if (crafterLasers[i] == null) {
                     Vec2 p = MD_Edge.transpose(craftPos[i].cpy(),rotation).add(x,y);
-                    BeamEntity laserEntity = new BeamEntity(beam);
+                    BeamEntity laserEntity = new BeamEntity(beam,this);
                     laserEntity.create(p.x, p.y, MD_Edge.transpose(craftRotation[i].cpy(),rotation), i);
                     MD_Fx.waveColor(5f, 3f, 1f).at(p.x * 8, p.y * 8, Color.valueOf("FFFFFF"));
                 } else {

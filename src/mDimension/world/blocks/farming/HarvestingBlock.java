@@ -33,6 +33,7 @@ public class HarvestingBlock extends Block {
         solid = true;
         update = true;
         hasItems = true;
+        itemCapacity = 20;
     }
     TextureRegion f(String sfx){
         return Core.atlas.find(name+"-"+sfx);
@@ -63,6 +64,13 @@ public class HarvestingBlock extends Block {
         }
     }
 
+    @Override
+    public TextureRegion[] icons(){
+        return new TextureRegion[]{
+                region,armStartBottom,armStart
+        };
+    }
+
     public class HarvestingBlockBuild extends Building{
         public float progress = 0;
         public Tile target;
@@ -81,7 +89,7 @@ public class HarvestingBlock extends Block {
                 dump();
                 progress -= dumpSpeed;
             }
-            if(!isPayload())harvesting();
+            if(!isPayload() && items.total()<block.itemCapacity)harvesting();
         }
 
         @Override

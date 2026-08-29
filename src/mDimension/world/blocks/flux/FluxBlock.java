@@ -1,9 +1,11 @@
 package mDimension.world.blocks.flux;
 
+import arc.graphics.Color;
 import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.consumers.modules.FluxModule;
+import mDimension.tool.Debug;
 import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.game.Team;
@@ -20,10 +22,8 @@ public class FluxBlock extends Block{
         group = BlockGroup.power;
     }
 
+
     public class FluxBlockBuild extends Building implements Flux{
-
-
-
         //you should add this
         //region module
         public FluxModule flux = new FluxModule();
@@ -37,6 +37,13 @@ public class FluxBlock extends Block{
         }
 
         @Override
+        public void updateProximity() {
+            super.updateProximity();
+            Debug.cry(this,Color.blue);
+            flux.graph.updateGraph();
+        }
+
+        @Override
         public void write(Writes write) {
             super.write(write);
             flux.write(write);
@@ -47,6 +54,8 @@ public class FluxBlock extends Block{
             flux.read(read);
         }
 
+
+
         @Override
         public void onRemoved() {
             FluxGraphRemoved();
@@ -54,6 +63,7 @@ public class FluxBlock extends Block{
 
         @Override
         public Seq<Building> FluxConnections(Seq<Building> out) {
+            super.updateProximity();
             out.clear();
 
             if (flux() == null) {

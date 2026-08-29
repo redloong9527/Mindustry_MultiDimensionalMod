@@ -11,21 +11,20 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mDimension.consumers.ConsumeBeam;
 import mDimension.content.MD_beams;
-import mDimension.tool.MD_Edge;
 import mDimension.world.beam.BeamBlock;
 import mDimension.world.data.BeamData;
 import mDimension.world.data.Beam;
 import mDimension.world.blocks.LaserCrafter;
-import mDimension.world.blocks.MD_BeamDeflector;
 import mindustry.Vars;
 import mindustry.content.Blocks;
-import mindustry.content.Items;
 import mindustry.core.World;
 import mindustry.entities.EntityGroup;
 import mindustry.gen.*;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
+
+import java.util.Arrays;
 
 public class BeamEntity implements Entityc, Drawc {
     protected transient int index__all;
@@ -35,20 +34,21 @@ public class BeamEntity implements Entityc, Drawc {
     public int id = EntityGroup.nextId();
     public float warmup=0;
     public float scl = 1;
+    public Building owner = null;
 
     public int createId;
 
     public Vec2 rotation = new Vec2(1,0);
     public Vec2 launchRotation;
 
-    public FloatSeq points = new FloatSeq(3);
+    public FloatSeq points = new FloatSeq(6);
 
     public float x;
     public float y;
 
     public Seq<Building> passBuild = new Seq<Building>(6);
 
-    public Beam laser = MD_beams.near_infrared_ligth;
+    public Beam laser = MD_beams.near_infrared_light;
     public BeamData beamData;
     public int step = 0;
     public int cycleLength = 0;
@@ -60,8 +60,9 @@ public class BeamEntity implements Entityc, Drawc {
     public BeamEntity(){
 
     }
-    public BeamEntity(Beam laser){
+    public BeamEntity(Beam laser, Building owner){
         this.laser = laser;
+        this.owner = owner;
     }
 
     public void setPower(float power){this.beamData.setPower(power);}
@@ -79,78 +80,68 @@ public class BeamEntity implements Entityc, Drawc {
         warmup = Mathf.approachDelta(warmup,beamData.power > 0.01f ?1f:0f,1.5f/60f);
     }
     public float scl(){
-        return  (Mathf.absin(Time.time + id*1145,3,0.15f)+1)*warmup;
+        return  (Mathf.absin(Time.time + id*2,3f,0.15f)+1)*warmup;
     }
     @Override
     public void update() {
         this.scl = scl();
 
-        if (buildOn() == null) {
+        if (!(owner instanceof LaserCrafter.TestCrafterBuild tcb) || !owner.isValid() || !Arrays.asList(tcb.crafterLasers).contains(this)) {
             remove();
-        }else if(buildOn() instanceof LaserCrafter.TestCrafterBuild tcb){
-            without:
-            {
-                for (BeamEntity l : tcb.crafterLasers) {
-                    if (l == this) break without;
-                }
-                remove();
-                return;
-            }
+            return;
+        }
 
-            points.clear();
-            passBuild.clear();
-            start(x,y,launchRotation);
-            isBlocked = false;
-            cx=x;cy=y;
-            rotation.set(launchRotation);
-            updateEntity();
-            cycleLength = beamData.length;
-            for (int i = 1; i <= cycleLength; i++) {
-                step = i;
-                cx += rotation.x*8;
-                cy += rotation.y*8;
-                Building onBuild = buildOn(cx, cy);
-                if (onBuild == null) {
-                    if (onSolid(cx, cy)) {
-                        end(cx,cy,rotation);
-                        isBlocked = true;
-                        break;
-                    }
-                    continue;
-                }
-                if(passBuild.contains(onBuild)){
-                    end(cx,cy,rotation);
-                    isBlocked = true;
-                    break;
-                }
-                if(onBuild instanceof BeamBlock.BeamBlockBuild beamBuild){
-                    if(beamBuild.handleBeam(this)){
-                        break;
-                    };
-                    continue;
-                }
-                if (ConsumeBeam.getLaserConsume(onBuild.block).size != 0) {
-                    end(cx,cy,rotation);
-                    isBlocked = true;
-                    for (ConsumeBeam c : ConsumeBeam.getLaserConsume(onBuild.block)) {
-                        if (c.laserDataMap.get(onBuild) == null) continue;
-                        c.accrue(onBuild, beamData);
-                    }
-                    break;
-                }
-
+        points.clear();
+        passBuild.clear();
+        start(x,y,launchRotation);
+        isBlocked = false;
+        cx=x;cy=y;
+        rotation.set(launchRotation);
+        updateEntity();
+        cycleLength = beamData.length;
+        for (int i = 1; i <= cycleLength; i++) {
+            step = i;
+            cx += rotation.x*8;
+            cy += rotation.y*8;
+            Building onBuild = buildOn(cx, cy);
+            if (onBuild == null) {
                 if (onSolid(cx, cy)) {
                     end(cx,cy,rotation);
                     isBlocked = true;
                     break;
                 }
+                continue;
             }
-            if(!isBlocked){
+            if(passBuild.contains(onBuild)){
                 end(cx,cy,rotation);
-                isBlocked = false;
+                isBlocked = true;
+                break;
             }
-        }else{
-            remove();
+            if(onBuild instanceof BeamBlock.BeamBlockBuild beamBuild){
+                if(beamBuild.handleBeam(this)){
+                    break;
+                };
+                continue;
+            }
+            if (ConsumeBeam.getLaserConsume(onBuild.block).size != 0) {
+                end(cx,cy,rotation);
+                isBlocked = true;
+                for (ConsumeBeam c : ConsumeBeam.getLaserConsume(onBuild.block)) {
+                    if (c.laserDataMap.get(onBuild) == null) continue;
+                    c.accrue(onBuild, beamData);
+                }
+                break;
+            }
+
+            if (onSolid(cx, cy)) {
+                end(cx,cy,rotation);
+                isBlocked = true;
+                break;
+            }
+        }
+        if(!isBlocked){
+            end(cx,cy,rotation);
+            isBlocked = false;
         }
     }
 

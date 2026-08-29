@@ -9,7 +9,7 @@ public class MD_Items {
             bauxite,aluminium,germanium,chromium,uranium,al_alloy,ti_alloy,polymer,carbon_fibre,polymorphic_crystal,plasma,light_ceramic,nihility_alloy
 
             //seed
-            ,seed1
+            ,colloid_fruit
             ;
 
     public static void load(){
@@ -24,7 +24,7 @@ public class MD_Items {
             hardness = 1;
             cost = 0.4f;
         }};
-        germanium = new Item("germanium",Color.valueOf("EDDB75")){{
+        germanium = new Item("germanium",Color.valueOf("ED93EC")){{
             healthScaling = 0.4f;
             hardness = 1;
             cost = 0.6f;
@@ -96,6 +96,8 @@ public class MD_Items {
             hardness  = 3;
         }};
 
-        seed1 = new SeedItem("seed",Color.yellow);
+        colloid_fruit = new SeedItem("colloid-fruit",Color.valueOf("FFB082")){{
+            flammability = 0.4f;
+        }};
     }
 }

@@ -211,7 +211,7 @@ public class MultiRecipeCrafter extends GenericCrafter {
 
             //limit progress increase by maximum amount of liquid it can produce
             float scaling = 1f, max = 1f;
-            if(recipes.outLiquidType().length >0){
+            if(recipes.outLiquidType().length >0 && recipe.outputLiquids!=null){
                 max = 0f;
                 for(var s : recipe.outputLiquids){
                     float value = (liquidCapacity - liquids.get(s.liquid)) / (s.amount * edelta());

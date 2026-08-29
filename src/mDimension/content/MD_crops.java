@@ -6,12 +6,14 @@ import mindustry.type.ItemStack;
 import mindustry.world.Block;
 
 public class MD_crops {
-    public static Block crop;
+    public static Block xenogum_tree;
 
     public static void load(){
-        crop = new Crop("crop",MD_Items.seed1){{
+        xenogum_tree = new Crop("xenogum-tree",MD_Items.colloid_fruit){{
             mapColor = Color.valueOf("917F50");
-            outputItems = ItemStack.with(MD_Items.bauxite,5);
+            growthTime = 90*60f;
+            outputItems = ItemStack.with(MD_Items.colloid_fruit,3);
+            requirements = ItemStack.with(MD_Items.colloid_fruit,2);
         }};
     }
 }

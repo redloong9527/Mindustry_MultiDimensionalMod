@@ -64,7 +64,6 @@ import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.distribution.Duct;
 import mindustry.world.blocks.distribution.Junction;
 import mindustry.world.blocks.distribution.OverflowGate;
-import mindustry.world.blocks.distribution.Sorter;
 import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.blocks.payloads.Constructor;
@@ -210,8 +209,8 @@ public class MD_blocks {
             armor = 3;
             size = 4;
             buildTime = 6f;
-            consume(new ConsumeBeam(6, MD_beams.ultraviolet_ligth));
-            consume(new ConsumeBeam(30, MD_beams.near_infrared_ligth));
+            consume(new ConsumeBeam(6, MD_beams.ultraviolet_light));
+            consume(new ConsumeBeam(30, MD_beams.near_infrared_light));
             craftTime = 80f;
             itemCapacity = 30;
             consumeItems(ItemStack.with(Items.silicon, 3, Items.titanium, 12));
@@ -313,7 +312,7 @@ public class MD_blocks {
             requirements(Category.crafting,BuildVisibility.sandboxOnly, with());
             size = 3;
             consumePower(1f);
-            consume(new ConsumeBeam(20f, MD_beams.ultraviolet_ligth));
+            consume(new ConsumeBeam(20f, MD_beams.ultraviolet_light));
             outputItem = new ItemStack(Items.silicon, 1);
             craftTime = 15f;
             hasPower = true;
@@ -444,7 +443,7 @@ public class MD_blocks {
             };
             diagonalFilp = true;
             consumePower(2f);
-            beam = MD_beams.near_infrared_ligth;
+            beam = MD_beams.near_infrared_light;
             size = 2;
             beamPower = 10f;
             rotateDraw = false;
@@ -463,7 +462,7 @@ public class MD_blocks {
             };
             consumePower(3f);
             diagonalFilp = true;
-            beam = MD_beams.ultraviolet_ligth;
+            beam = MD_beams.ultraviolet_light;
             size = 2;
             beamPower = 6f;
             rotateDraw = false;
@@ -497,7 +496,7 @@ public class MD_blocks {
         carbon_fibre_binder = new GenericCrafter("carbon-fibre-binder") {{
             requirements(Category.crafting, with());
             size = 3;
-            consume(new ConsumeBeam(40, MD_beams.near_infrared_ligth));
+            consume(new ConsumeBeam(40, MD_beams.near_infrared_light));
             consumePower(5f);
             consumeItems(
                     with(MD_Items.polymer, 5)
@@ -540,7 +539,7 @@ public class MD_blocks {
 
             consumeLiquid(Liquids.water, 20 / 60f);
             consumePower(1f);
-            consume(new ConsumeBeam(10, MD_beams.near_infrared_ligth));
+            consume(new ConsumeBeam(10, MD_beams.near_infrared_light));
             warmupSpeed = 0.003f;
 
             drawer = new DrawMulti(
@@ -760,7 +759,7 @@ public class MD_blocks {
                 heatColor = Color.valueOf("E6C845");
                 boostHeatColor = Color.valueOf("F26B4D");
 
-                consume(new ConsumeBeamBoost(5, MD_beams.near_infrared_ligth,optionalBoostIntensity).boost());
+                consume(new ConsumeBeamBoost(5, MD_beams.near_infrared_light,optionalBoostIntensity).boost());
             }
         };
         small_impact_drill = new MD_BurstDrill("small-impact-drill") {{
@@ -843,6 +842,7 @@ public class MD_blocks {
                     new DrawRegion("-top"),
                     new DrawRotation("-rotate",true)
             );
+            consumeLiquid(Liquids.water,15/60f);
         }};
         harvestingArm = new HarvestingBlock("harvesting-arm"){{
             requirements(Category.production,with(Items.silicon,40,MD_Items.al_alloy,20,MD_Items.polymer,80));
@@ -1731,8 +1731,10 @@ public class MD_blocks {
             fluffrain = new LiquidTurret("fluffrain"){{
                 requirements(Category.turret,with(MD_Items.polymer,150,Items.silicon,200, MD_Items.al_alloy,200, MD_Items.ti_alloy,180));
                 scaledHealth = 250;
+                predictTarget = false;
                 ammo(
                         MD_Liquids.dimension_fluid,new BasicBulletType(15.2f*8/60f,50){{
+                            homingPower = 0.02f;
                             lifetime = 55f;
                             width = 7f;
                             height = 20;
@@ -2037,7 +2039,7 @@ public class MD_blocks {
                 rotateSpeed = 60/60f;
                 shootCone = 360f;
                 unitSort = UnitSorts.strongest;
-                consume(new ConsumeBeam(80, MD_beams.near_infrared_ligth));
+                consume(new ConsumeBeam(80, MD_beams.near_infrared_light));
 
             }};
             crest = new MD_PayloadTurret("crest"){{

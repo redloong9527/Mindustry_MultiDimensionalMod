@@ -26,7 +26,7 @@ public class ConsumeBeam extends Consume {
     //由于aunke使用min，所以改这个diao用没有
     public float maxEfficiency = 1f;
 
-    public Beam inputBeam = MD_beams.near_infrared_ligth;
+    public Beam inputBeam = MD_beams.near_infrared_light;
     public int maxSize = 256;
 
     public static Seq<ConsumeBeam> allConsume = new Seq<>();

@@ -14,6 +14,7 @@ public class FluxModule extends BlockModule {
     public void init(Building owner){
         FluxGraph temp = new FluxGraph();
         temp.init(owner);
+
         this.owner = owner;
     }
 

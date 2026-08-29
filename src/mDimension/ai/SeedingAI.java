@@ -18,7 +18,7 @@ public class SeedingAI extends AIController {
 
         boss = (PlanterBlockBuild)tether.building();
 
-        if(boss.isFull || boss.target == null){
+        if(boss.isFull || boss.target == null || boss.crop == null || !boss.items.has(boss.crop.seed,boss.crop.seedingRequirements)){
             moveTo(boss,moveBossRange,moveSmoothing);
         }else{
             moveTo(Tmp.v2.set(boss.target.worldx(),boss.target.worldy()),moveRange,moveSmoothing);

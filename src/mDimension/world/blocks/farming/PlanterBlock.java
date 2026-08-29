@@ -141,7 +141,7 @@ public class PlanterBlock extends Block {
         public void updateTile() {
             if(unit!=null && (seedingProgress += edelta())>=seedingInterval){
                 findCrop();
-                if(crop!=null && items.has(crop.requirements)){
+                if(crop!=null && items.has(crop.seed,crop.seedingRequirements)){
                     updateSeed();
                 }
             }
@@ -161,8 +161,8 @@ public class PlanterBlock extends Block {
             readyness = Mathf.approachDelta(readyness, unit != null ? 1f : 0f, 1f / 60f);
 
             if(unit == null && Units.canCreate(team, unitType)){
-                buildProgress += edelta() / unitBuildTime;
-                totalProgress += edelta();
+                buildProgress += delta() / unitBuildTime;
+                totalProgress += delta();
 
                 if(buildProgress >= 1f){
                     if(!net.client()){
@@ -209,7 +209,7 @@ public class PlanterBlock extends Block {
                     planterEffect.at(target.worldx(),target.worldy(),target.floor().mapColor);
                     Call.setTile(target,crop, Team.derelict,0);
                     takeEffect.at(x,y,0, Color.white,unit);
-                    items.remove(consumeItem,1);
+                    items.remove(crop.seed,crop.seedingRequirements);
                     seedingProgress=0;
                 }
             }else{
@@ -218,17 +218,24 @@ public class PlanterBlock extends Block {
 
 
         }
-        void findCrop(){
+        boolean findCrop(){
             crop = null;
             consumeItem = null;
             for(var e:SeedItem.map.entries()){
                 if(items.has(e.key)){
                     crop = (Crop)e.value;
                     consumeItem = e.key;
-                    return;
+                    return true;
                 }
             }
+            return false;
         }
+
+        @Override
+        public boolean shouldConsume() {
+            return enabled && !isFull && unit != null && findCrop() && crop!=null && items.has(crop.seed,crop.seedingRequirements);
+        }
+
         boolean canSeeding(Tile tile){
 
             return tile!=null && !tile.solid() && !tile.floor().isDeep() && tile.build == null && crop.canPlaceOn(tile,Team.derelict, 0);

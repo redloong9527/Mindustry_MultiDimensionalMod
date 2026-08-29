@@ -295,13 +295,13 @@ public class ExtendedPlanet extends Planet {
         public boolean enabled = true;
         public boolean bothPoles = true;
         public float height = 0.13f;
-        public float heightScl = 0.2f;
-        public float minHeight = 0.04f;
+        public float heightScl = 0.4f;
+        public float minHeight = 0.02f;
         /** 是否启用距离淡出 */
         public boolean useFade = true;
         public float fadeNear = -1f;
         public float fadeFar = -1f;
-        public float scl = 0.6f;
+        public float scl = 0.45f;
         public float rad = 0.4f;
         public float cosT = 0,sinT = 0;
         public PlanetAurora() {}
